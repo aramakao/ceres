@@ -1,4 +1,1 @@
-HOola 2
-asdasd
-asda
-
+AGROCERES es una plataforma donde podrás conectarte en torno al mundo TICs en la agricultura. Es una propuesta enfocada al sector agropecuario para lograr su competitividad, dejando atrás la comercialización tradicional y optando por las nuevas tecnologías.
