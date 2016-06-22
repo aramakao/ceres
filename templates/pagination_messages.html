@@ -1,0 +1,27 @@
+<nav>
+  <ul class="pagination">
+    {% if my_messages.has_previous %}
+      <li><a href="?page={{ my_messages.previous_page_number }}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a></li>
+    {% else %}
+      <li><a aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+    {% endif %}
+    </li>
+    {% for pagelink in my_messages.paginator.page_range %}
+      {% if page_obj.number == pagelink %}
+        <li class="active"><a>{{pagelink}}<span class="sr-only"></span></a></li>
+      {% else %}
+      <li><a href="?page={{ pagelink }}">{{pagelink}}</a></li>
+    {% endif %}
+  {% endfor %}
+    {% if my_messages.has_next %}
+      <li><a href="?page={{ my_messages.next_page_number }}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a></li>
+    {% else %}
+      <li><a aria-label="Next"><span aria-hidden="true">&raquo;</span> </a></li>
+    {% endif %}
+    </li>
+  </ul>
+</nav>

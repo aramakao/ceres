@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>apps.blog.models &mdash; AgroCeres 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="AgroCeres 1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> AgroCeres
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/account.html">Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/store.html">Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/blog.html">Blog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/comment.html">Comment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/extras.html">Extras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/farm.html">Farm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/groups.html">Groups</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/messages.html">Messages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/product.html">Product</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/search.html">Search</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">AgroCeres</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>apps.blog.models</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for apps.blog.models</h1><div class="highlight"><pre>
+<span class="c">#-*- encoding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">autoslug</span> <span class="kn">import</span> <span class="n">AutoSlugField</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">formats</span>
+
+<div class="viewcode-block" id="CategoryManager"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.models.CategoryManager">[docs]</a><span class="k">class</span> <span class="nc">CategoryManager</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Manager</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class allows manager the category model&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="CategoryManager.menuCategory"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.models.CategoryManager.menuCategory">[docs]</a>    <span class="k">def</span> <span class="nf">menuCategory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function returns the menu for categories&#39;&#39;&#39;</span>
+        <span class="n">categories</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)</span>
+        <span class="n">categories_list</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">category</span><span class="o">=</span><span class="p">{}</span>
+        <span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">:</span>
+            <span class="n">category</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">cat</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">category</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">cat</span><span class="o">.</span><span class="n">slug</span>
+            <span class="n">category</span><span class="p">[</span><span class="s">&#39;svg&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">cat</span><span class="o">.</span><span class="n">svg</span>
+            <span class="n">category</span><span class="p">[</span><span class="s">&#39;count&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">cat</span><span class="o">.</span><span class="n">countEntries</span><span class="p">()</span>
+            <span class="n">categories_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">category</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">categories_list</span>
+</div>
+<div class="viewcode-block" id="CategoryManager.countEntries"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.models.CategoryManager.countEntries">[docs]</a>    <span class="k">def</span> <span class="nf">countEntries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function counts the entries&#39;&#39;&#39;</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">count</span>
+</div></div>
+<div class="viewcode-block" id="Category"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.models.Category">[docs]</a><span class="k">class</span> <span class="nc">Category</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This model allows save the categories&#39;&#39;&#39;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">slug</span> <span class="o">=</span> <span class="n">AutoSlugField</span><span class="p">(</span><span class="n">populate_from</span><span class="o">=</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="n">unique_with</span><span class="o">=</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="n">always_update</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ImageField</span><span class="p">(</span><span class="n">upload_to</span><span class="o">=</span><span class="s">&#39;blog&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&#39;blog/no_image.png&#39;</span><span class="p">)</span>
+    <span class="n">icon</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ImageField</span><span class="p">(</span><span class="n">upload_to</span><span class="o">=</span><span class="s">&#39;blog&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&#39;blog/no_image.png&#39;</span><span class="p">)</span>
+    <span class="n">svg</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;none&#39;</span><span class="p">)</span>
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">CategoryManager</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+<div class="viewcode-block" id="Category.countEntries"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.models.Category.countEntries">[docs]</a>    <span class="k">def</span> <span class="nf">countEntries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function counts the entries for categories&#39;&#39;&#39;</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">Blog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">count</span>
+</div></div>
+<div class="viewcode-block" id="BlogManager"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.models.BlogManager">[docs]</a><span class="k">class</span> <span class="nc">BlogManager</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Manager</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This manager extends from blog model&#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="nf">getBanners</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">banners</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s">&#39;image&#39;</span><span class="p">,</span><span class="s">&#39;slug&#39;</span><span class="p">,</span><span class="s">&#39;title&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">in_banner</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">banners</span>
+</div>
+<div class="viewcode-block" id="Blog"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.models.Blog">[docs]</a><span class="k">class</span> <span class="nc">Blog</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This model allows save a blog&#39;&#39;&#39;</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">slug</span> <span class="o">=</span> <span class="n">AutoSlugField</span><span class="p">(</span><span class="n">populate_from</span><span class="o">=</span><span class="s">&#39;title&#39;</span><span class="p">,</span> <span class="n">unique_with</span><span class="o">=</span><span class="s">&#39;title&#39;</span><span class="p">,</span><span class="n">always_update</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+    <span class="n">posted</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Category</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ImageField</span><span class="p">(</span><span class="n">upload_to</span><span class="o">=</span><span class="s">&#39;blog&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&#39;blog/no_image.png&#39;</span><span class="p">)</span>
+    <span class="n">in_banner</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">BlogManager</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span>
+
+<div class="viewcode-block" id="Blog.minContent"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.models.Blog.minContent">[docs]</a>    <span class="k">def</span> <span class="nf">minContent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function returns a minimum content of the entry&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">100</span><span class="p">]</span><span class="o">+</span><span class="s">&#39;...&#39;</span>
+</div>
+<div class="viewcode-block" id="Blog.date_post"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.models.Blog.date_post">[docs]</a>    <span class="k">def</span> <span class="nf">date_post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function returns the publication date&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">formats</span><span class="o">.</span><span class="n">date_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">posted</span><span class="p">,</span> <span class="s">&quot;SHORT_DATE_FORMAT&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, AgroCeres.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

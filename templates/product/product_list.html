@@ -1,0 +1,98 @@
+{% extends "./base.html" %}
+{% block title %}Mis Productos{% endblock title %}
+{% block subtitle %}Mis Productos{% endblock subtitle %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_products="active" farm_in="in" %}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block extra_css %}
+  <link href="{{STATIC_URL}}css/bootstrap-switch.min.css" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+		<li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+		<li class="active">Mis Productos</li>
+	</ol>
+	<div class="page-header">
+    <h1 class="title-main">Mis Productos</h1>
+  </div>
+	<div class="col-md-12">
+		<h3><a href="{% url 'product_app:product_add' %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Nuevo Producto</a></h3>
+		{% if not products %}
+			<div class="alert alert-success" role="alert">
+				<strong>Información!</strong> No tiene productos registrados..
+			  <a href="{% url 'product_app:product_add' %}" class="alert-link">Agregue un producto</a>
+			</div>
+		{% else %}
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Producto</th>
+					<th>Visible</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for product in products %}
+				<tr>
+					<td width="70%">
+						<div class="media">
+						  <div class="media-left">
+						    <a href="{% url 'product_app:product_detail' product.slug %}">
+						      <img src="{{MEDIA_URL}}{{product.getPicture}}" class="img-circle product-image-list"> <a href="{% url 'product_app:product_detail' product.slug %}">
+						    </a>
+						  </div>
+						  <div class="media-body">
+						    <h4 class="media-heading"><a href="{% url 'product_app:product_detail' product.slug %}"><strong>{{product.name}}</strong></a></h4>
+						    {{product.summary}}
+						    <br><small>Categoría <strong>{{product.category}}</strong></small>
+						  </div>
+						</div>
+					</td>
+					<td>
+						<input type="checkbox" id="{{product.id}}" name="my-checkbox" data-size="mini" {% if product.is_active %}checked{%endif%} data-off-color="warning" data-on-color="success" data-on-text="SI" data-off-text="NO">
+					</td>
+					<td>
+						<a href="{% url 'product_app:product_detail' product.slug %}" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="top" title="Detalles"><span class="glyphicon glyphicon-eye-open"></span></a>
+						<a href="{% url 'product_app:product_edit' product.slug %}"  class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="top" title="Editar"><span class="glyphicon glyphicon-edit"></span></a>
+						<a href="{% url 'product_app:product_delete' product.slug %}"  class="delete btn btn-danger btn-xs" data-toggle="tooltip" data-placement="top" title="Borrar"><span class="glyphicon glyphicon-trash"></span></a>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+		{% include './pagination.html'%}
+	</div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+  <script src="{{STATIC_URL}}js/bootstrap-switch.min.js"></script>
+	<script src="{{STATIC_URL}}js/django-ajax.js"></script>
+	<script type="text/javascript">
+		$( document ).ready(function() {
+			ajaxDjango();
+			$("[name='my-checkbox']").bootstrapSwitch();
+			$('input[name="my-checkbox"]').on('switchChange.bootstrapSwitch', function(event, state) {
+        $.ajax({
+          type: "POST",
+          url: "{% url 'product_app:update_active' %}",
+          data: {product:this.id,state:state},
+          success: function(msg){
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert(errorThrown);}
+          });
+      });
+		});
+	</script>
+{% endblock extra_js %}

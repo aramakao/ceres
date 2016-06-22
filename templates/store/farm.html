@@ -1,0 +1,128 @@
+{% extends "./base.html" %}
+{% block title %}{{ farm.farm.name|title }}{% endblock title %}
+{% block active_farms %}active{% endblock %}
+
+{% block extra_css %}
+  <link type="text/css" href="{{STATIC_URL}}css/star-rating.min.css"  rel="stylesheet"/>
+{% endblock extra_css %}
+
+{% block banner %}
+  {% include "./banner_farm.html" with farm_profile=farm%}
+{% endblock banner %}
+
+{% block meta %}
+  <meta name="description" content="{{ farm.farm.name|title }} - {{ farm.slogan|title }} | Dir:  {{farm.farm.address}} - Tél: {{farm.farm.phone}}" />
+  <meta name="keywords" content="AgroCeres,Campo,agricultura,Nariño,granja,asociaciones,{{ group.group.name|title }}">
+{% endblock meta %}
+
+{% block second_menu %}
+  {% include "./menu_category_farm.html" %}
+{% endblock %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'farms' %}">Granjas</a></li>
+    <li class="active">{{ farm.farm.name|title }}</li>
+  </ol>
+  <div class="col-md-12">
+    <div class="page-header">
+      <h1 class="title-main">Nosotros</h1>
+    </div>
+    {% include "./menu.html" with name="Productos - Categorías" list=categories farm=farm %}
+  </div>
+  <div class="col-md-12">
+    <div class="page-header">
+      <h1 class="title-main">Nuestra Ubicación</h1>
+    </div>
+    <div class="col-md-12">
+      <p>
+        <span class="label label-success">{{farm.location}}</span>
+      </p>
+      <div class="map-canvas" id="map-canvas"></div>
+    </div>
+  </div>
+</div>
+{% if latest_products %}
+  <div class="col-md-12">
+    {% include './carousel_products.html' with products=latest_products name="Nuestros Productos" source="farm"%}
+  </div>
+  <div class="col-md-12 text-center"><br>
+    <a class="btn btn-success" href="{% url 'products_list' farm.farm.slug %}">Ver todos los productos</a>
+  </div>
+{% else %}
+  <div class="col-md-12"><br>
+    <div class="alert alert-success" role="alert"><strong>Importante!!</strong> Esta granja aún no tiene productos registrados.</div>
+  </div>
+{% endif %}
+{% endblock container %}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/parallax.js"></script>
+<script src="{{STATIC_URL}}/owl-carousel/owl.carousel.js"></script>
+<script src="{{STATIC_URL}}js/star-rating.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(".feedback").rating({'showCaption':true,showClear:false, disabled:true, 'stars':'5', 'min':'0', 'max':'5', 'step':'1', 'size':'xs',
+    starCaptions: function(val) {
+      if (val == 1) {
+        return val+' Estrella';
+      } else {
+        return val+' Estrellas';
+      }
+    }
+    });
+
+    var owl = $("#owl_products");
+    owl.owlCarousel({
+    items : 3,
+    itemsDesktop : [1000,3], //5 items between 1000px and 901px
+    itemsDesktopSmall : [900,2], // 3 items betweem 900px and 601px
+    itemsTablet: [600,1], //2 items between 600 and 0;
+    });
+    owl.trigger('owl.play',5000);
+
+  });
+</script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&libraries=places"></script>
+<script type="text/javascript">
+  var latitude=('{{farm.latitude}}').replace(/,/g, '.');
+  var longitude=('{{farm.longitude}}').replace(/,/g, '.');
+
+  function initialize() {
+		var myLatlng = new google.maps.LatLng(parseFloat(latitude),parseFloat(longitude));
+
+    var mapOptions = {
+      zoom: 9,
+      center: myLatlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+	   };
+
+	  var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+	  var marker = new google.maps.Marker({
+	    position: myLatlng,
+	    map:map,
+	    animation: google.maps.Animation.DROP,
+	    title:"{{farm.name}}"
+	  });
+
+  	var contentString = '<div id="content">'+
+    '<div id="siteNotice">'+
+    '</div>'+
+    '<h4 id="firstHeading" class="firstHeading">{{farm.farm.name|title}} <small><i>{{form.slogan.value}}</i></small></h4>'+
+        '<div id="bodyContent">'+
+        '<b>Dirección: </b>{{farm.farm.address}}<br/>' +
+        '<b>Télefono: </b>{{farm.farm.phone}}<br/>' +
+        '</div>'+
+        '</div>';
+
+    var infowindow = new google.maps.InfoWindow({content: contentString});
+
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.open(map,marker);
+    });
+  }
+  google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+{% endblock extra_js %}

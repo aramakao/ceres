@@ -1,0 +1,308 @@
+{% extends "./base.html" %}
+{% block title %}Mi Granja{% endblock title %}
+
+{% block banner %}
+  {% include "./banner_farm2.html" with farm_profile=farm_profile%}
+{% endblock banner %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_myfarm="active" farm_in="in"%}
+{% endblock main-menu %}
+
+{% block extra_css %}
+<style>
+   .controls {
+     margin-top: 16px;
+     border: 1px solid transparent;
+     border-radius: 2px 0 0 2px;
+     box-sizing: border-box;
+     -moz-box-sizing: border-box;
+     height: 32px;
+     outline: none;
+     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+   }
+
+   #pac-input {
+     background-color: #fff;
+     font-size: 15px;
+     font-weight: 300;
+     margin-left: 12px;
+     padding: 0 11px 0 13px;
+     text-overflow: ellipsis;
+     width: 400px;
+   }
+
+   #pac-input:focus {
+     border-color: #8BC34A;
+   }
+
+   #type-selector {
+     color: #fff;
+     background-color: #4d90fe;
+     padding: 5px 11px 0px 11px;
+   }
+
+   #type-selector label {
+     font-size: 13px;
+     font-weight: 300;
+   }
+ </style>
+{% endblock extra_css %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li class="active">Mi Granja</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Mi Granja <i class="helpers fa fa-question-circle" data-trigger="hover" data-toggle="popover" title="Ayuda" data-content="Para cambiar la imagen de perfil de tu granja debes hacer click sobre la imagen circular."></i></h1>
+  </div>
+  <form method="POST" id="form">{% csrf_token %}
+    <div class="col-md-12">
+      <div class="page-header">
+        <h3 class="title-main">Información de su Granja</h3>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_name">Nombre</label>
+        {{form_farm.name}}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_slogan">Slogan o Frase</label>
+        {{form_profile.slogan}}
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h3 class="title-main">Información de Contacto</h3>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_facebook">Dirección</label>
+        {{form_farm.address}}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_facebook">Teléfono</label>
+        {{form_farm.phone}}
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h3 class="title-main">Otra Información</h3>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_facebook">Facebook</label>
+        {{form_profile.facebook}}
+        {{form_profile.latitude}}
+        {{form_profile.longitude}}
+        {{form_profile.location}}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_twitter">Twitter</label>
+        {{form_profile.twitter}}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_web_site">Sitio Web</label>
+        {{form_profile.web_site}}
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h3 class="title-main">Ubicación <i class="helpers fa fa-question-circle" data-trigger="hover" data-toggle="popover" title="Ayuda" data-content="Para cambiar la ubicación de tu granja puedes arrastrar el marcador por el mapa o buscar tu región en la caja de texto."></i></h3>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <span class="pull-left label label-success" id='location-map'>{{form_profile.location.value}}</span><br>
+      <input id="pac-input" class="controls" type="text" placeholder="Buscar">
+      <div class="map-canvas" id="map-canvas"></div>
+    </div>
+    <div class="col-md-12">
+      <br>
+      <button type="submit" class="btn btn-success btn-lg btn-block">Actualizar Información</button>
+    </div>
+  </form>
+</div>
+{% endblock container %}
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+      $("#form").validate({
+        messages: {
+				  name: "Este campo es requerido",
+          address: "Este campo es requerido",
+          phone: "Este campo es requerido",
+        }
+      });
+    });
+</script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&libraries=places"></script>
+<script type="text/javascript">
+    $('[data-toggle="popover"]').popover();
+	  var latitude=('{{form_profile.latitude.value}}').replace(/,/g, '.');
+    var longitude=('{{form_profile.longitude.value}}').replace(/,/g, '.');
+    function initialize() {
+  		var myLatlng = new google.maps.LatLng(parseFloat(latitude),parseFloat(longitude));
+	   	var mapOptions = {
+		  zoom: 9,
+		  center: myLatlng,
+		  mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+
+		var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+		var marker = new google.maps.Marker({
+		    position: myLatlng,
+		    map:map,
+		    animation: google.maps.Animation.DROP,
+		    title:"{{farm_admin.name}}",
+		    draggable:true
+		});
+
+		google.maps.event.addListener(marker, 'dragend', function(a) {
+			latitude = a.latLng.lat();
+   		longitude = a.latLng.lng();
+      $('#id_latitude').val(latitude);
+      $('#id_longitude').val(longitude);
+      $.getJSON('http://maps.googleapis.com/maps/api/geocode/json?latlng='+latitude+','+longitude+'&sensor=false', function(data) {
+        $.each( data['results'][1], function( key, val ) {
+          if(key=="formatted_address"){
+            console.log(val);
+            $('#location-map').html(val);
+            $('#id_location').val(val);
+            return false;
+          }
+        });
+      });
+		});
+
+  	google.maps.event.addListener(marker, 'position_changed', function() {
+  		latitude = this.getPosition().lat();
+  		longitude = this.getPosition().lng();
+      $('#id_latitude').val(latitude);
+      $('#id_longitude').val(longitude);
+      $.getJSON('http://maps.googleapis.com/maps/api/geocode/json?latlng='+latitude+','+longitude+'&sensor=false', function(data) {
+        $.each( data['results'][1], function( key, val ) {
+          if(key=="formatted_address"){
+            console.log(val);
+            $('#location-map').html(val);
+            $('#id_location').val(val);
+            return false;
+          }
+        });
+      });
+		});
+
+  	var input = (document.getElementById('pac-input'));
+ 		map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+ 		var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h4 id="firstHeading" class="firstHeading">{{farm_admin.name}} <small><i>{{form.slogan.value}}</i></small></h4>'+
+		      '<div id="bodyContent">'+
+		      '<b>Dirección: </b>{{farm_admin.address}}<br/>' +
+		      '<b>Télefono: </b>{{farm_admin.phone}}<br/>' +
+		      '</div>'+
+		      '</div>';
+
+		var infowindow = new google.maps.InfoWindow({content: contentString});
+
+  	var searchBox = new google.maps.places.Autocomplete((input), {
+		      types: ['geocode']
+		});
+
+  	google.maps.event.addListener(searchBox, 'place_changed', function() {
+    		var place = this.getPlace();
+    		if (place.geometry) {
+      			marker.setOptions({
+        			title: place.name,
+        			position: place.geometry.location
+      			});
+   			if (place.geometry.viewport) {
+        			marker.getMap().fitBounds(place.geometry.viewport);
+      			} else {
+        			marker.getMap().setCenter(place.geometry.location);
+      			}
+   		 	}
+		    else {
+		      marker.setOptions({
+		        title: null
+		      });
+		    }
+	    	latitude= place.geometry.location.lat();
+    		longitude= place.geometry.location.lng();
+        $('#id_latitude').val(latitude);
+        $('#id_longitude').val(longitude);
+        $('#id_location').val(val);
+  		});
+
+    google.maps.event.addListener(map, 'bounds_changed', function() {
+    var bounds = map.getBounds();
+    searchBox.setBounds(bounds);
+  });
+
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.open(map,marker);
+  });
+}
+  google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+<script src="{{STATIC_URL}}js/parallax.js"></script>
+<script src="{{STATIC_URL}}js/django-ajax.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $("#file-input-profile").change(function (){
+        var data=$('#file-input-profile')[0].files;
+        var formdata = new FormData();
+        formdata.append('file_upload', data[0]);
+        formdata.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        $.ajax({
+          type: "POST",
+          url: "/mi-agro/changePictureProfile/",
+          data: formdata,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+            $("#image-profile").attr("src",res);
+          }
+        });
+      });
+
+      $("#file-input-bg").change(function (){
+        var data=$('#file-input-bg')[0].files;
+        var formdata = new FormData();
+        formdata.append('file_upload', data[0]);
+        formdata.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        $.ajax({
+          type: "POST",
+          url: "/mi-agro/changePictureBanner/",
+          data: formdata,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+            console.log(res);
+            $("#image-banner").attr("style","background: url('"+res+"') no-repeat fixed center 8px / cover  transparent;");
+          }
+        });
+      });
+    });
+  </script>
+{% endblock extra_js %}

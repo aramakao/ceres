@@ -1,0 +1,83 @@
+{% extends "./base.html" %}
+{% block title %}Participantes{% endblock title %}
+
+{% block banner %}
+  {% include "./banner_group.html" with group_profile=group%}
+{% endblock banner %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_group="active" group_in="in" %}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li><a href="{% url 'groups_app:my_groups' %}">Asociaciones</a></li>
+    <li><a href="{% url 'groups_app:my_group' group.group.slug %}">{{group.group.name}}</a></li>
+    <li class="active">Participantes</li>
+  </ol>
+  <div class="page-header">
+		<h1 class="title-main">Participantes</h1>
+	</div>
+  <div class="col-md-12">
+    <div class="pin-content">
+      <form method="post">{% csrf_token %}
+        {% for member in members %}
+        {% url 'user_profile' member.user as url_user %}
+        <div class="media">
+          <div class="media-left">
+            <a href="{{url_user}}">
+              <img class="media-object img-circle img-avatar" src="{{MEDIA_URL}}{{member.user.avatar}}">
+            </a>
+          </div>
+          <div class="media-body">
+            <a href="{{url_user}}"><h4 class="media-heading">{{member.user_name|title}}</h4></a>
+            <small>Se unió hace {{member.joined|timesince}}</small>
+          </div>
+          {% if not member.admin %}
+            <button type="submit"  name="delete:{{member.member}}" class="btn btn-danger btn-xs" name="button"><i class="fa fa-times"></i> Sacar del grupo</button>
+          {% endif %}
+        </div>
+        <hr>
+        {% endfor %}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+<script type="text/javascript">
+  (function($) {
+  $.fn.parallax = function(options) {
+            var windowHeight = $(window).height();
+            var settings = $.extend({
+                speed        : 0.15
+            }, options);
+            return this.each( function() {
+              var $this = $(this);
+              $(document).scroll(function(){
+                    var scrollTop = $(window).scrollTop();
+                          var offset = $this.offset().top;
+                          var height = $this.outerHeight();
+          if (offset + height <= scrollTop || offset >= scrollTop + windowHeight) {
+            return;
+          }
+          var yBgPosition = Math.round((offset - scrollTop) * settings.speed);
+              $this.css('background-position', 'center ' + yBgPosition + 'px');
+              });
+            });
+        }
+    }(jQuery));
+
+    $('.bg-1').parallax({
+      speed : 0.15
+    });
+</script>
+{% endblock %}

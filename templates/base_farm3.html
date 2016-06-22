@@ -1,0 +1,50 @@
+{% extends "./base.html"%}
+{% block banner %}{% endblock banner %}
+{% block master_content %}
+	<div class="row">
+		<div class="col-md-3 col-xs-12 col-sm-4">
+			<div class="container2">
+				{% block card_profile %}{% endblock card_profile %}
+			</div>
+			<div class="container2">
+				{% block menu %}{% endblock menu %}
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-8 col-md-9">
+  		{% block breadcrumbs %}{% endblock breadcrumbs %}
+  		<div class="page-header">
+				<h2>{% block subtitle %}{% endblock subtitle %}</h2>
+			</div>
+  		{% block content %}{% endblock content %}
+	  </div>
+	</div>
+{% endblock master_content %}
+{% block internal_js %}
+	<script type="text/javascript">
+	  (function($) {
+	  $.fn.parallax = function(options) {
+	            var windowHeight = $(window).height();
+	            var settings = $.extend({
+	                speed        : 0.15
+	            }, options);
+	            return this.each( function() {
+	              var $this = $(this);
+	              $(document).scroll(function(){
+	                    var scrollTop = $(window).scrollTop();
+	                          var offset = $this.offset().top;
+	                          var height = $this.outerHeight();
+	          if (offset + height <= scrollTop || offset >= scrollTop + windowHeight) {
+	            return;
+	          }
+	          var yBgPosition = Math.round((offset - scrollTop) * settings.speed);
+	              $this.css('background-position', 'center ' + yBgPosition + 'px');
+	              });
+	            });
+	        }
+	    }(jQuery));
+
+	    $('.bg-1').parallax({
+	      speed : 0.15
+	    });
+	</script>
+{% endblock internal_js %}

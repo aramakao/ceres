@@ -1,0 +1,108 @@
+{% extends "./base.html" %}
+{% block title %}Editar Entrada{% endblock title %}
+
+{% block main-menu %}
+ 	{% include "./menu_myfarm.html" with active_blog="active" admin_in="in"%}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block extra_css %}
+  <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jasny-bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/bootstrap-wysihtml5.css">
+  <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/wysiwyg-color.css">
+{% endblock extra_css %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li><a href="{% url 'blog' %}">AgroBlog</a></li>
+    <li class="active">{{form.title.value|title}}</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">{{form.title.value|title}}</h1>
+  </div>
+  <form method="post" enctype="multipart/form-data" id="form">{% csrf_token %}
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="id_title">Título</label>
+        {{ form.title }}
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="id_content">Categoría</label>
+        {{ form.category }}
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="id_in_banner">{{ form.in_banner }} Ver en el banner principal</label>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="id_content">Contenido</label>
+        {{ form.content }}
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="fileinput fileinput-new" data-provides="fileinput">
+        <div class="fileinput-new thumbnail" style="width:100%; height: 150px;">
+          <img src="{{MEDIA_URL}}{{form.image.value}}">
+        </div>
+        <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 100%; max-height: 150px;"></div>
+        <div>
+          <span class="btn btn-default btn-file"><span class="fileinput-new">Seleccionar imagen</span><span class="fileinput-exists">Cambiar</span><input type="file" name="image" id="image"></span>
+          <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Borrar</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <button type="submit" class="btn btn-success btn-lg btn-block" name="button">Guardar Entrada</button>
+    </div>
+  </form>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+  <script src="{{STATIC_URL}}js/jasny-bootstrap.min.js"></script>
+  <script type="text/javascript" src="{{STATIC_URL}}js/wysihtml5-0.3.0.js"></script>
+  <script type="text/javascript" src="{{STATIC_URL}}js/bootstrap-wysihtml5.js"></script>
+  <script type="text/javascript" src="{{STATIC_URL}}js/bootstrap-wysihtml5.es-ES.js"></script>
+  <script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function(){
+  	var myCustomTemplates = {
+  	  html : function(locale) {
+  	    return "<li>" +
+  	           "<div class='btn-group'>" +
+  	           "<a class='btn' data-wysihtml5-action='change_view' title='" + locale.html.edit + "'>HTML</a>" +
+  	           "</div>" +
+  	           "</li>";
+  	  }
+  	}
+  	$('#id_content').wysihtml5({
+  		"font-styles": true,
+  		"emphasis": true,
+  		"lists": true,
+  		"html": true,
+  		"link": true,
+  		"image": true,
+  		"color": true
+  	});
+
+    $("#form").validate({
+			messages: {
+				title: "Este campo es requerido",
+        category: "Este campo es requerido",
+        content: "Este campo es requerido",
+			}
+		});
+  });
+  </script>
+{% endblock extra_js %}

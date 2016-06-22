@@ -1,0 +1,459 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>apps.product.views &mdash; AgroCeres 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="AgroCeres 1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> AgroCeres
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/account.html">Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/store.html">Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/blog.html">Blog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/comment.html">Comment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/extras.html">Extras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/farm.html">Farm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/groups.html">Groups</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/messages.html">Messages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/product.html">Product</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/search.html">Search</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">AgroCeres</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>apps.product.views</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for apps.product.views</h1><div class="highlight"><pre>
+<span class="c">#-*- encoding: utf-8 -*-</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="nb">reload</span><span class="p">(</span><span class="n">sys</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">get_object_or_404</span><span class="p">,</span> <span class="n">redirect</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="kn">import</span> <span class="n">ListView</span><span class="p">,</span> <span class="n">DetailView</span><span class="p">,</span> <span class="n">CreateView</span><span class="p">,</span> <span class="n">UpdateView</span><span class="p">,</span> <span class="n">DeleteView</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">apps.account.models</span> <span class="kn">import</span> <span class="n">LoggedInMixin</span>
+<span class="kn">from</span> <span class="nn">django.core.urlresolvers</span> <span class="kn">import</span> <span class="n">reverse_lazy</span><span class="p">,</span> <span class="n">reverse</span>
+<span class="kn">from</span> <span class="nn">django.core</span> <span class="kn">import</span> <span class="n">serializers</span>
+<span class="kn">from</span> <span class="nn">apps.ceres.processors</span> <span class="kn">import</span> <span class="n">haveFarm</span><span class="p">,</span> <span class="n">getFarmUser</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">Http404</span><span class="p">,</span> <span class="n">HttpResponse</span><span class="p">,</span> <span class="n">HttpResponseRedirect</span>
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">messages</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">django.forms.models</span> <span class="kn">import</span> <span class="n">model_to_dict</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+
+<div class="viewcode-block" id="ProductCreateView"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductCreateView">[docs]</a><span class="k">class</span> <span class="nc">ProductCreateView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">CreateView</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This view allows create a product&#39;&#39;&#39;</span>
+	<span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
+	<span class="n">template_name</span><span class="o">=</span><span class="s">&#39;product/product_add.html&#39;</span>
+	<span class="n">form_class</span><span class="o">=</span><span class="n">ProductForm</span>
+
+<div class="viewcode-block" id="ProductCreateView.post"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductCreateView.post">[docs]</a>	<span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function checks if a form is valid before save it&#39;&#39;&#39;</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">product_form</span><span class="o">=</span><span class="n">ProductForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">product_form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+				<span class="n">name</span><span class="o">=</span><span class="n">product_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+				<span class="n">summary</span><span class="o">=</span><span class="n">product_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;summary&#39;</span><span class="p">]</span>
+				<span class="n">category</span><span class="o">=</span><span class="n">product_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;category&#39;</span><span class="p">]</span>
+				<span class="n">description</span><span class="o">=</span><span class="n">product_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;description&#39;</span><span class="p">]</span>
+				<span class="n">price</span><span class="o">=</span><span class="n">product_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;price&#39;</span><span class="p">]</span>
+				<span class="n">quantity</span><span class="o">=</span><span class="n">product_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;quantity&#39;</span><span class="p">]</span>
+				<span class="n">farm</span><span class="o">=</span><span class="n">getFarmUser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+				<span class="n">product</span><span class="o">=</span><span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="n">summary</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">price</span><span class="p">,</span> <span class="n">quantity</span><span class="o">=</span><span class="n">quantity</span><span class="p">,</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">)</span>
+				<span class="n">product</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+				<span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">:</span>
+					<span class="n">imagen</span><span class="o">=</span><span class="n">ProductImage</span><span class="p">(</span><span class="n">product</span><span class="o">=</span><span class="n">product</span><span class="p">,</span><span class="n">image</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="n">image</span><span class="p">])</span>
+					<span class="n">imagen</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+				<span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span><span class="s">&quot;Has agreagado {0} a tu lista de productos&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+				<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;product_app:product_list&#39;</span><span class="p">))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;product_app:product_add&#39;</span><span class="p">))</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="k">print</span> <span class="n">e</span>
+			<span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span><span class="s">&quot;Tenemos un problema&quot;</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;product_app:product_add&#39;</span><span class="p">))</span>
+</div></div>
+<div class="viewcode-block" id="ProductUpdateView"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductUpdateView">[docs]</a><span class="k">class</span> <span class="nc">ProductUpdateView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">UpdateView</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This view update a product&#39;&#39;&#39;</span>
+	<span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
+	<span class="n">template_name</span><span class="o">=</span> <span class="s">&#39;product/product_edit.html&#39;</span>
+	<span class="n">form_class</span> <span class="o">=</span> <span class="n">ProductForm</span>
+	<span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;product_app:product_list&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProductUpdateView.get_object"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductUpdateView.get_object">[docs]</a>	<span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">queryset</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function checks if the product belong to user&#39;&#39;&#39;</span>
+		<span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ProductUpdateView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
+		<span class="n">farm</span><span class="o">=</span><span class="n">getFarmUser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">farm</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">farm</span> <span class="o">==</span> <span class="n">farm</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="n">Http404</span>
+			<span class="k">return</span> <span class="n">obj</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="n">Http404</span><span class="p">(</span><span class="s">&quot;farm deactive&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ProductUpdateView.post"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductUpdateView.post">[docs]</a>	<span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function checks if the form is valid before save it&#39;&#39;&#39;</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">product</span><span class="o">=</span><span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">slug</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">])</span>
+			<span class="n">product_form</span><span class="o">=</span><span class="n">ProductForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">product_form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+				<span class="n">product</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="n">product_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+				<span class="n">product</span><span class="o">.</span><span class="n">summary</span><span class="o">=</span><span class="n">product_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;summary&#39;</span><span class="p">]</span>
+				<span class="n">product</span><span class="o">.</span><span class="n">category</span><span class="o">=</span><span class="n">product_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;category&#39;</span><span class="p">]</span>
+				<span class="n">product</span><span class="o">.</span><span class="n">description</span><span class="o">=</span><span class="n">product_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;description&#39;</span><span class="p">]</span>
+				<span class="n">product</span><span class="o">.</span><span class="n">price</span><span class="o">=</span><span class="n">product_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;price&#39;</span><span class="p">]</span>
+				<span class="n">product</span><span class="o">.</span><span class="n">quantity</span><span class="o">=</span><span class="n">product_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;quantity&#39;</span><span class="p">]</span>
+				<span class="n">product</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+				<span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span><span class="s">&quot;Has actualizado {0} correctamente&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span><span class="s">&quot;Tenemos un problema!&quot;</span><span class="p">)</span>
+
+			<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;btn_img&#39;</span><span class="p">):</span>
+						<span class="n">imagen_id</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="mi">7</span><span class="p">:]</span>
+						<span class="n">ProductImage</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">imagen_id</span><span class="p">,</span><span class="n">product__farm__user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+			<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">:</span>
+				<span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">:</span>
+					<span class="n">imagen</span><span class="o">=</span><span class="n">ProductImage</span><span class="p">(</span><span class="n">product</span><span class="o">=</span><span class="n">product</span><span class="p">,</span><span class="n">image</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="n">image</span><span class="p">])</span>
+					<span class="n">imagen</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+			<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;product_app:product_list&#39;</span><span class="p">))</span>
+
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span><span class="s">&quot;Tenemos un problema!&quot;</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;product_app:product_edit&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;slug&#39;</span><span class="p">:</span><span class="n">product</span><span class="o">.</span><span class="n">slug</span><span class="p">}))</span>
+</div></div>
+<div class="viewcode-block" id="ProductDeleteView"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductDeleteView">[docs]</a><span class="k">class</span> <span class="nc">ProductDeleteView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">DeleteView</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This view delete a product&#39;&#39;&#39;</span>
+	<span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
+	<span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;product_app:product_list&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProductDeleteView.get_object"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductDeleteView.get_object">[docs]</a>	<span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">queryset</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function checks if a product belong to user&#39;&#39;&#39;</span>
+		<span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ProductDeleteView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
+		<span class="n">farm</span><span class="o">=</span><span class="n">getFarmUser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">farm</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">farm</span> <span class="o">==</span> <span class="n">farm</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="n">Http404</span>
+			<span class="k">return</span> <span class="n">obj</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="n">Http404</span><span class="p">(</span><span class="s">&quot;farm deactive&quot;</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="ProductDetailView"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductDetailView">[docs]</a><span class="k">class</span> <span class="nc">ProductDetailView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">DetailView</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This views allows view a product&#39;&#39;&#39;</span>
+	<span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
+	<span class="n">context</span> <span class="o">=</span><span class="s">&#39;product&#39;</span>
+
+<div class="viewcode-block" id="ProductDetailView.get_object"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductDetailView.get_object">[docs]</a>	<span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">queryset</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function checks if a product belong to user&#39;&#39;&#39;</span>
+		<span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ProductDetailView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
+		<span class="n">farm</span><span class="o">=</span><span class="n">getFarmUser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">farm</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">farm</span> <span class="o">==</span> <span class="n">farm</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="n">Http404</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">obj</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="n">Http404</span><span class="p">(</span><span class="s">&quot;farm deactive&quot;</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="ProductListView"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductListView">[docs]</a><span class="k">class</span> <span class="nc">ProductListView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">ListView</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This views returns a list of products&#39;&#39;&#39;</span>
+	<span class="n">model</span> <span class="o">=</span> <span class="n">Product</span>
+	<span class="n">template_name</span><span class="o">=</span><span class="s">&#39;product/product_list.html&#39;</span>
+	<span class="n">paginate_by</span> <span class="o">=</span> <span class="mi">10</span>
+	<span class="n">context_object_name</span> <span class="o">=</span> <span class="s">&#39;products&#39;</span>
+
+<div class="viewcode-block" id="ProductListView.get_queryset"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductListView.get_queryset">[docs]</a>	<span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function checks if the farm is active and filter the products by user&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="n">haveFarm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+			<span class="n">farm</span><span class="o">=</span><span class="n">getFarmUser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">farm</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="n">Http404</span><span class="p">(</span><span class="s">&quot;farm deactive&quot;</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;register_farm&#39;</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="ProductCategoryListView"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductCategoryListView">[docs]</a><span class="k">class</span> <span class="nc">ProductCategoryListView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">ListView</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This view lists the product categories&#39;&#39;&#39;</span>
+	<span class="n">model</span> <span class="o">=</span> <span class="n">ProductCategory</span>
+	<span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;product/category_list.html&#39;</span>
+	<span class="n">paginate_by</span> <span class="o">=</span> <span class="mi">10</span>
+	<span class="n">context_object_name</span> <span class="o">=</span> <span class="s">&#39;categories&#39;</span>
+
+<div class="viewcode-block" id="ProductCategoryListView.get_queryset"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductCategoryListView.get_queryset">[docs]</a>	<span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function checks if the user is superuser&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">ProductCategory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="n">Http404</span>
+</div></div>
+<div class="viewcode-block" id="ProductCategoryCreateView"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductCategoryCreateView">[docs]</a><span class="k">class</span> <span class="nc">ProductCategoryCreateView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">CreateView</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This view allows create a category&#39;&#39;&#39;</span>
+	<span class="n">model</span> <span class="o">=</span> <span class="n">ProductCategory</span>
+	<span class="n">template_name</span><span class="o">=</span><span class="s">&#39;product/category_add.html&#39;</span>
+	<span class="n">form_class</span><span class="o">=</span><span class="n">ProductCategoryForm</span>
+
+<div class="viewcode-block" id="ProductCategoryCreateView.post"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductCategoryCreateView.post">[docs]</a>	<span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function checks if the form is valid before save it&#39;&#39;&#39;</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">form</span><span class="o">=</span><span class="n">ProductCategoryForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+				<span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+				<span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span><span class="s">&quot;Has agreagado una nueva categoría&quot;</span><span class="p">)</span>
+				<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;product_app:category&#39;</span><span class="p">))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span><span class="s">&quot;Tenemos un problema&quot;</span><span class="p">)</span>
+				<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;product_app:category_add&#39;</span><span class="p">))</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span><span class="s">&quot;Tenemos un problema&quot;</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;product_app:category_add&#39;</span><span class="p">))</span>
+</div>
+	<span class="k">def</span> <span class="nf">get_form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">form_class</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function checks if the user is superuser&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">form_class</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_form_kwargs</span><span class="p">())</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="n">Http404</span>
+</div>
+<div class="viewcode-block" id="ProductCategoryUpdateView"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductCategoryUpdateView">[docs]</a><span class="k">class</span> <span class="nc">ProductCategoryUpdateView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">UpdateView</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This views allows update a category&#39;&#39;&#39;</span>
+	<span class="n">model</span> <span class="o">=</span> <span class="n">ProductCategory</span>
+	<span class="n">template_name</span><span class="o">=</span><span class="s">&#39;product/category_update.html&#39;</span>
+	<span class="n">form_class</span><span class="o">=</span><span class="n">ProductCategoryForm</span>
+	<span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;product_app:category&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProductCategoryUpdateView.form_valid"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductCategoryUpdateView.form_valid">[docs]</a>	<span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">form</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function checks if the form is valid before save it&#39;&#39;&#39;</span>
+		<span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span><span class="s">&quot;Categoría Actualizada&quot;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ProductCategoryUpdateView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+</div>
+	<span class="k">def</span> <span class="nf">get_form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">form_class</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function checks if the user is superuser&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">form_class</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_form_kwargs</span><span class="p">())</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="n">Http404</span>
+</div>
+<div class="viewcode-block" id="ProductCategoryDelete"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductCategoryDelete">[docs]</a><span class="k">class</span> <span class="nc">ProductCategoryDelete</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">DeleteView</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This view allows delete a category&#39;&#39;&#39;</span>
+	<span class="n">model</span> <span class="o">=</span> <span class="n">ProductCategory</span>
+	<span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;product_app:category&#39;</span><span class="p">)</span>
+	<span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;product/category_delete.html&#39;</span>
+
+<div class="viewcode-block" id="ProductCategoryDelete.get_form"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.ProductCategoryDelete.get_form">[docs]</a>	<span class="k">def</span> <span class="nf">get_form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">form_class</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function checks if the user is superuser&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">form_class</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_form_kwargs</span><span class="p">())</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="n">Http404</span>
+</div></div>
+<div class="viewcode-block" id="updateMyProductsGroup"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.updateMyProductsGroup">[docs]</a><span class="k">def</span> <span class="nf">updateMyProductsGroup</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This function allows update the products of the group&#39;&#39;&#39;</span>
+	<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_ajax</span><span class="p">:</span>
+		<span class="n">state</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">]</span>
+		<span class="n">product</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;product&#39;</span><span class="p">]</span>
+		<span class="n">group</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;group&#39;</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s">&#39;POST&#39;</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">state</span><span class="o">==</span><span class="s">&#39;false&#39;</span><span class="p">:</span>
+				<span class="n">productGroup</span><span class="o">=</span><span class="n">ProductsGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">product_id</span><span class="o">=</span><span class="n">product</span><span class="p">,</span><span class="n">group_id</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+				<span class="n">productGroup</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">productGroup</span><span class="o">=</span><span class="n">ProductsGroup</span><span class="p">(</span><span class="n">product_id</span><span class="o">=</span><span class="n">product</span><span class="p">,</span><span class="n">group_id</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+				<span class="n">productGroup</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">data</span><span class="o">=</span><span class="bp">False</span>
+	<span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s">&quot;Producto agreagado con exito!&quot;</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&quot;text/plain&quot;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="updateActiveProduct"><a class="viewcode-back" href="../../../modules/product.html#apps.product.views.updateActiveProduct">[docs]</a><span class="k">def</span> <span class="nf">updateActiveProduct</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This function allows change the state of the product&#39;&#39;&#39;</span>
+	<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_ajax</span><span class="p">:</span>
+		<span class="n">state</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">]</span>
+		<span class="n">product_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;product&#39;</span><span class="p">]</span>
+		<span class="n">product</span><span class="o">=</span><span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">product_id</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s">&#39;POST&#39;</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">product</span><span class="o">.</span><span class="n">farm</span><span class="o">.</span><span class="n">user</span><span class="o">==</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">state</span><span class="o">==</span><span class="s">&#39;false&#39;</span><span class="p">:</span>
+					<span class="n">product</span><span class="o">.</span><span class="n">is_active</span><span class="o">=</span><span class="bp">False</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">product</span><span class="o">.</span><span class="n">is_active</span><span class="o">=</span><span class="bp">True</span>
+				<span class="n">product</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">data</span><span class="o">=</span><span class="bp">False</span>
+	<span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s">&quot;Producto agreagado con exito!&quot;</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&quot;text/plain&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, AgroCeres.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

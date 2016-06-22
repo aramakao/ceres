@@ -1,0 +1,16 @@
+{% extends "account/base_template.html" %}
+{% block title %}Página No Encontrada{% endblock title %}
+{% block modal_title %}Error 404 :({% endblock modal_title %}
+
+{% block content %}
+  <div class="modal-body">
+    Lo sentimos pero la página que intentas ver <strong>NO EXISTE</strong>.<br/>
+    El motivo puede ser:
+    <li>Una dirección mal escrita</li>
+    <li>Un link no actualizado</li>
+  </div>
+  <div class="modal-footer">
+    <a href={% url 'home' %} class="btn btn-success btn-lg btn-block">Regresar a AgroCeres</a>
+  </div>
+    <br><br><br>  <br><br><br> <br><br><br> <br><br><br>
+{% endblock content %}

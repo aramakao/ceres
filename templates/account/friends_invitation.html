@@ -1,0 +1,53 @@
+{% extends "./base.html" %}
+{% block title %}Solicitudes de Amistad{% endblock title %}
+{% block subtitle %}Solicitudes de Amistad{% endblock subtitle %}
+
+{% block main-menu %}
+ 	{% include "./menu_myfarm.html" with active_friends_invitation="active" friends_in="in" %}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li class="active">Solicitudes de Amistad</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Solicitudes de Amistad <span class="badge">Resultados {{paginator.count}}</span></h1>
+  </div>
+  <div class="col-md-12">
+
+      {% if invitations %}
+      <div class="pin-content container2">
+        <form method="post">{% csrf_token %}
+          {% for invitation in invitations %}
+            <div class="media">
+              <div class="media-left">
+                <a href="{% url 'user_profile' invitation.friend %}">
+                  <img class="media-object img-circle img-avatar" src="{{MEDIA_URL}}{{invitation.friend.avatar}}">
+                </a>
+              </div>
+              <div class="media-body">
+                <a href="{% url 'user_profile' invitation.friend %}"><h4 class="media-heading"> {{invitation.friend.get_full_name}}</h4></a>
+                <strong>Mensaje: </strong> {{invitation.comment}}
+                <br><small>Solicitud enviada hace {{invitation.date|timesince}}</small>
+              </div>
+                <button type="submit" name="reject:{{invitation.id}}" class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Rechazar</button>
+                <button type="submit" name="accept:{{invitation.id}}" class="btn btn-success btn-xs"><i class="fa fa-check"></i> Aceptar</button>
+            </div>
+            <hr>
+          {% endfor %}
+        </form>
+        {% include './pagination.html' %}
+      </div>
+      {% else%}
+        <div class="alert alert-success" role="alert">Lo sentimos no tienes solicitudes pendientes!</div>
+      {% endif %}
+  </div>
+</div>
+{% endblock container %}

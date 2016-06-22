@@ -1,0 +1,88 @@
+{% extends "./base.html" %}
+{% block title %}Dirección de Envío{% endblock title %}
+{% block active_car %}active{% endblock %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'shopping_cart' %}">Carrito de compras</a></li>
+    <li class="active">Dirección de Envío</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Dirección de Envío</h1>
+  </div>
+  <div class="col-md-12">
+    <form method="post" id="form_address">{% csrf_token %}
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="id_name">Barrio</label>
+          {{shipping_form.neighborhood}}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="id_name">Dirección</label>
+          {{shipping_form.address}}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="id_name">Ciudad</label>
+          {{shipping_form.city}}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="id_name">Teléfono</label>
+          {{shipping_form.phone}}
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="id_name">Descripción</label>
+          {{shipping_form.description}}
+        </div>
+      </div>
+      <div class="col-md-12">
+        <button class='btn btn-success btn-lg btn-block' type="submit"><i class='fa fa-shopping-cart'></i> Finalizar Compra</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock container%}
+
+{% block extra_js %}
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $("#form_address").submit(function(eventObj) {
+      var products = JSON.parse(localStorage.shopping_cart);
+
+      var shopping_cart={
+        product:[]
+      };
+
+      for(var i=0;i<products.length;i++){
+        var obj =JSON.parse(products[i]);
+        shopping_cart.product.push({
+          'product_slug':obj.product_slug,
+          'quantity':obj.n_quantity,
+          'payment_id':obj.payment,
+          'shipping_id':obj.shipping_id
+        });
+        console.log(JSON.stringify(shopping_cart));
+      }
+      console.log(shopping_cart);
+      $('<input />').attr('type', 'hidden')
+          .attr('name', "shopping_cart")
+          .attr('value', JSON.stringify(shopping_cart))
+          .appendTo('#form_address');
+      return true;
+    });
+  });
+  </script>
+{% endblock extra_js %}

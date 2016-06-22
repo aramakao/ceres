@@ -1,0 +1,23 @@
+<div class="banner-main">
+  <section class="bg-1 text-center"  style="background: url('{{MEDIA_URL}}{{farm_profile.banner}}') no-repeat fixed center 8px / cover  transparent;">
+    <img id="image" class="img-profile img-circle responsive-img" src={{MEDIA_URL}}{{farm_profile.farm.logo}}>
+    <div class="banner">
+      <div class="banner-content no_margin">
+        <h3 class="name_profile no_margin">{{ farm_profile.farm.name|title }}</h3>
+        <label class="profession_profile no_margin">{{ farm_profile.slogan|title }}</label>
+        <p class="no_margin">
+        {% if farm_profile.facebook %}
+          <a href="http://fb.me/{{farm_profile.facebook}}" target="_blank"><i class="fa fa-facebook icon_profile"></i></a>
+        {%endif%}
+        {%if farm_profile.twitter%}
+          <a href="http://twitter.com/{{farm_profile.twitter}}" target="_blank"><i class="fa fa-twitter icon_profile"></i></a>
+        {%endif%}
+        {%if farm_profile.web_site %}
+          <a href="http://{{farm_profile.web_site}}" target="_blank"><i class="fa fa-globe icon_profile"></i></a>
+        {%endif%}
+        </p>
+        <p><i class="fa fa-map-marker"></i> {{farm_profile.farm.address}} | <i class="fa fa-phone"></i> {{farm_profile.farm.phone}}</p>
+      </div>
+    </div>
+  </section>
+</div>

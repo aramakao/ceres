@@ -1,0 +1,60 @@
+{% extends "./base.html" %}
+{% block title %}Opciones de Envío{% endblock title %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_shipping_options="active"  farm_in="in"%}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+		<li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+		<li class="active">Opciones de Envío</li>
+	</ol>
+	<div class="page-header">
+		<h1 class="title-main">Opciones de Envío</h1>
+	</div>
+	<div class="col-md-12">
+		<h3><a href="{% url 'shipping_option_add' %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Nueva Opción de Envío</a></h3>
+		{% if not shipping_options %}
+			<div class="alert alert-success" role="alert">
+				<strong>Información!</strong> No tiene opciones de envío registradas..
+			  <a href="{% url 'shipping_option_add' %}" class="alert-link">Crear nueva</a>
+			</div>
+		{% else %}
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Nombre</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for shipping_option in shipping_options %}
+				<tr>
+					<td width="80%">
+						<div class="media">
+						  <div class="media-body">
+						    <h4 class="media-heading"><a href="{% url 'shipping_option_update' shipping_option.id %}"><strong id="shopping_{{shipping_option.id}}">{{shipping_option.name}}</strong></a></h4>
+						    <small>Descripción: <strong>{{shipping_option.detail}}</strong></small>
+						  </div>
+						</div>
+					</td>
+					<td>
+						<a href="{% url 'shipping_option_update' shipping_option.id %}"  class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="top" title="Editar"><span class="glyphicon glyphicon-edit"></span></a>
+						<a href={% url 'shipping_option_delete' shipping_option.id %} class="btn btn-danger btn-xs del_shipping"><span class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" title="Borrar"></span></button>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+		{% include './pagination.html'%}
+	</div>
+</div>
+{% endblock container %}

@@ -1,0 +1,179 @@
+{% extends "./base.html" %}
+{% block title %}{{ profile_name | title }}{% endblock title %}
+{% block active_users %}active{% endblock %}
+
+{% block extra_css %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jasny-bootstrap.min.css">
+{% endblock extra_css %}
+
+{% block second_menu %}
+  {% include "./menu_profile.html" with name="Categorías" %}
+{% endblock second_menu %}
+
+{% block banner %}
+  {% include "./banner_user.html" with user_profile=profile name=profile_name%}
+{% endblock banner %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'users' %}">Usuarios</a></li>
+    <li class="active">{{ profile_name | title }}</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Mis Publicaciones</h1>
+  </div>
+  <div class="col-md-12">
+    {% if status %}
+      {% for state in status %}
+        {% include "./card_state.html" with state=state %}
+      {% endfor %}
+      {% include "./pagination_state.html" %}
+    {% else %}
+      <div class="alert alert-success" role="alert"><strong>Información! </strong>No hay publicaciones</div>
+    {% endif %}
+  </div>
+</div>
+{% include "./card_comments.html" with comments_form=comments_form %}
+<!-- Modeal Invitation -->
+<form method="post" id="invitation_form">{% csrf_token %}
+  <div class="modal fade" id="invitation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Solicitar Amistad</h4>
+        </div>
+        <div class="modal-body">
+          {{invitation_form.comment}}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" name="btn_invitation" class="btn btn-success"><i class="fa fa-paper-plane-o"></i> Solicitar Amistad</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- Modal Invitation Friends List -->
+<div class="modal fade" id="friends" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Amigos de {{profile_name|title}}</h4>
+      </div>
+      <div class="modal-body">
+        {% for friend in friends %}
+          <div class="media">
+            <div class="media-left">
+              <a href="{% url 'user_profile' friend.friend.username %}">
+                <img class="media-object img-circle img-avatar" src="{{MEDIA_URL}}{{friend.friend.avatar}}">
+              </a>
+            </div>
+            <div class="media-body">
+              <a href="{% url 'user_profile' friend.friend.username %}"><h4 class="media-heading">{{friend.full_name|title}}</h4></a>
+              <small>Amigos hace {{friend.date|timesince}}</small>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Message -->
+<div class="modal fade" id="message" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Enviar mensaje a {{profile_name|title}}</h4>
+      </div>
+      <form enctype="multipart/form-data" method="post" name="message_form" id="message_form">{% csrf_token %}
+      <div class="modal-body">
+          {{message_form.message}}
+          <p>
+            <div class="fileinput fileinput-new" data-provides="fileinput">
+              <span class="btn btn-default btn-file"><span class="fileinput-new"><li class="fa fa-paperclip"></li> Adjuntar archivo</span><span class="fileinput-exists">Cambiar</span>{{message_form.file}}</span>
+              <span class="fileinput-filename"></span>
+              <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+            </div>
+          </p>
+      </div>
+      <div class="modal-footer">
+        <p>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button name="btn_message" type="submit" class="btn btn-success"><li class="fa fa-paper-plane-o"></li> Enviar mensaje</button>
+        </p>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/parallax.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jasny-bootstrap.min.js"></script>
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+  <script type="text/javascript">
+    window.onload = function () {
+			$("#message_form").validate({
+        messages: {
+				  message: "Por favor ingresa un mensaje",
+        }
+      });
+
+			$("#comments_form").validate({
+        messages: {
+				  text: "Por favor ingresa un comentario",
+        }
+      });
+
+			$("#invitation_form").validate({
+        messages: {
+				  comment: "Por favor ingresa un comentario",
+        }
+      });
+
+      $(".comments").click(function(event) {
+          $("#id_state").val(event.target.id);
+      });
+
+      $(".comments").click(function(event) {
+            var url_comments = ("{% url 'api_status_comments' 999%}").replace("999",$(this).attr('id'));
+            $.getJSON(url_comments,function(data){
+              if(data.length>0){
+                $("#comments-list").empty();
+                $.each(data,function(key,val){
+                  if(val.picture!=null){
+                    var image ='<img src="'+val.picture+'" class="img-rounded img-responsive img-state" />';
+                  }
+                  else{
+                    var image="";
+                  }
+                  var url_user = ("{% url 'user_profile' 999 %}").replace("999",val.user['username']);
+                  $("#comments-list").append('<div class="media">'+
+                    '<div class="media-left"><a href="'+url_user+'"><img class="media-object img-circle img-avatar" src="'+val.user['avatar']+'">'+
+                    '</a></div><div class="media-body"><a href="'+url_user+'"><h4 class="media-heading">'+val.user['full_name']+'</h4></a>'+val.text+
+                    '</div><br><small>Hace '+val.date_post+'</small></div><hr>'+image
+                    );
+                });
+              }else {
+                $("#comments-list").html('<div class="alert alert-success" role="alert">Se el primero en hacer un comentario!</div>');
+              }
+            });
+      });
+    }
+  </script>
+{% endblock extra_js %}

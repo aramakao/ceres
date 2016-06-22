@@ -1,0 +1,34 @@
+{% extends "./base.html" %}
+{% load humanize %}
+{% block title %}{{product.name}}{% endblock title %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_products="active" farm_in="in" %}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+	  <li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+	  <li><a href="{% url 'product_app:product_list' %}">Mis Productos</a></li>
+	  <li class="active">{{product.name}}</li>
+	</ol>
+	<div class="page-header">
+    <h1 class="title-main">{{product.name}}</h1>
+  </div>
+	<div class="col-md-8">
+		{% include './slider.html' with images=product.getAllPicture2 %}
+	</div>
+	<div class="col-md-4 detail-color"><br>
+		<h4><small>Precio: </small><strong>${{product.price|intcomma}}</strong></h4>
+		<h4><small>Cantidad: </small><strong>{{product.quantity}} <small>unidades</small></strong></h4>
+		<h4><small>Categoría: </small><strong>{{product.category}}</strong></h4>
+		<h4><small>Resumen: </small><strong>{{product.summary}}</strong></h4>
+	</div>
+	<div class="col-md-12">
+		<h3><strong>Descripción:</strong></h3>
+		<p class="text-justify">{{product.description|safe}}</p>
+	</div>
+</div>
+{% endblock container %}

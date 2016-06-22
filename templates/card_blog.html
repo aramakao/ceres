@@ -1,0 +1,19 @@
+<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 list-margin">
+  <div class="pin-blog">
+    <div class="cover">
+      <img src="{{MEDIA_URL}}{{entry.image}}" class="img-responsive" />
+    </div>
+    <div class="content">
+      <p class="category">
+        <a href="{% url 'blog_app:category' entry.category.slug %}"><span class="label label-success">{{entry.category.name}}</span></a> <small> {{entry.posted|date}}</small>
+      </p>
+      <p class="title">
+        <a href="{% url 'blog_app:entry' entry.slug %}">{{entry.title|title}}</a>
+      </p>
+      <p class="entry">
+        {{entry.content|truncatewords_html:20|safe}}
+      </p>
+      <a href="{% url 'blog_app:entry' entry.slug %}">Leer más</a>
+    </div>
+  </div>
+</div>

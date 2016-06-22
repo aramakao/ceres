@@ -1,0 +1,19 @@
+{% load tags %}
+{% if user.is_authenticated %}
+<div class="form-group">
+  <form method="POST">{% csrf_token %}
+    <textarea name="comment" id="comment_bx" class="form-control box-comment" placeholder="Escribe un comentario..." rows="4"></textarea>
+    <button type="button" id="btn_comment_bx" class="btn btn-success btn-block btn-comment"><i class="fa fa-comment"></i> Comentar</button>
+    <span class="label label-success" id="lbl_comment_bx">Escriba un comentario</span>
+    <input type="hidden" name="id_comment_bx" id="id_comment_bx" value="{{ object.id}}">
+    <input type="hidden" name="object_comment_bx" id="object_comment_bx" value="{{ object|to_class_name }}">
+    <input type="hidden" name="label_comment_bx" id="label_comment_bx" value="{{ object|to_app_label }}">
+  </form>
+</div>
+<div class="page-header">
+  <h4>Comentarios</h4>
+</div>
+<div id="comments_list"></div>
+{% else %}
+  <div class="alert alert-success" role="alert">Para poder ver y hacer comentarios debes iniciar sesión!</div>
+{% endif%}

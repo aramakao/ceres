@@ -1,0 +1,7 @@
+<div class="list-group">
+  <a href="{% url 'category_list' %}" class="list-group-item"><strong>Productos - Categorías</strong></a>
+    {% for category in product_categories %}
+      <a href="{% url 'category' category.slug %}" class="category list-group-item" id="{{category.slug}}" style="cursor:pointer">
+        <i class="fa fa-asterisk"></i> {{category.name}} <span class="badge">{{category.countProducts}}</span></a>
+    {% endfor %}
+</div>

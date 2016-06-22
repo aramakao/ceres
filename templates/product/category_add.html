@@ -1,0 +1,107 @@
+{% extends "./base.html" %}
+{% block title %}Categorías de Productos{% endblock title %}
+
+{% block messages%}
+	{% include './messages.html'%}
+{% endblock messages%}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_product_category="active"  admin_in="in"%}
+{% endblock main-menu %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{STATIC_URL}}css/jasny-bootstrap.min.css">
+{% endblock %}
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+		<li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+		<li><a href="{% url 'product_app:category' %}">Categorías de Productos</a></li>
+		<li class="active">Nueva Categoría</li>
+	</ol>
+	<div class="page-header">
+    <h1 class="title-main">Nueva Categoría</h1>
+  </div>
+	<div class="col-md-12">
+		<form method="post" enctype="multipart/form-data" id="form">{% csrf_token %}
+      <div class="col-md-12">
+        <div class="col-md-6">
+  				<div class="form-group">
+  					<label for="id_name">Nombre</label>
+  					{{ form.name }}
+  				</div>
+  			</div>
+      </div>
+			<div class="col-md-12">
+        <div class="col-md-6">
+  				<div class="form-group">
+  					<label for="id_summary">Imagen</label>
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+                <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+                <div>
+                  <span class="btn btn-default btn-file"><span class="fileinput-new">Seleccionar imagen</span><span class="fileinput-exists">Cambiar</span>{{ form.image }}</span>
+                  <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Borrar</a>
+                </div>
+              </div>
+  				</div>
+  			</div>
+			</div>
+			<div class="col-md-12">
+        <div class="col-md-6">
+  				<div class="form-group">
+  						<label for="id_category">Icono</label>
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+                <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+                <div>
+                  <span class="btn btn-default btn-file"><span class="fileinput-new">Seleccionar imagen</span><span class="fileinput-exists">Cambiar</span>{{ form.icon }}</span>
+                  <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Borrar</a>
+                </div>
+              </div>
+  				</div>
+  			</div>
+			</div>
+			<div class="col-md-12">
+        <div class="col-md-6">
+  				<div class="form-group">
+  					<label class="active" for="id_quantity">Icono de Color</label>
+            <div class="fileinput fileinput-new" data-provides="fileinput">
+              <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+              <div>
+                <span class="btn btn-default btn-file"><span class="fileinput-new">Seleccionar imagen</span><span class="fileinput-exists">Cambiar</span>{{ form.icon_color }}</span>
+                <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Borrar</a>
+              </div>
+            </div>
+  				</div>
+  			</div>
+			</div>
+			<div class="col-md-12">
+				<button type="submit" class="btn btn-lg btn-success btn-block">Agregar Categoría</button>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+    <script src="{{STATIC_URL}}js/jasny-bootstrap.min.js"></script>
+    <script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+          $("#form").validate({
+            rules: {
+              icon: {required: true,},
+              icon_color: {required: true,},
+              image: {required: true,},
+              name: {required: true,},
+            },
+            messages: {
+              name: "Este campo es requerido",
+    				  icon: "Este campo es requerido",
+              image: "Este campo es requerido",
+              icon_color: "Este campo es requerido",
+            }
+          });
+        });
+    </script>
+{% endblock extra_js %}

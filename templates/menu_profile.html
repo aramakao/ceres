@@ -1,0 +1,32 @@
+<div class="list-group">
+  {% if farm%}
+    <strong class="list-group-item">Granja</strong>
+    <a class="list-group-item" href="{% url 'farm' farm.slug %}"><li class="fa fa-home"></li> {{farm.name | title}}</a>
+  {% endif %}
+  {% if groups %}
+    <strong class="list-group-item">Asociaciones</strong>
+    {% for group in groups %}
+      <a class="list-group-item" href="{% url 'group_profile' group.group.slug %}"><li class="fa fa-users"></li> {{group.group.name}}</a>
+    {% endfor %}
+  {% endif %}
+  <strong class="list-group-item">Amigos <span class="badge">{{friends|length}}</span></strong>
+    {% if user.is_authenticated %}
+      {% if user != profile.user %}
+        <a href="#" class="list-group-item" data-toggle="modal" data-target="#invitation"><i class="fa fa-angellist"></i> Hacer Amigo</a>
+      {% endif %}
+    {% endif %}
+    {% if friends %}
+    <div class="list-group-item">
+      {% for friend in friends|slice:":10" %}
+        <img src="{{MEDIA_URL}}{{friend.friend.avatar}}" class="img-circle img-avatar" data-toggle="tooltip" data-placement="top" title="{{friend.full_name}}" />
+      {% endfor %}
+      <a href="#" data-toggle="modal" data-target="#friends"><br><small>Ver más</small></a>
+    </div>
+
+    {% endif %}
+    {% if user.is_authenticated %}
+      {% if user != profile.user %}
+        <a href="#" class="list-group-item" data-toggle="modal" data-target="#message" ><i class="fa fa-envelope-o"></i> Enviar un mensaje</a>
+      {% endif %}
+    {% endif %}
+</div>

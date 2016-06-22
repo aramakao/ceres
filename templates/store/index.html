@@ -1,0 +1,271 @@
+{% extends "./base.html" %}
+{% load staticfiles %}
+{% block title %}The Social Agro Marketplace{% endblock title %}
+{% block active_home %}active{% endblock %}
+
+{% block seo %}
+  {% include "./seo.html" with m_keywords="AgroCeres,Campo,agricultura,Nariño" m_description="Este es un espacio para que el agricultor por medio de su granja on-line pueda difundir y comercializar sus productos." m_title="AgroCeres - The Social Agro Marketplace" m_image="/static/img/banner.jpg"%}
+{% endblock seo %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block extra_css %}
+  <link  rel="stylesheet" href="{{STATIC_URL}}owl-carousel/owl.carousel.css"/>
+  <link  rel="stylesheet" href="{{STATIC_URL}}owl-carousel/owl.theme.css"/>
+  <style>
+    #owl_products,#owl_farms,#owl_groups .item{
+        padding: 5px 0px;
+        margin: 5px;
+        color: #FFF;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        text-align: center;
+    }
+    .customNavigation{
+      text-align: center;
+    }
+    .customNavigation a{
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+  </style>
+{% endblock extra_css %}
+
+{% block banner %}
+<div class="row carousel-holder banner-main">
+  <div class="col-md-12">
+    <div class="text-center bg-1">
+      <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+          {% for ad in adverts %}
+          {% if forloop.counter0 == 0 %}
+            <li data-target="#carousel-example-generic" data-slide-to="{{forloop.counter0}}" class="active"></li>
+          {% else%}
+            <li data-target="#carousel-example-generic" data-slide-to="{{forloop.counter0}}"></li>
+          {% endif %}
+          {% endfor %}
+        </ol>
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner" role="listbox">
+          {% for ad in adverts %}
+            {% if forloop.counter0 == 0 %}
+            <section class="item bg-1 active text-center parallax" style="background: url('{{MEDIA_URL}}{{ad.image}}') no-repeat fixed center 25px/ cover  transparent; height:380px;">
+              <div class="banner-blog">
+                <div class="banner-content no_margin">
+                  <a href="{% url 'blog_app:entry' ad.slug %}" class="a_blog"><h4 class="entry-title no_margin">{{ad.title}}</h4></a>
+                </div>
+              </div>
+            </section>
+            {% else %}
+            <section class="item bg-1 text-center parallax" style="background: url('{{MEDIA_URL}}{{ad.image}}') no-repeat fixed center 25px/ cover  transparent; height:380px;">
+              <div class="banner-blog">
+                <div class="banner-content no_margin">
+                  <a href="{% url 'blog_app:entry' ad.slug %}" class="a_blog"><h4 class="entry-title no_margin">{{ad.title}}</h4></a>
+                </div>
+              </div>
+            </section>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <!-- Controls -->
+        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock banner%}
+
+{% block container %}
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&libraries=places"></script>
+<script type="text/javascript">
+  window.onload = function () {
+    var lat=null;
+    var lng=null;
+    var myLatlng = new google.maps.LatLng(parseFloat(1.67684),parseFloat(-78.04487));
+    var mapOptions = {
+      zoom: 8,
+      center: myLatlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+     };
+    var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+      $.getJSON("{% url 'geofarms_countcity' %}", function(data) {
+        $.each( data, function( key, val ) {
+          $.getJSON("http://maps.googleapis.com/maps/api/geocode/json?address="+val.location+"&sensor=false",function(data_address){
+            lat=data_address.results[0].geometry.location.lat;
+            lng=data_address.results[0].geometry.location.lng;
+            var contentString = '<div id="content">'+
+                '<div id="siteNotice">'+
+                '</div>'+
+                '<h4 id="firstHeading" class="firstHeading"><strong>'+val.location.split(',')[0].toUpperCase()+'</strong> <span class="badge">Granjas: '+val.count+'</span></h4>'+
+                '</div>';
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+            var marker = new google.maps.Marker({
+              position: new google.maps.LatLng(lat,lng),
+              map:map,
+              icon: 'media/icons/marker_farms.png',
+            });
+            google.maps.event.addListener(marker, 'mouseover', function() {
+              infowindow.open(map,marker);
+            });
+            google.maps.event.addListener(marker, 'mouseout', function() {
+              infowindow.close(map,marker);
+            });
+          });
+        });
+      });
+    }
+</script>
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li class="active">Inicio</li>
+  </ol>
+</div>
+<div>
+  <div class="col-md-12">
+    <div class="page-header">
+      <h1 class="title-main">Últimos Productos <small><a href="{% url 'geo-farms'%}">Ver más</a></small></h1>
+    </div>
+    {% for product in latest_products  %}
+      {% url 'product' product.slug as url_product %}
+      {% include "./card_product.html" with product=product url_prod=url_product class="col-sm-4 col-lg-6 col-md-6"%}
+    {% endfor %}
+  </div>
+  {% include "./carousel_users.html" with users=users class=""%}
+  <div class="col-md-12">
+    <div class="page-header">
+      <h1 class="title-main">Geo-Granjas <small><a href="{% url 'geo-farms'%}">Ver más</a></small></h1>
+    </div>
+    <div class="col-md-12">
+      <div class="map-canvas" id="map-canvas" style="margin-bottom:10px;"></div>
+    </div>
+  </div>
+  {% include "./carousel_farms.html" with farms=farms class=""%}
+  <div class="col-md-12">
+    <div class="page-header">
+      <h1 class="title-main">AgroBlog <small><a href="{% url 'blog_app:agro_blog'%}">Ver todas las noticias</a></small></h1>
+    </div>
+    <div class="col-md-12">
+      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        {% for entry in entries %}
+          {% include './card_entry.html' with entry=entry%}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% include "./carousel_groups.html" with groups=groups class=""%}
+  <div class="col-md-12">
+    <div class="page-header">
+      <h1 class="title-main">Publicaciones <small><a href={% url 'status' %}>Ver todas las publicaciones</a></small></h1>
+    </div>
+    <div class="col-md-12">
+      {% for state in status %}
+			  <div class="row">
+					<form name="delete_form" method="post">{% csrf_token %}
+			    	{% include "./card_state.html" with state=state %}
+					</form>
+			  </div>
+			{% endfor %}
+    </div>
+  </div>
+</div>
+{% include "./card_comments.html" with comments_form=comments_form %}
+{% endblock container%}
+
+{% block extra_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jasny-bootstrap.min.js"></script>
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script src="{{STATIC_URL}}/owl-carousel/owl.carousel.js"></script>
+<script type="text/javascript">
+  $( document ).ready(function() {
+    var owl = $("#owl_users");
+      owl.owlCarousel({
+        items : 3, //10 items above 1000px browser width
+        itemsDesktop : [1000,3], //5 items between 1000px and 901px
+        itemsDesktopSmall : [900,2], // 3 items betweem 900px and 601px
+        itemsTablet: [600,1], //2 items between 600 and 0;
+        });
+
+    owl.trigger('owl.play',5000);
+
+    var owl_farms = $("#owl_farms");
+      owl_farms.owlCarousel({
+        items : 3, //10 items above 1000px browser width
+        itemsDesktop : [1000,3], //5 items between 1000px and 901px
+        itemsDesktopSmall : [900,2], // 3 items betweem 900px and 601px
+        itemsTablet: [600,1], //2 items between 600 and 0;
+        });
+
+    owl_farms.trigger('owl.play',5000);
+
+    var owl_groups = $("#owl_groups");
+      owl_groups.owlCarousel({
+        items : 3, //10 items above 1000px browser width
+        itemsDesktop : [1000,3], //5 items between 1000px and 901px
+        itemsDesktopSmall : [900,2], // 3 items betweem 900px and 601px
+        itemsTablet: [600,1], //2 items between 600 and 0;
+        });
+
+    owl_groups.trigger('owl.play',5000);
+
+    $('#id_text[maxlength]').keyup(function(){
+        var limit = parseInt($(this).attr('maxlength'));
+        var text = $(this).val();
+        var chars = text.length;
+        console.log(limit-chars);
+        $('#text_length').html(limit-chars);
+    });
+		$(".comments").click(function(event) {
+				$("#id_state").val(event.target.id);
+		});
+
+		$(".comments").click(function(event) {
+			var url_comments = ("{% url 'api_status_comments' 999%}").replace("999",$(this).attr('id'));
+			$.getJSON(url_comments,function(data){
+				if(data.length>0){
+					$("#comments-list").empty();
+					$.each(data,function(key,val){
+						if(val.picture!=null){
+							var image ='<img src="'+val.picture+'" class="img-rounded img-responsive img-state" alt="Imágen de una publicación."/>';
+						}
+						else{
+							var image="";
+						}
+						var url_user = ("{% url 'user_profile' 999 %}").replace("999",val.user['username']);
+						$("#comments-list").append('<div class="media">'+
+							'<div class="media-left"><a href="'+url_user+'"><img val="'+val.user['full_name']+'" class="media-object img-circle img-avatar" src="'+val.user['avatar']+'">'+
+							'</a></div><div class="media-body"><a href="'+url_user+'"><h4 class="media-heading">'+val.user['full_name']+'</h4></a>'+val.text+
+							'</div><br><small>Hace '+val.date_post+'</small></div><hr>'+image
+							);
+					});
+				}else {
+					$("#comments-list").html('<div class="alert alert-success" role="alert">Se el primero en hacer un comentario!</div>');
+				}
+			});
+		});
+
+		$("#comments_form").validate({
+			messages: {
+				text: "Este campor es requerido",
+			}
+		});
+
+  });
+</script>
+{% endblock extra_js %}

@@ -1,0 +1,17 @@
+{% extends "./base.html" %}
+{% block title %}Compra Exitosa{% endblock title %}
+{% block active_car %}active{% endblock %}
+
+{% block container %}
+<div class="col-md-12">
+  <div class="row well">
+    <h1>TU COMPRA HA FINALIZADO CORRECTAMENTE!</h1>
+    <h3>Puedes revisar tu compra y ponerte en contácto con el vendedor en este <strong><a href="{% url 'my_shopping' %}">enlace</a></strong> o seguir <strong><a href="{% url 'home' %}">comprando</a></strong></h3>
+  </div>
+</div>
+{% endblock container%}
+{% block extra_js %}
+  <script type="text/javascript">
+    localStorage.clear();
+  </script>
+{% endblock extra_js %}

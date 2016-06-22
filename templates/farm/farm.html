@@ -1,0 +1,80 @@
+{% extends "./base.html" %}
+{% block title %}{{form.name.value}}{% endblock title %}
+
+{% block banner %}
+  {% include "./banner_farm.html" with farm_profile=farm_profile%}
+{% endblock banner %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_farm="active" farm_in="in" %}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li class="active">Información de su Granja</li>
+  </ol>
+  <div class="page-header">
+		<h1 class="title-main">Información de su Granja</h1>
+	</div>
+  <form method="POST">{% csrf_token %}
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_name">Nombre</label>
+        {{form.name}}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_address">Dirección</label>
+        {{form.address}}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_phone">Teléfono</label>
+        {{form.phone}}
+      </div>
+    </div>
+    <div class="col-md-12">
+      <button type="submit" class="btn btn-success btn-lg">Actualizar información</button>
+    </div>
+  </form>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+<script type="text/javascript">
+  (function($) {
+  $.fn.parallax = function(options) {
+            var windowHeight = $(window).height();
+            var settings = $.extend({
+                speed        : 0.15
+            }, options);
+            return this.each( function() {
+              var $this = $(this);
+              $(document).scroll(function(){
+                    var scrollTop = $(window).scrollTop();
+                          var offset = $this.offset().top;
+                          var height = $this.outerHeight();
+          if (offset + height <= scrollTop || offset >= scrollTop + windowHeight) {
+            return;
+          }
+          var yBgPosition = Math.round((offset - scrollTop) * settings.speed);
+              $this.css('background-position', 'center ' + yBgPosition + 'px');
+              });
+            });
+        }
+    }(jQuery));
+
+    $('.bg-1').parallax({
+      speed : 0.15
+    });
+</script>
+{% endblock %}

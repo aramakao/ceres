@@ -1,0 +1,20 @@
+<a href={% url 'user_profile' profile.user.username  %}>
+  <div class="{{class}}">
+    <div class="pin-container">
+      <div class="pin">
+        <div class="cover">
+          <img class="img-responsive" id="image-banner2" src="{{MEDIA_URL}}{{profile.banner}}" alt="{{profile.user.get_full_name |title}}">
+        </div>
+        <div class="user">
+          <img class="img-responsive img-circle img-circle-profile" id="image-profile3" src="{{MEDIA_URL}}{{profile.user.avatar}}" alt="{{profile.user.get_full_name |title}}">
+        </div>
+        <div class="content">
+          <div class="card-main">
+            <p class="name">{{profile.user.get_full_name |title}}</p>
+            <p class="summary">{{profile.get_occupation}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</a>

@@ -1,0 +1,6 @@
+<div class="list-group">
+  <a href="{% url 'blog_app:categories' %}" class="list-group-item"><strong>AgroBlog - Categorías</strong></a>
+  {% for category in blog_categories %}
+    <a class="list-group-item" href="{% url 'blog_app:category' category.slug %}">{{category.svg|safe}} {{category.name|title}} <span class="badge">{{category.count}} entradas</span></a>
+  {% endfor %}
+</div>

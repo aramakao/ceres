@@ -1,0 +1,12 @@
+<div class="col-md-12">
+  <div class="page-header">
+    <h1 class="title-main">Granjas <small><a href={% url 'farms' %}>Ver más</a></small></h1>
+  </div>
+  <div class="col-md-12">
+    <div id="owl_farms" class="owl-carousel">
+      {% for farm in farms %}
+        {% include './card_farm.html' with profile=farm %}
+      {% endfor %}
+    </div>
+  </div>
+</div>

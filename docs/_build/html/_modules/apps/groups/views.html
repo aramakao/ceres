@@ -1,0 +1,546 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>apps.groups.views &mdash; AgroCeres 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="AgroCeres 1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> AgroCeres
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/account.html">Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/store.html">Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/blog.html">Blog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/comment.html">Comment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/extras.html">Extras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/farm.html">Farm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/groups.html">Groups</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/messages.html">Messages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/product.html">Product</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/search.html">Search</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">AgroCeres</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>apps.groups.views</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for apps.groups.views</h1><div class="highlight"><pre>
+<span class="c">#-*- encoding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">get_object_or_404</span><span class="p">,</span> <span class="n">redirect</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="kn">import</span> <span class="n">TemplateView</span><span class="p">,</span><span class="n">CreateView</span><span class="p">,</span> <span class="n">ListView</span><span class="p">,</span> <span class="n">UpdateView</span>
+<span class="kn">from</span> <span class="nn">django.core.urlresolvers</span> <span class="kn">import</span> <span class="n">reverse_lazy</span><span class="p">,</span> <span class="n">reverse</span>
+<span class="kn">from</span> <span class="nn">apps.account.models</span> <span class="kn">import</span> <span class="n">LoggedInMixin</span><span class="p">,</span> <span class="n">Profile</span>
+<span class="kn">from</span> <span class="nn">apps.product.models</span> <span class="kn">import</span> <span class="n">Product</span><span class="p">,</span> <span class="n">ProductsGroup</span><span class="p">,</span> <span class="n">haveProductsFarm</span><span class="p">,</span> <span class="n">ProductsGroup</span>
+<span class="kn">from</span> <span class="nn">apps.ceres.processors</span> <span class="kn">import</span> <span class="n">getUserFullName</span>
+<span class="kn">from</span> <span class="nn">apps.message.models</span> <span class="kn">import</span> <span class="n">MessageGroup</span><span class="p">,</span> <span class="n">Message</span>
+<span class="kn">from</span> <span class="nn">apps.message.forms</span> <span class="kn">import</span> <span class="n">MessageGroupForm</span><span class="p">,</span> <span class="n">MessageForm</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">Http404</span><span class="p">,</span> <span class="n">HttpResponseRedirect</span><span class="p">,</span> <span class="n">HttpResponse</span>
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">messages</span>
+<span class="kn">from</span> <span class="nn">notifications.models</span> <span class="kn">import</span> <span class="n">Notification</span>
+<span class="kn">from</span> <span class="nn">django.core.paginator</span> <span class="kn">import</span> <span class="n">Paginator</span><span class="p">,</span> <span class="n">EmptyPage</span><span class="p">,</span> <span class="n">PageNotAnInteger</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">IntegrityError</span>
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">apps.ceres.notification</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="GroupsView"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.GroupsView">[docs]</a><span class="k">class</span> <span class="nc">GroupsView</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Thsi view list all groups&#39;&#39;&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">GroupProfile</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;groups/groups.html&#39;</span>
+    <span class="n">paginate_by</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s">&#39;groups&#39;</span>
+
+<div class="viewcode-block" id="GroupsView.get_queryset"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.GroupsView.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function filters active groups&#39;&#39;&#39;</span>
+        <span class="n">object_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">group__is_active</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;group&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">object_list</span>
+</div></div>
+<div class="viewcode-block" id="GroupProfileView"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.GroupProfileView">[docs]</a><span class="k">class</span> <span class="nc">GroupProfileView</span><span class="p">(</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This view allows view a group&#39;&#39;&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;groups/group.html&#39;</span>
+
+<div class="viewcode-block" id="GroupProfileView.get_context_data"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.GroupProfileView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function return members,status,products, invitation form and message form&#39;&#39;&#39;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">GroupProfileView</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Group</span><span class="p">,</span><span class="n">slug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;group&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;is_member&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">isMemberGroupView</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;group&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">get_object_or_404</span><span class="p">(</span><span class="n">GroupProfile</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;members&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">getMembersGroup</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;invitation_form&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">InivitationGroupForm</span><span class="p">()</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;message_form&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">MessageForm</span><span class="p">()</span>
+            <span class="n">paginator</span> <span class="o">=</span> <span class="n">Paginator</span><span class="p">(</span><span class="n">getStateGroup</span><span class="p">(</span><span class="n">group</span><span class="p">),</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s">&#39;page&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+                <span class="n">page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;page&#39;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">PageNotAnInteger</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">EmptyPage</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">paginator</span><span class="o">.</span><span class="n">num_pages</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;comments_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">StateGroupCommentForm</span><span class="p">()</span>
+            <span class="n">products</span> <span class="o">=</span> <span class="n">ProductsGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span><span class="n">product__is_active</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;products_group&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">products</span>
+            <span class="k">return</span> <span class="n">context</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Http404</span>
+</div>
+<div class="viewcode-block" id="GroupProfileView.post"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.GroupProfileView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function allows publish comments, send invitation and messages to the group&#39;&#39;&#39;</span>
+        <span class="n">slug</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;group&#39;</span><span class="p">]</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">slug</span><span class="o">=</span><span class="n">slug</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;btn_comments&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;text&#39;</span><span class="p">]</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s">&#39;picture&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">StateGroupComment</span><span class="p">(</span><span class="n">state_id</span><span class="o">=</span><span class="n">state</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span><span class="n">picture</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;picture&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">StateGroupComment</span><span class="p">(</span><span class="n">state_id</span><span class="o">=</span><span class="n">state</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">notificationCommentGroup</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="p">,</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Publicación exitosa!&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;btn_invitation&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">comment</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;comment&#39;</span><span class="p">]</span>
+                <span class="n">inivitation</span> <span class="o">=</span> <span class="n">InivitationGroup</span><span class="p">(</span><span class="n">comment</span><span class="o">=</span><span class="n">comment</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+                <span class="n">inivitation</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">notificationInvitationGroup</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="p">,</span><span class="n">group</span><span class="p">)</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Invitación enviada!&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">IntegrityError</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Ya has enviado una invitación a este grupo!&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;btn_messages&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="n">comment</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;message&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s">&#39;file&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">receiver</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">administrator</span><span class="p">,</span><span class="nb">file</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILE</span><span class="p">[</span><span class="s">&#39;file&#39;</span><span class="p">],</span><span class="n">message</span><span class="o">=</span><span class="n">comment</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">receiver</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">administrator</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="n">comment</span><span class="p">)</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">receiver</span><span class="o">=</span><span class="n">group</span><span class="o">.</span><span class="n">administrator</span><span class="p">)</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Se ha enviado el mensaje al administrador del grupo!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;group_profile&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;group&#39;</span><span class="p">:</span><span class="n">slug</span><span class="p">}))</span>
+</div></div>
+<div class="viewcode-block" id="RegisterGroup"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.RegisterGroup">[docs]</a><span class="k">class</span> <span class="nc">RegisterGroup</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">CreateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This view allows create a new group&#39;&#39;&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;groups/register.html&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Group</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">GroupForm</span>
+
+<div class="viewcode-block" id="RegisterGroup.post"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.RegisterGroup.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function checks if the form is valid and save it&#39;&#39;&#39;</span>
+        <span class="n">groupForm</span><span class="o">=</span><span class="n">GroupForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">groupForm</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">groupForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">phone</span> <span class="o">=</span> <span class="n">groupForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;phone&#39;</span><span class="p">]</span>
+            <span class="n">address</span> <span class="o">=</span> <span class="n">groupForm</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;address&#39;</span><span class="p">]</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="n">name</span><span class="o">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">phone</span><span class="o">=</span><span class="n">phone</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="n">address</span><span class="p">,</span> <span class="n">administrator</span><span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Grupo creado!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;groups_app:my_group&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;slug&#39;</span><span class="p">:</span><span class="n">group</span><span class="o">.</span><span class="n">slug</span><span class="p">}))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Por favor verifique la información!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;groups_app:register&#39;</span><span class="p">))</span>
+</div></div>
+<div class="viewcode-block" id="MyGroupView"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.MyGroupView">[docs]</a><span class="k">class</span> <span class="nc">MyGroupView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This view return the landing page of the group&#39;&#39;&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;groups/my_group.html&#39;</span>
+
+<div class="viewcode-block" id="MyGroupView.get_context_data"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.MyGroupView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function return members, messages, invitations, comments, products&#39;&#39;&#39;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyGroupView</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Group</span><span class="p">,</span><span class="n">slug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">isMemberGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s">&#39;state&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+                <span class="n">notifications</span><span class="o">=</span><span class="n">Notification</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">])</span>
+                <span class="n">notifications</span><span class="o">.</span><span class="n">mark_as_read</span><span class="p">()</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">GroupProfile</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;messages_group_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageGroupForm</span><span class="p">()</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;members&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">getMembersGroup</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">paginator_message</span> <span class="o">=</span><span class="n">Paginator</span><span class="p">(</span><span class="n">MessageGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">getMessages</span><span class="p">(</span><span class="n">group</span><span class="p">),</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;messages_group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator_message</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s">&#39;page_messages&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+                <span class="n">page_messages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;page_messages&#39;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s">&#39;messages_group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator_message</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">page_messages</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">PageNotAnInteger</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s">&#39;messages_group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator_message</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">EmptyPage</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s">&#39;messages_group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator_message</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">paginator_message</span><span class="o">.</span><span class="n">num_pages</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;inivitations&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">getIvitationsGroup</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;admin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">isAdministratorGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;haveProducts&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">haveProductsFarm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;state_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">StateGroupForm</span><span class="p">()</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;comments_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">StateGroupCommentForm</span><span class="p">()</span>
+            <span class="n">paginator</span> <span class="o">=</span> <span class="n">Paginator</span><span class="p">(</span><span class="n">getStateGroup</span><span class="p">(</span><span class="n">group</span><span class="p">),</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s">&#39;page&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+                <span class="n">page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;page&#39;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">PageNotAnInteger</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">EmptyPage</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">paginator</span><span class="o">.</span><span class="n">num_pages</span><span class="p">)</span>
+            <span class="n">products</span> <span class="o">=</span> <span class="n">ProductsGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;products_group&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">products</span>
+
+        <span class="k">return</span> <span class="n">context</span>
+</div>
+<div class="viewcode-block" id="MyGroupView.post"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.MyGroupView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function allows publish and delete status, accept invitations, comments status&#39;&#39;&#39;</span>
+        <span class="n">slug</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">]</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">slug</span><span class="o">=</span><span class="n">slug</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;btn_delete:&#39;</span><span class="p">):</span>
+                <span class="n">delete</span> <span class="o">=</span>  <span class="n">key</span><span class="p">[</span><span class="mi">11</span><span class="p">:]</span>
+                <span class="n">state</span><span class="o">=</span><span class="n">StateGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">delete</span><span class="p">)</span>
+                <span class="n">state</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Publicación borrada!&#39;</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;accept_invitation:&#39;</span><span class="p">):</span>
+                <span class="n">accept</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="mi">18</span><span class="p">:]</span>
+                <span class="n">member</span> <span class="o">=</span> <span class="n">acceptInvitation</span><span class="p">(</span><span class="n">accept</span><span class="p">)</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Felicidades tienes un nuevo integrante en tu asociación&#39;</span><span class="p">)</span>
+                <span class="n">notificationAcceptInvitationGroup</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">member</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;reject_invitation:&#39;</span><span class="p">):</span>
+                <span class="n">reject</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="mi">18</span><span class="p">:]</span>
+                <span class="n">member</span> <span class="o">=</span> <span class="n">rejectInvitation</span><span class="p">(</span><span class="n">reject</span><span class="p">)</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Invitación rechazada!&#39;</span><span class="p">)</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="s">&#39;btn_state&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;text&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s">&#39;picture&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">StateGroup</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span><span class="n">picture</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;picture&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">StateGroup</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">notificationStateGroup</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="p">,</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Publicación exitosa!&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;btn_comments&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;text&#39;</span><span class="p">]</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s">&#39;picture&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">StateGroupComment</span><span class="p">(</span><span class="n">state_id</span><span class="o">=</span><span class="n">state</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span><span class="n">picture</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;picture&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">StateGroupComment</span><span class="p">(</span><span class="n">state_id</span><span class="o">=</span><span class="n">state</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">notificationCommentGroup</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="p">,</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Publicación exitosa!&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;leaveGroup&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="n">leaveGroup</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Has abandonado la asociación!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;groups_app:my_groups&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;btn_messages_group&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="n">comment</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;message&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s">&#39;file&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">MessageGroup</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span><span class="nb">file</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;file&#39;</span><span class="p">],</span><span class="n">message</span><span class="o">=</span><span class="n">comment</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">MessageGroup</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="n">comment</span><span class="p">)</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">notificationMessageGroup</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="p">,</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Mensaje enviado exitosamente!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;groups_app:my_group&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;slug&#39;</span><span class="p">:</span><span class="n">slug</span><span class="p">}))</span>
+</div></div>
+<div class="viewcode-block" id="MyProductsGroupView"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.MyProductsGroupView">[docs]</a><span class="k">class</span> <span class="nc">MyProductsGroupView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This view list the products that a member have&#39;&#39;&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;groups/my_products.html&#39;</span>
+
+<div class="viewcode-block" id="MyProductsGroupView.get_context_data"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.MyProductsGroupView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function checks if a user is member and return the products&#39;&#39;&#39;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyProductsGroupView</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Group</span><span class="p">,</span><span class="n">slug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">isMemberGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">haveProductsFarm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">):</span>
+                <span class="n">context</span><span class="p">[</span><span class="s">&#39;group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">GroupProfile</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+                <span class="n">myProductsGroup</span> <span class="o">=</span> <span class="n">ProductsGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span><span class="n">product__farm__user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+                <span class="n">myProducts</span> <span class="o">=</span> <span class="n">Product</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm__user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">is_active</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">m_product</span> <span class="ow">in</span> <span class="n">myProducts</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">myProductsGroup</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">product</span><span class="o">==</span><span class="n">m_product</span><span class="p">:</span>
+                            <span class="nb">setattr</span><span class="p">(</span><span class="n">m_product</span><span class="p">,</span><span class="s">&#39;in_farm&#39;</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+                            <span class="k">break</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="nb">setattr</span><span class="p">(</span><span class="n">m_product</span><span class="p">,</span><span class="s">&#39;in_farm&#39;</span><span class="p">,</span><span class="bp">False</span><span class="p">)</span>
+                <span class="n">context</span><span class="p">[</span><span class="s">&#39;my_products&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">myProducts</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">Http404</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Http404</span>
+        <span class="k">return</span> <span class="n">context</span>
+</div></div>
+<span class="k">class</span> <span class="nc">MembersGroup</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;groups/members.html&#39;</span>
+
+    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MembersGroup</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Group</span><span class="p">,</span><span class="n">slug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">isAdministratorGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="p">)</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Http404</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">GroupProfile</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;members&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">getMembersGroup</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">context</span>
+
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">slug</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">]</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">slug</span><span class="o">=</span><span class="n">slug</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;delete:&#39;</span><span class="p">):</span>
+                <span class="n">delete</span> <span class="o">=</span>  <span class="n">key</span><span class="p">[</span><span class="mi">7</span><span class="p">:]</span>
+                <span class="n">member</span> <span class="o">=</span> <span class="n">GroupMember</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">delete</span><span class="p">)</span>
+                <span class="n">leaveGroup</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">member</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">member</span><span class="o">.</span><span class="n">group</span><span class="p">)</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Participante retirado de la Asociación!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;groups_app:members&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;slug&#39;</span><span class="p">:</span><span class="n">slug</span><span class="p">}))</span>
+
+<div class="viewcode-block" id="MyGroupsList"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.MyGroupsList">[docs]</a><span class="k">class</span> <span class="nc">MyGroupsList</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This view returns the members&#39;&#39;&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">GroupMember</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;groups/my_groups_list.html&#39;</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s">&#39;groups&#39;</span>
+
+<div class="viewcode-block" id="MyGroupsList.get_queryset"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.MyGroupsList.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function filters the members by group&#39;&#39;&#39;</span>
+        <span class="n">object_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;group&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">object_list</span><span class="p">:</span>
+            <span class="n">members</span><span class="o">=</span><span class="n">GroupMember</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">groupProfile</span><span class="o">=</span><span class="n">GroupProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">obj</span><span class="o">.</span><span class="n">group</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="s">&#39;members&#39;</span><span class="p">,</span><span class="n">members</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="s">&#39;profile&#39;</span><span class="p">,</span><span class="n">groupProfile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">object_list</span>
+</div></div>
+<div class="viewcode-block" id="MyGroupAdminView"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.MyGroupAdminView">[docs]</a><span class="k">class</span> <span class="nc">MyGroupAdminView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">UpdateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This view allows admin the group&#39;&#39;&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;groups/group_admin.html&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Group</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">GroupForm</span>
+    <span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;groups_app:group_admin&#39;</span><span class="p">,</span><span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="s">&#39;aso-cuyo&#39;</span><span class="p">})</span>
+
+<div class="viewcode-block" id="MyGroupAdminView.get_context_data"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.MyGroupAdminView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function checks if the user is administrator&#39;&#39;&#39;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyGroupAdminView</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Group</span><span class="p">,</span><span class="n">slug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">isAdministratorGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="p">)</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Http404</span>
+        <span class="n">context</span><span class="p">[</span><span class="s">&#39;group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">GroupProfile</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s">&#39;profile_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">GroupProfileForm</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">GroupProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">context</span>
+</div>
+<div class="viewcode-block" id="MyGroupAdminView.form_valid"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.MyGroupAdminView.form_valid">[docs]</a>    <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">form</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function checks if the form is valid before save it&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s">&#39;POST&#39;</span><span class="p">:</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span><span class="s">&quot;Has actualizado {0} correctamente&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]))</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Group</span><span class="p">,</span><span class="n">slug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">])</span>
+            <span class="n">latitude</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;latitude&#39;</span><span class="p">]</span>
+            <span class="n">longitude</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;longitude&#39;</span><span class="p">]</span>
+            <span class="n">location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">]</span>
+            <span class="n">slogan</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;slogan&#39;</span><span class="p">]</span>
+            <span class="n">groupProfile</span><span class="o">=</span><span class="n">GroupProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+            <span class="n">groupProfile</span><span class="o">.</span><span class="n">latitude</span><span class="o">=</span><span class="n">latitude</span>
+            <span class="n">groupProfile</span><span class="o">.</span><span class="n">longitude</span><span class="o">=</span><span class="n">longitude</span>
+            <span class="n">groupProfile</span><span class="o">.</span><span class="n">location</span><span class="o">=</span><span class="n">location</span>
+            <span class="n">groupProfile</span><span class="o">.</span><span class="n">slogan</span><span class="o">=</span><span class="n">slogan</span>
+            <span class="n">groupProfile</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyGroupAdminView</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">get_success_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;groups_app:group_admin&#39;</span><span class="p">,</span><span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">group</span><span class="o">.</span><span class="n">slug</span><span class="p">})</span>
+</div>
+<div class="viewcode-block" id="leaveGroup"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.leaveGroup">[docs]</a><span class="k">def</span> <span class="nf">leaveGroup</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function allows leave a group&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">isMemberGroup</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="p">):</span>
+        <span class="n">ProductsGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">product__farm__user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="n">GroupMember</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="changePictureProfile"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.changePictureProfile">[docs]</a><span class="k">def</span> <span class="nf">changePictureProfile</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function allows change the group logo&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_ajax</span><span class="p">():</span>
+        <span class="n">group</span><span class="o">=</span><span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">administrator</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">slug</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;group&#39;</span><span class="p">])</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">logo</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;file_upload&#39;</span><span class="p">]</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">logo</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&quot;text/plain&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Http404</span>
+</div>
+<div class="viewcode-block" id="changePictureBanner"><a class="viewcode-back" href="../../../modules/groups.html#apps.groups.views.changePictureBanner">[docs]</a><span class="k">def</span> <span class="nf">changePictureBanner</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function allows change the banner&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_ajax</span><span class="p">():</span>
+        <span class="n">group</span><span class="o">=</span><span class="n">GroupProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group__slug</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;group&#39;</span><span class="p">])</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">banner</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;file_upload&#39;</span><span class="p">]</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">banner</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&quot;text/plain&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Http404</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, AgroCeres.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

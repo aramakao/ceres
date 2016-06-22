@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Groups &mdash; AgroCeres 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="AgroCeres 1.0 documentation" href="../index.html"/>
+        <link rel="next" title="Messages" href="messages.html"/>
+        <link rel="prev" title="Farm" href="farm.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> AgroCeres
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="account.html">Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="store.html">Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blog.html">Blog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comment.html">Comment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extras.html">Extras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="farm.html">Farm</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Groups</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#models">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#views">Views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#forms">Forms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="messages.html">Messages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="product.html">Product</a></li>
+<li class="toctree-l1"><a class="reference internal" href="search.html">Search</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">AgroCeres</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Groups</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/modules/groups.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="groups">
+<h1>Groups<a class="headerlink" href="#groups" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="models">
+<h2>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h2>
+<p>This model allows management groups</p>
+<span class="target" id="module-apps.groups.models"></span><dl class="class">
+<dt id="apps.groups.models.Group">
+<em class="property">class </em><code class="descclassname">apps.groups.models.</code><code class="descname">Group</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#Group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.Group" title="Permalink to this definition">¶</a></dt>
+<dd><p>This model allows save groups</p>
+<dl class="method">
+<dt id="apps.groups.models.Group.count_members">
+<code class="descname">count_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#Group.count_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.Group.count_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function counts the members at group</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="apps.groups.models.Group.getProducts">
+<code class="descname">getProducts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#Group.getProducts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.Group.getProducts" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the products that a group have</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.models.GroupManager">
+<em class="property">class </em><code class="descclassname">apps.groups.models.</code><code class="descname">GroupManager</code><a class="reference internal" href="../_modules/apps/groups/models.html#GroupManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.GroupManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class allows manager the group model</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.models.GroupMember">
+<em class="property">class </em><code class="descclassname">apps.groups.models.</code><code class="descname">GroupMember</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#GroupMember"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.GroupMember" title="Permalink to this definition">¶</a></dt>
+<dd><p>This models allows add members to the group</p>
+<dl class="method">
+<dt id="apps.groups.models.GroupMember.date_since">
+<code class="descname">date_since</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#GroupMember.date_since"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.GroupMember.date_since" title="Permalink to this definition">¶</a></dt>
+<dd><p>this function returns the joining date</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.models.GroupProfile">
+<em class="property">class </em><code class="descclassname">apps.groups.models.</code><code class="descname">GroupProfile</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#GroupProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.GroupProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>This model allows update infromation about the group</p>
+<dl class="method">
+<dt id="apps.groups.models.GroupProfile.get_slogan">
+<code class="descname">get_slogan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#GroupProfile.get_slogan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.GroupProfile.get_slogan" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the group&#8217;s slogan</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.models.InivitationGroup">
+<em class="property">class </em><code class="descclassname">apps.groups.models.</code><code class="descname">InivitationGroup</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#InivitationGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.InivitationGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>This model allows managing the invitation requests</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.models.StateGroup">
+<em class="property">class </em><code class="descclassname">apps.groups.models.</code><code class="descname">StateGroup</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#StateGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.StateGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>this models allows publish status</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.models.StateGroupComment">
+<em class="property">class </em><code class="descclassname">apps.groups.models.</code><code class="descname">StateGroupComment</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#StateGroupComment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.StateGroupComment" title="Permalink to this definition">¶</a></dt>
+<dd><p>This model allows comment a group state</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="apps.groups.models.acceptInvitation">
+<code class="descclassname">apps.groups.models.</code><code class="descname">acceptInvitation</code><span class="sig-paren">(</span><em>invitation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#acceptInvitation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.acceptInvitation" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function allows accept an invitation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="apps.groups.models.getIvitationsGroup">
+<code class="descclassname">apps.groups.models.</code><code class="descname">getIvitationsGroup</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#getIvitationsGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.getIvitationsGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function lists the inivitations by group</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="apps.groups.models.getMembersGroup">
+<code class="descclassname">apps.groups.models.</code><code class="descname">getMembersGroup</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#getMembersGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.getMembersGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the members by group</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="apps.groups.models.getStateGroup">
+<code class="descclassname">apps.groups.models.</code><code class="descname">getStateGroup</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#getStateGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.getStateGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function return the status by group</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="apps.groups.models.isAdministratorGroup">
+<code class="descclassname">apps.groups.models.</code><code class="descname">isAdministratorGroup</code><span class="sig-paren">(</span><em>user</em>, <em>group</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#isAdministratorGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.isAdministratorGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function checks if an user is gruop administrator</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="apps.groups.models.isMemberGroup">
+<code class="descclassname">apps.groups.models.</code><code class="descname">isMemberGroup</code><span class="sig-paren">(</span><em>user</em>, <em>group</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#isMemberGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.isMemberGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function checks if an user is member of it</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="apps.groups.models.isMemberGroupView">
+<code class="descclassname">apps.groups.models.</code><code class="descname">isMemberGroupView</code><span class="sig-paren">(</span><em>user</em>, <em>group</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#isMemberGroupView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.isMemberGroupView" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function checks if an user is member of it</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="apps.groups.models.rejectInvitation">
+<code class="descclassname">apps.groups.models.</code><code class="descname">rejectInvitation</code><span class="sig-paren">(</span><em>invitation</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/models.html#rejectInvitation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.models.rejectInvitation" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function reject an invitation</p>
+</dd></dl>
+
+</div>
+<div class="section" id="views">
+<h2>Views<a class="headerlink" href="#views" title="Permalink to this headline">¶</a></h2>
+<p>This views allows the communication between the groups templates and the groups models</p>
+<span class="target" id="module-apps.groups.views"></span><dl class="class">
+<dt id="apps.groups.views.GroupProfileView">
+<em class="property">class </em><code class="descclassname">apps.groups.views.</code><code class="descname">GroupProfileView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#GroupProfileView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.GroupProfileView" title="Permalink to this definition">¶</a></dt>
+<dd><p>This view allows view a group</p>
+<dl class="method">
+<dt id="apps.groups.views.GroupProfileView.get_context_data">
+<code class="descname">get_context_data</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#GroupProfileView.get_context_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.GroupProfileView.get_context_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function return members,status,products, invitation form and message form</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="apps.groups.views.GroupProfileView.post">
+<code class="descname">post</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#GroupProfileView.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.GroupProfileView.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function allows publish comments, send invitation and messages to the group</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.views.GroupsView">
+<em class="property">class </em><code class="descclassname">apps.groups.views.</code><code class="descname">GroupsView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#GroupsView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.GroupsView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thsi view list all groups</p>
+<dl class="method">
+<dt id="apps.groups.views.GroupsView.get_queryset">
+<code class="descname">get_queryset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#GroupsView.get_queryset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.GroupsView.get_queryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function filters active groups</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="apps.groups.views.GroupsView.model">
+<code class="descname">model</code><a class="headerlink" href="#apps.groups.views.GroupsView.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">GroupProfile</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.views.MyGroupAdminView">
+<em class="property">class </em><code class="descclassname">apps.groups.views.</code><code class="descname">MyGroupAdminView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#MyGroupAdminView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.MyGroupAdminView" title="Permalink to this definition">¶</a></dt>
+<dd><p>This view allows admin the group</p>
+<dl class="attribute">
+<dt id="apps.groups.views.MyGroupAdminView.form_class">
+<code class="descname">form_class</code><a class="headerlink" href="#apps.groups.views.MyGroupAdminView.form_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">GroupForm</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="apps.groups.views.MyGroupAdminView.form_valid">
+<code class="descname">form_valid</code><span class="sig-paren">(</span><em>form</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#MyGroupAdminView.form_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.MyGroupAdminView.form_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function checks if the form is valid before save it</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="apps.groups.views.MyGroupAdminView.get_context_data">
+<code class="descname">get_context_data</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#MyGroupAdminView.get_context_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.MyGroupAdminView.get_context_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function checks if the user is administrator</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="apps.groups.views.MyGroupAdminView.model">
+<code class="descname">model</code><a class="headerlink" href="#apps.groups.views.MyGroupAdminView.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">Group</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.views.MyGroupView">
+<em class="property">class </em><code class="descclassname">apps.groups.views.</code><code class="descname">MyGroupView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#MyGroupView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.MyGroupView" title="Permalink to this definition">¶</a></dt>
+<dd><p>This view return the landing page of the group</p>
+<dl class="method">
+<dt id="apps.groups.views.MyGroupView.get_context_data">
+<code class="descname">get_context_data</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#MyGroupView.get_context_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.MyGroupView.get_context_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function return members, messages, invitations, comments, products</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="apps.groups.views.MyGroupView.post">
+<code class="descname">post</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#MyGroupView.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.MyGroupView.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function allows publish and delete status, accept invitations, comments status</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.views.MyGroupsList">
+<em class="property">class </em><code class="descclassname">apps.groups.views.</code><code class="descname">MyGroupsList</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#MyGroupsList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.MyGroupsList" title="Permalink to this definition">¶</a></dt>
+<dd><p>This view returns the members</p>
+<dl class="method">
+<dt id="apps.groups.views.MyGroupsList.get_queryset">
+<code class="descname">get_queryset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#MyGroupsList.get_queryset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.MyGroupsList.get_queryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function filters the members by group</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="apps.groups.views.MyGroupsList.model">
+<code class="descname">model</code><a class="headerlink" href="#apps.groups.views.MyGroupsList.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">GroupMember</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.views.MyProductsGroupView">
+<em class="property">class </em><code class="descclassname">apps.groups.views.</code><code class="descname">MyProductsGroupView</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#MyProductsGroupView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.MyProductsGroupView" title="Permalink to this definition">¶</a></dt>
+<dd><p>This view list the products that a member have</p>
+<dl class="method">
+<dt id="apps.groups.views.MyProductsGroupView.get_context_data">
+<code class="descname">get_context_data</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#MyProductsGroupView.get_context_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.MyProductsGroupView.get_context_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function checks if a user is member and return the products</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.views.RegisterGroup">
+<em class="property">class </em><code class="descclassname">apps.groups.views.</code><code class="descname">RegisterGroup</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#RegisterGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.RegisterGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>This view allows create a new group</p>
+<dl class="attribute">
+<dt id="apps.groups.views.RegisterGroup.form_class">
+<code class="descname">form_class</code><a class="headerlink" href="#apps.groups.views.RegisterGroup.form_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">GroupForm</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="apps.groups.views.RegisterGroup.model">
+<code class="descname">model</code><a class="headerlink" href="#apps.groups.views.RegisterGroup.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal"><span class="pre">Group</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="apps.groups.views.RegisterGroup.post">
+<code class="descname">post</code><span class="sig-paren">(</span><em>request</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#RegisterGroup.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.RegisterGroup.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function checks if the form is valid and save it</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="apps.groups.views.changePictureBanner">
+<code class="descclassname">apps.groups.views.</code><code class="descname">changePictureBanner</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#changePictureBanner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.changePictureBanner" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function allows change the banner</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="apps.groups.views.changePictureProfile">
+<code class="descclassname">apps.groups.views.</code><code class="descname">changePictureProfile</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#changePictureProfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.changePictureProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function allows change the group logo</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="apps.groups.views.leaveGroup">
+<code class="descclassname">apps.groups.views.</code><code class="descname">leaveGroup</code><span class="sig-paren">(</span><em>user</em>, <em>group</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/views.html#leaveGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.views.leaveGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function allows leave a group</p>
+</dd></dl>
+
+</div>
+<div class="section" id="forms">
+<h2>Forms<a class="headerlink" href="#forms" title="Permalink to this headline">¶</a></h2>
+<p>This forms allows make groups forms</p>
+<span class="target" id="module-apps.groups.forms"></span><dl class="class">
+<dt id="apps.groups.forms.GroupForm">
+<em class="property">class </em><code class="descclassname">apps.groups.forms.</code><code class="descname">GroupForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>instance=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/forms.html#GroupForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.forms.GroupForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>This form allows create and update a group</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.forms.GroupProfileForm">
+<em class="property">class </em><code class="descclassname">apps.groups.forms.</code><code class="descname">GroupProfileForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>instance=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/forms.html#GroupProfileForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.forms.GroupProfileForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>This form allows create and update a group profile</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.forms.InivitationGroupForm">
+<em class="property">class </em><code class="descclassname">apps.groups.forms.</code><code class="descname">InivitationGroupForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>instance=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/forms.html#InivitationGroupForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.forms.InivitationGroupForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>This form allows send invitations</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.forms.StateGroupCommentForm">
+<em class="property">class </em><code class="descclassname">apps.groups.forms.</code><code class="descname">StateGroupCommentForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>instance=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/forms.html#StateGroupCommentForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.forms.StateGroupCommentForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>This form allows create comments</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="apps.groups.forms.StateGroupForm">
+<em class="property">class </em><code class="descclassname">apps.groups.forms.</code><code class="descname">StateGroupForm</code><span class="sig-paren">(</span><em>data=None</em>, <em>files=None</em>, <em>auto_id=u'id_%s'</em>, <em>prefix=None</em>, <em>initial=None</em>, <em>error_class=&lt;class 'django.forms.utils.ErrorList'&gt;</em>, <em>label_suffix=None</em>, <em>empty_permitted=False</em>, <em>instance=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/apps/groups/forms.html#StateGroupForm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#apps.groups.forms.StateGroupForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>This form allows create status</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="messages.html" class="btn btn-neutral float-right" title="Messages" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="farm.html" class="btn btn-neutral" title="Farm" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, AgroCeres.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% extends "./base.html" %}
+{% block master_content %}
+	{% block card_profile %}{% endblock card_profile %}
+	<div class="col-md-12">
+      <div class="pin-container">
+        	<div class="container">
+        		{% block breadcrumbs %}{% endblock breadcrumbs %}
+        		<div class="page-header">
+  						<h2>{% block subtitle %}{% endblock subtitle %}</h2>
+						</div>
+					<br>
+        	{% block content %}{% endblock content %}
+      	</div>
+      </div>
+  </div>
+{% endblock master_content %}

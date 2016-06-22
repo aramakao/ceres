@@ -1,0 +1,20 @@
+{% load humanize %}
+<a href="{{url_prod}}" data-toggle="tooltip" data-placement="left" title="{{product.name|title}}">
+  <div class="{{class}}">
+    <div class="pin-container">
+      <div class="pin">
+        <div class="cover">
+          <img class="img-responsive" src="{{MEDIA_URL}}{{product.getPicture}}" alt="{{product.name|title}}">
+        </div>
+        <div class="content">
+          <div class="card-main">
+            <p class="farm">{{product.farm.name|title}}</p>
+            <h3 class="name">{{product.name|title|truncatechars:20}}</h3>
+            <p class="summary">{{product.summary|truncatechars:30}}</p>
+            <p class="price">${{product.price|intcomma}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</a>

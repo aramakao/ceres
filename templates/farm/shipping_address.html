@@ -1,0 +1,76 @@
+{% extends "./base.html" %}
+{% block title %}Dirección de Envío{% endblock title %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_address="active" profile_in="in" %}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+	  <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+	  <li class="active">Dirección de Envío</li>
+	</ol>
+  <div class="page-header">
+    <h1 class="title-main">Dirección de Envío <i class="helpers fa fa-question-circle" data-trigger="hover" data-toggle="popover" title="Ayuda" data-content="Asegúrese de que la información suministrada sea correcta para evitar problemas al momento de entregar su compra."></i></h1>
+  </div>
+  <form method="post" id="form">{% csrf_token %}
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_name">Barrio</label>
+        {{shipping_form.neighborhood}}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_name">Dirección</label>
+        {{shipping_form.address}}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_name">Ciudad</label>
+        {{shipping_form.city}}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_name">Teléfono</label>
+        {{shipping_form.phone}}
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="id_name">Descripción</label>
+        {{shipping_form.description}}
+      </div>
+    </div>
+    <div class="col-md-12">
+      <button class='btn btn-lg btn-success btn-block btn-long' type="submit">Actualizar Información</button>
+    </div>
+  </form>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('[data-toggle="popover"]').popover();
+    $("#form").validate({
+      messages: {
+        neighborhood: "Campo requerido",
+        address: "Campo requerido",
+        city: "Campo requerido",
+        phone: "Campo requerido",
+        description: "Campo requerido",
+      }
+    });
+  });
+</script>
+{% endblock extra_js %}

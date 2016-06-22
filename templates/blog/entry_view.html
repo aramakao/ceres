@@ -1,0 +1,29 @@
+{% extends "./base.html" %}
+{% block title %}{{blog.title|title|truncatechars:50}}{% endblock title %}
+
+{% block main-menu %}
+ 	{% include "./menu_myfarm.html" with active_blog="active" admin_in="in"%}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li><a href="{% url 'blog' %}">AgroBlog</a></li>
+    <li class="active">{{blog.title|title|truncatechars:50}}</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">{{blog.title|title}}</h1>
+  </div>
+  <div class="col-md-12">
+    <div class="pin-content row">
+    	<img src="{{MEDIA_URL}}{{blog.image}}" class="img-thumbnail img-news" />
+    	<div class="text-justify">
+    	  {{blog.content|safe}}
+        <p><small>Fecha de publicación {{blog.posted|date}}</small></p>
+    	</div>
+    </div>
+  </div>
+</div>
+{% endblock container %}

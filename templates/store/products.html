@@ -1,0 +1,34 @@
+{% extends "./base.html" %}
+{% block title %}Productos{% endblock title %}
+{% block active_products %}active{% endblock %}
+
+{% block seo %}
+  {% include "./seo.html" with m_keywords="AgroCeres,Campo,agricultura,Nariño,Productos" m_description="Encuentra frutas, verduras y otros productos que han sido cultivados por manos campesinas." m_title="Productos | AgroCeres" m_image="/media/banners/productos.jpg"%}
+{% endblock seo %}
+
+{% block banner %}
+  {% include './banner_app.html' with image="banners/productos.jpg" title="Productos" subtitle="Frutas, verduras y otros productos" %}
+{% endblock banner %}
+
+{% block second_menu %}
+    {% include "./menu_product_category.html" %}
+{% endblock %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li class="active">Productos <span class="badge"> {{ paginator.count }}  resultados</span></li>
+  </ol>
+</div>
+{% for product in products %}
+  {% url 'product' product.slug as url_prod %}
+  {% include './card_product.html' with url_prod=url_prod product=product class="col-sm-4 col-lg-6 col-md-6" %}
+{% endfor %}
+<div class="col-md-12">
+  {% include './pagination.html'%}
+</div>
+{% endblock container%}
+{% block extra_js %}
+  <script src="{{STATIC_URL}}js/parallax.js"></script>
+{% endblock extra_js %}

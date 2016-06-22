@@ -1,0 +1,286 @@
+{% extends "./base.html" %}
+{% block title %}{{group.group.name|title}}{% endblock title %}
+
+{% block banner %}
+  {% include "./banner_group.html" with group_profile=group%}
+{% endblock banner %}
+
+{% block messages %}
+  {% include "./messages.html"%}
+{% endblock messages %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_group="active" group_in="in" %}
+{% endblock main-menu %}
+
+
+{% block extra_css %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jasny-bootstrap.min.css">
+{% endblock extra_css %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li><a href="{% url 'groups_app:my_groups' %}">Asociaciones</a></li>
+    <li class="active">{{group.group.name}}</li>
+  </ol>
+  <div class="page-header">
+		<h1 class="title-main">Información de {{group.group.name}}</h1>
+	</div>
+  <div class="col-md-12">
+    <div class="pin-content">
+      <!-- Nav tabs -->
+      <p>
+        <div class="btn-group" role="group" aria-label="...">
+          {% if admin == True %}
+            <a href="{% url 'groups_app:group_admin' group.group.slug %}" class="btn btn-success">Administrar Grupo</a>
+            <a href="{% url 'groups_app:members' group.group.slug %}" class="btn btn-default">Participantes</a>
+          {% endif %}
+          {% if haveProducts == True %}
+            <a href="{% url 'groups_app:my_products' group.group.slug %}"class="btn btn-default">Mis Productos</a>
+          {% else %}
+            <span class="label label-success">Para aportar con productos al grupo debes crear una granja y agreagar productos</span>
+          {% endif %}
+        </div>
+        {% if admin ==  False%}
+        <br></rp><a href="#" data-toggle="modal" data-target="#leaveGroup"><i class="fa fa-sign-out"></i> Abandonar Asociación</a>
+        {% endif %}
+      </p>
+
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#activity" aria-controls="home" role="tab" data-toggle="tab">Actividad</a></li>
+        <li><a href="#members" aria-controls="members" role="tab" data-toggle="tab">Participantes</a></li>
+        <li><a href="#products" aria-controls="products" role="tab" data-toggle="tab">Productos del Grupo</a></li>
+        <li><a href="#conversations" aria-controls="conversations" role="tab" data-toggle="tab">Conversaciones</a></li>
+        {% if admin == True %}
+        <li><a href="#invitations" aria-controls="invitations" role="tab" data-toggle="tab">Solicitudes</a></li>
+        {% endif %}
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="activity">
+          <form enctype="multipart/form-data" method="post" name="state_form" id="state_form">{% csrf_token %}
+            <div class="container2">
+              <div class="pin">
+                <div class="title">
+                  Comparte en tu grupo!
+                </div>
+                <div class="content">
+                  <div class="main">
+                    <div class="form-group">
+                      {{state_form.text}}
+                      <p>
+                        <small id="text_length"> {{state_form.text.field.widget.attrs.maxlength}}</small>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="footer">
+                  <div class="fileinput fileinput-new" data-provides="fileinput">
+                    <span class="btn btn-default btn-file"><span class="fileinput-new"><li class="fa fa-camera"></li> Añadir foto</span><span class="fileinput-exists">Cambiar</span>{{state_form.picture}}</span>
+                    <span class="fileinput-filename"></span>
+                    <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                  </div>
+                  <button type="submit" name="btn_state" class="btn btn-success btn-block btn-post"><li class="fa fa-pencil-square-o"></li> Publicar</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="members">
+          {% for member in members %}
+            {% url 'user_profile' member.user as url_user %}
+            <div class="media">
+              <div class="media-left">
+                <a href="{{url_user}}">
+                  <img class="media-object img-circle img-avatar" src="{{MEDIA_URL}}{{member.user.avatar}}">
+                </a>
+              </div>
+              <div class="media-body">
+                <a href="{{url_user}}"><h4 class="media-heading">{{member.user_name|title}}</h4></a>
+                <small>Se unió hace {{member.joined|timesince}}</small>
+              </div>
+            </div>
+          {%endfor%}
+        </div>
+        <div role="tabpanel" class="tab-pane" id="conversations">
+          {% if messages_group %}
+            {% for message in messages_group %}
+              {% include './card_message_group.html' with message=message %}
+            {% endfor %}
+            {% include './pagination_messages_group.html' %}
+          {% else %}
+          <div class="alert alert-success" role="alert">Empieza una conversación con tus amigos de {{group.group.name|title}}</div>
+          {% endif %}
+          <div class="well">
+            <form enctype="multipart/form-data" method="post" name="message_form" id="message_form">{% csrf_token %}
+              {{messages_group_form.message}}
+              <p>
+                <div class="fileinput fileinput-new" data-provides="fileinput">
+                  <span class="btn btn-default btn-file"><span class="fileinput-new"><li class="fa fa-paperclip"></li> Adjuntar Archivo</span><span class="fileinput-exists">Cambiar</span>{{messages_group_form.file}}</span>
+                  <span class="fileinput-filename"></span>
+                  <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                  <button name="btn_messages_group" type="submit" class="btn btn-success pull-right"><li class="fa fa-paper-plane-o"></li> Enviar Mensaje</button>
+                </div>
+              </p>
+            </form>
+          </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="products">
+          {% if products_group %}
+            {% for product in products_group %}
+            <div class="media">
+              <div class="media-left">
+                <a href="#">
+                  <img src="{{MEDIA_URL}}{{product.product.getPicture}}" class="img-circle product-image-list"> <a href="#">
+                </a>
+              </div>
+              <div class="media-body">
+                <h4 class="media-heading"><a href="{% url 'product' product.product.slug %}"><strong>{{product.product.name|title}}</strong></a></h4>
+                Aportado por <a href="{% url 'user_profile' product.product.farm.user %}"><strong>{{product.product.farm.user.get_full_name}}</strong></a>
+                <br><small>Granja <strong><a href="{% url 'farm' product.product.farm.slug %}">{{product.product.farm.name|title}}</a></strong></small>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="alert alert-success" role="alert">Lo sentimos no hay productos!</div>
+          {% endif %}
+        </div>
+        {% if admin == True %}
+        <div role="tabpanel" class="tab-pane" id="invitations">
+          {% if inivitations %}
+            <form method="post">{% csrf_token %}
+              {% for invitation in inivitations %}
+                {% url 'user_profile' invitation.user as url_user %}
+                <div class="media">
+                  <div class="media-left">
+                    <a href="{{url_user}}">
+                      <img class="media-object img-circle img-avatar" src="{{MEDIA_URL}}{{invitation.user.avatar}}">
+                    </a>
+                  </div>
+                  <div class="media-body">
+                    <a href="{{url_user}}"><h4 class="media-heading">{{invitation.user_name|title}}</h4></a>
+                    <p><strong>Comentario: </strong>{{invitation.comment}}
+                      <br><small>Pidió unirse hace {{invitation.date|timesince}}</small>
+                    </p>
+
+                  </div>
+                  <button type="submit" name="accept_invitation:{{invitation.id}}" class="btn btn-success btn-xs" name="button"><i class="fa fa-check"></i> Aceptar</button>
+                  <button type="submit"  name="reject_invitation:{{invitation.id}}" class="btn btn-danger btn-xs" name="button"><i class="fa fa-times"></i> Rechazar</button>
+                </div>
+              {% endfor %}
+            </form>
+          {% else %}
+            <div class="alert alert-success" role="alert">Lo sentimos no hay solicitudes pendientes!</div>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  <hr></div>
+  <div class="page-header">
+    <h1 class="title-main">Estados</h1>
+  </div>
+  <div class="col-md-12">
+    {% if status %}
+      {% for state in status %}
+          <form name="delete_form" method="post">{% csrf_token %}
+            {% include "./card_state.html" with state=state profile_name=full_name profile=user_profile %}
+          </form>
+      {% endfor %}
+      {% include "./pagination_state.html" %}
+    {% else %}
+      <div class="alert alert-success" role="alert">No hay publicaciones!</div>
+    {% endif %}
+
+    {% include "./card_comments.html" with comments_form=comments_form %}
+  </div>
+</div>
+<!--Modal Lave Group-->
+<form method="post">{% csrf_token %}
+  <div class="modal fade" id="leaveGroup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Abandonar Asociación</h4>
+        </div>
+        <div class="modal-body">
+          ¿Estás seguro que quieres dejar el grupo?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" name="leaveGroup" class="btn btn-success">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+{% endblock container %}
+
+{% block extra_js %}
+  <script type="text/javascript" src="{{STATIC_URL}}js/parallax.js"></script>
+  <script type="text/javascript" src="{{STATIC_URL}}js/jasny-bootstrap.min.js"></script>
+  <script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+  <script type="text/javascript">
+    $( document ).ready(function() {
+      $("#"+"{{group.group.slug}}").addClass("active");
+      $("#state_form").validate({
+        messages: {
+				  text: "Escribe un comentario",
+        }
+      });
+
+      $("#comments_form").validate({
+        messages: {
+				  text: "Escribe un comentario",
+        }
+      });
+
+      $("#message_form").validate({
+        messages: {
+				  message: "Escribe un mensaje",
+        }
+      });
+
+      $('#id_text[maxlength]').keyup(function(){
+          var limit = parseInt($(this).attr('maxlength'));
+          var text = $(this).val();
+          var chars = text.length;
+          $('#text_length').html(limit-chars);
+      });
+  		$(".comments").click(function(event) {
+  				$("#id_state").val(event.target.id);
+  		});
+
+  		$(".comments").click(function(event) {
+  					var url_comments = ("{% url 'api_group_comments' 999%}").replace("999",$(this).attr('id'));
+  					$.getJSON(url_comments,function(data){
+  						if(data.length>0){
+  							$("#comments-list").empty();
+  							$.each(data,function(key,val){
+  								if(val.picture!=null){
+  									var image ='<img src="'+val.picture+'" class="img-rounded img-responsive img-state" />';
+  								}
+  								else{
+  									var image="";
+  								}
+  								var url_user = ("{% url 'user_profile' 999 %}").replace("999",val.user['username']);
+  								$("#comments-list").append('<div class="media">'+
+  									'<div class="media-left"><a href="'+url_user+'"><img class="media-object img-circle img-avatar" src="'+val.user['avatar']+'">'+
+  									'</a></div><div class="media-body"><a href="'+url_user+'"><h4 class="media-heading">'+val.user['full_name']+'</h4></a>'+val.text+
+  									'</div><br><small>Hace '+val.date_post+'</small></div><hr>'+image
+  									);
+  							});
+  						}else {
+  							$("#comments-list").html('<div class="alert alert-success" role="alert">Se el primero en hacer un comentario!</div>');
+  						}
+  					});
+  		});
+    });
+  </script>
+{% endblock extra_js %}

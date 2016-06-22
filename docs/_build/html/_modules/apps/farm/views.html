@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>apps.farm.views &mdash; AgroCeres 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="AgroCeres 1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> AgroCeres
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/account.html">Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/store.html">Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/blog.html">Blog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/comment.html">Comment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/extras.html">Extras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/farm.html">Farm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/groups.html">Groups</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/messages.html">Messages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/product.html">Product</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/search.html">Search</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">AgroCeres</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>apps.farm.views</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for apps.farm.views</h1><div class="highlight"><pre>
+<span class="c">#-*- encoding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span><span class="p">,</span><span class="n">redirect</span><span class="p">,</span> <span class="n">get_object_or_404</span>
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">messages</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.decorators</span> <span class="kn">import</span> <span class="n">login_required</span>
+<span class="kn">from</span> <span class="nn">django.core.paginator</span> <span class="kn">import</span> <span class="n">Paginator</span><span class="p">,</span> <span class="n">EmptyPage</span><span class="p">,</span> <span class="n">PageNotAnInteger</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span><span class="p">,</span> <span class="n">HttpResponseRedirect</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="kn">import</span> <span class="n">TemplateView</span><span class="p">,</span> <span class="n">UpdateView</span><span class="p">,</span> <span class="n">CreateView</span>
+<span class="kn">from</span> <span class="nn">django.core.urlresolvers</span> <span class="kn">import</span> <span class="n">reverse_lazy</span>
+<span class="kn">from</span> <span class="nn">django.template.response</span> <span class="kn">import</span> <span class="n">TemplateResponse</span>
+<span class="kn">from</span> <span class="nn">apps.account.models</span> <span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">LoggedInMixin</span><span class="p">,</span> <span class="n">Profile</span><span class="p">,</span> <span class="n">getStateUser</span><span class="p">,</span> <span class="n">StateUser</span><span class="p">,</span> <span class="n">StateUserComment</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">apps.ceres.processors</span> <span class="kn">import</span> <span class="n">haveFarm</span><span class="p">,</span> <span class="n">getFarmUser</span>
+<span class="kn">from</span> <span class="nn">apps.account.forms</span> <span class="kn">import</span> <span class="n">StateUserForm</span><span class="p">,</span> <span class="n">StateUserCommentForm</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">apps.ceres.processors</span> <span class="kn">import</span> <span class="n">getUserFullName</span>
+<span class="kn">from</span> <span class="nn">django.core.files</span> <span class="kn">import</span> <span class="n">File</span>
+<span class="kn">from</span> <span class="nn">django.core.files.temp</span> <span class="kn">import</span> <span class="n">NamedTemporaryFile</span>
+<span class="kn">from</span> <span class="nn">django.core.files.storage</span> <span class="kn">import</span> <span class="n">default_storage</span>
+<span class="kn">from</span> <span class="nn">django.core.files.base</span> <span class="kn">import</span> <span class="n">ContentFile</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.core</span> <span class="kn">import</span> <span class="n">serializers</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">Http404</span>
+<span class="kn">from</span> <span class="nn">django.core.paginator</span> <span class="kn">import</span> <span class="n">Paginator</span><span class="p">,</span> <span class="n">EmptyPage</span><span class="p">,</span> <span class="n">PageNotAnInteger</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<div class="viewcode-block" id="MyFarm"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.MyFarm">[docs]</a><span class="k">class</span> <span class="nc">MyFarm</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This view shows the status and can publish status&#39;&#39;&#39;</span>
+    <span class="n">template_name</span><span class="o">=</span><span class="s">&#39;farm/home.html&#39;</span>
+
+    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    	<span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyFarm</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    	<span class="n">context</span><span class="p">[</span><span class="s">&#39;farmer_profile&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Profile</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s">&#39;state_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">StateUserForm</span><span class="p">()</span>
+        <span class="n">context</span><span class="p">[</span><span class="s">&#39;comments_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">StateUserCommentForm</span><span class="p">()</span>
+        <span class="n">context</span><span class="p">[</span><span class="s">&#39;admin&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">True</span>
+        <span class="n">paginator</span> <span class="o">=</span> <span class="n">Paginator</span><span class="p">(</span><span class="n">getStateUser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">),</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;page&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+            <span class="n">page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;page&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">PageNotAnInteger</span><span class="p">:</span>
+                <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">EmptyPage</span><span class="p">:</span>
+                <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">paginator</span><span class="o">.</span><span class="n">num_pages</span><span class="p">)</span>
+    	<span class="k">return</span> <span class="n">context</span>
+
+<div class="viewcode-block" id="MyFarm.post"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.MyFarm.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function allows create, delete and comment status&#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;btn_delete:&#39;</span><span class="p">):</span>
+                <span class="n">delete</span> <span class="o">=</span>  <span class="n">key</span><span class="p">[</span><span class="mi">11</span><span class="p">:]</span>
+                <span class="n">state</span><span class="o">=</span><span class="n">StateUser</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">delete</span><span class="p">)</span>
+                <span class="n">state</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Publicación borrada!&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;btn_state&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;text&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s">&#39;picture&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">StateUser</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span><span class="n">picture</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;picture&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">StateUser</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Publicación exitosa!&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;btn_comments&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;text&#39;</span><span class="p">]</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s">&#39;picture&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">StateUserComment</span><span class="p">(</span><span class="n">state_id</span><span class="o">=</span><span class="n">state</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span><span class="n">picture</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;picture&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">StateUserComment</span><span class="p">(</span><span class="n">state_id</span><span class="o">=</span><span class="n">state</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Publicación exitosa!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;mi_agro&#39;</span><span class="p">)</span>
+</div></div>
+<span class="nd">@login_required</span>
+<div class="viewcode-block" id="farmSuccess"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.farmSuccess">[docs]</a><span class="k">def</span> <span class="nf">farmSuccess</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function shows if the farm was created&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">haveFarm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span><span class="o">==</span><span class="bp">True</span><span class="p">:</span>
+		<span class="n">template_name</span><span class="o">=</span><span class="s">&#39;farm/farm_success.html&#39;</span>
+		<span class="k">return</span> <span class="n">TemplateResponse</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">template_name</span><span class="p">,{})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;register_farm&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="RegisterFarm"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.RegisterFarm">[docs]</a><span class="k">class</span> <span class="nc">RegisterFarm</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">CreateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This view allows register a farm&#39;&#39;&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span><span class="s">&#39;farm/register_farm.html&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Farm</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FarmForm</span>
+    <span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;farm_success&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RegisterFarm.dispatch"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.RegisterFarm.dispatch">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function checks if the user have a farm&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">haveFarm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;mi_agro&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">RegisterFarm</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="RegisterFarm.form_valid"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.RegisterFarm.form_valid">[docs]</a>    <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">form</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function checks if the form is valid before save it&#39;&#39;&#39;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;address&#39;</span><span class="p">]</span>
+        <span class="n">phone</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;phone&#39;</span><span class="p">]</span>
+        <span class="n">Farm</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="n">address</span><span class="p">,</span> <span class="n">phone</span><span class="o">=</span><span class="n">phone</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;farm_success&#39;</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="MyFarmUpdateView"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.MyFarmUpdateView">[docs]</a><span class="k">class</span> <span class="nc">MyFarmUpdateView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This view allows update the farm information&#39;&#39;&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;farm/my_farm.html&#39;</span>
+
+<div class="viewcode-block" id="MyFarmUpdateView.get_context_data"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.MyFarmUpdateView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function returns the farm if the user have one&#39;&#39;&#39;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyFarmUpdateView</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">farm</span> <span class="o">=</span> <span class="n">Farm</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="n">FarmProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s">&#39;form_farm&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">FarmForm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span> <span class="ow">or</span> <span class="bp">None</span><span class="p">,</span><span class="n">instance</span><span class="o">=</span><span class="n">farm</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s">&#39;form_profile&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">FarmProfileForm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span> <span class="ow">or</span> <span class="bp">None</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">profile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">context</span>
+</div>
+<div class="viewcode-block" id="MyFarmUpdateView.post"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.MyFarmUpdateView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function save the information&#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">context</span><span class="p">[</span><span class="s">&quot;form_farm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">is_valid</span><span class="p">()</span> <span class="ow">and</span> <span class="n">context</span><span class="p">[</span><span class="s">&quot;form_profile&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+                <span class="n">context</span><span class="p">[</span><span class="s">&quot;form_farm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">context</span><span class="p">[</span><span class="s">&quot;form_profile&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;La información de tu granja se ha actualizado!&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Por favor revisa tu información!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;my_farm&#39;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Tenemos un problema en el servidor!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;my_farm&#39;</span><span class="p">))</span>
+</div></div>
+<div class="viewcode-block" id="DeactivateFarmView"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.DeactivateFarmView">[docs]</a><span class="k">class</span> <span class="nc">DeactivateFarmView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This view allows deactivate a farm&#39;&#39;&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;farm/deactivate_farm.html&#39;</span>
+    <span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;deactivate_farm&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DeactivateFarmView.post"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.DeactivateFarmView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function deactive the farm&#39;&#39;&#39;</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Tu granja ha sido desactivada!&#39;</span><span class="p">)</span>
+        <span class="n">farm</span><span class="o">=</span><span class="n">getFarmUser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">farm</span><span class="o">.</span><span class="n">is_active</span><span class="o">=</span><span class="bp">False</span>
+        <span class="n">farm</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;activate_farm&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="DeactivateFarmView.dispatch"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.DeactivateFarmView.dispatch">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function checks if the user have a farm&#39;&#39;&#39;</span>
+        <span class="n">_haveFarm</span><span class="o">=</span><span class="n">haveFarm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_haveFarm</span><span class="p">:</span>
+            <span class="n">farm</span><span class="o">=</span><span class="n">getFarmUser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">farm</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">DeactivateFarmView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;activate&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">RegisterFarm</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="ActivateFarmView"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.ActivateFarmView">[docs]</a><span class="k">class</span> <span class="nc">ActivateFarmView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This view active a farm&#39;&#39;&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;farm/activate_farm.html&#39;</span>
+    <span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;activate_farm&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ActivateFarmView.post"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.ActivateFarmView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function active the farm&#39;&#39;&#39;</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Tu granja ha sido activada!&#39;</span><span class="p">)</span>
+        <span class="n">farm</span><span class="o">=</span><span class="n">getFarmUser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">farm</span><span class="o">.</span><span class="n">is_active</span><span class="o">=</span><span class="bp">True</span>
+        <span class="n">farm</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;activate_farm&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ActivateFarmView.dispatch"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.ActivateFarmView.dispatch">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This fucntion checks if the user hava a farm&#39;&#39;&#39;</span>
+        <span class="n">_haveFarm</span><span class="o">=</span><span class="n">haveFarm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_haveFarm</span><span class="p">:</span>
+            <span class="n">farm</span><span class="o">=</span><span class="n">getFarmUser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">farm</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ActivateFarmView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;deactivate_farm&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">RegisterFarm</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="changePictureProfile"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.changePictureProfile">[docs]</a><span class="k">def</span> <span class="nf">changePictureProfile</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function allows change the logo&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_ajax</span><span class="p">():</span>
+        <span class="n">farm</span><span class="o">=</span><span class="n">Farm</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">farm</span><span class="o">.</span><span class="n">logo</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;file_upload&#39;</span><span class="p">]</span>
+        <span class="n">farm</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">farm</span><span class="o">.</span><span class="n">logo</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&quot;text/plain&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Http404</span>
+</div>
+<div class="viewcode-block" id="changePictureBanner"><a class="viewcode-back" href="../../../modules/farm.html#apps.farm.views.changePictureBanner">[docs]</a><span class="k">def</span> <span class="nf">changePictureBanner</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function changes the banner picture&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_ajax</span><span class="p">():</span>
+        <span class="n">farm</span><span class="o">=</span><span class="n">FarmProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">farm__user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">farm</span><span class="o">.</span><span class="n">banner</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;file_upload&#39;</span><span class="p">]</span>
+        <span class="n">farm</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">farm</span><span class="o">.</span><span class="n">banner</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&quot;text/plain&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Http404</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, AgroCeres.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

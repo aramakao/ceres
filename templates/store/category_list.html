@@ -1,0 +1,33 @@
+{% extends "./base.html" %}
+{% block title %}Categorías{% endblock title %}
+{% block active_categories %}active{% endblock %}
+
+{% block banner %}
+  {% include './banner_app.html' with image="banners/categorias_productos.jpg" title="Productos" subtitle="Categorías" %}
+{% endblock banner %}
+
+{% block second_menu %}
+    {% include "./menu_product_category.html" %}
+{% endblock %}
+
+{% block seo %}
+  {% include "./seo.html" with m_keywords="AgroCeres,Campo,agricultura,Nariño,Productos" m_description="Todos los productos organizados en categorías para mayor una búsqueda más fácil." m_title="Categorías | AgroCeres" m_image="/media/banners/categorias_productos.jpg"%}
+{% endblock seo %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li class="active">Categorías <span class="badge"> {{ categories.count }}  resultados</span></li>
+  </ol>
+</div>
+
+{% for category in categories %}
+	{% url 'category' category.slug as url_category %}
+  {% include "./card_category.html" with category=category url_category=url_category count=category.count%}
+{% endfor %}
+{% endblock container %}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/parallax.js"></script>
+{% endblock extra_js %}

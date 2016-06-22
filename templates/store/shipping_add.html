@@ -1,0 +1,88 @@
+{% extends "./base.html" %}
+{% block title %}Opción de Envío{% endblock title %}
+{% block subtitle %}Opción de Envío{% endblock subtitle %}
+
+{% block messages%}
+	{% include './messages.html'%}
+{% endblock messages%}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_shipping_options="active" farm_in="in" %}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li><a href="{% url 'shipping_options' %}">Opciones de Envío</a></li>
+    <li class="active">Nueva Opción</li>
+  </ol>
+	<div class="page-header">
+		<h1 class="title-main">Opciones de Envío</h1>
+	</div>
+	<div class="col-md-12">
+		<form method="post" id="form" enctype="multipart/form-data">{% csrf_token %}
+	    <div class="form-group">
+	      <label for="id_name">Nombre</label>
+	      {{ form.name }}
+	    </div>
+	    <div class="form-group">
+	      <label for="id_summary">Descripción</label>
+	      {{ form.detail }}
+	    </div>
+	    <div class="form-group">
+	      <label class="active" for="id_price">Precio</label>
+				<i class="helpers fa fa-question-circle" data-trigger="hover" data-toggle="popover" title="Ayuda" data-content="Esta opción de envío tendra un precio fijo"></i>
+	      <div class="input-group">
+	        <div class="input-group-addon">$</div>
+	        {{ form.price }}
+	        <div class="input-group-addon">.00</div>
+	      </div>
+	    </div>
+	    <div class="form-group">
+	      <label class="active" for="id_price">Porcentaje</label>
+				<i class="helpers fa fa-question-circle" data-trigger="hover" data-toggle="popover" title="Ayuda" data-content="Esta opción de envío cobrará un porcentaje del valor total del pedido"></i>
+	      <div class="input-group">
+	        <div class="input-group-addon">%</div>
+	        {{ form.porcentage }}
+	        <div class="input-group-addon">.00</div>
+	      </div>
+	    </div>
+			<button type="submit" class="btn btn-success btn-lg btn-block">Agregar</button>
+	  </form>
+	</div>
+ </div>
+{% endblock container %}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover();
+
+		$("#form").validate({
+			rules: {
+				price: {
+					number: true
+				},
+				porcentage: {
+					number: true
+				}
+			},
+			messages: {
+				name: "Este campo es requerido",
+				detail: "Este campo es requerido",
+				price:{
+					required:"Este campo es requerido",
+					number: "Por favor ingrese sólo números"
+				},
+				porcentage:{
+					required:"Este campo es requerido",
+					number: "Por favor ingrese sólo números"
+				}
+			}
+		});
+});
+</script>
+{% endblock extra_js %}

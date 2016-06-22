@@ -1,0 +1,46 @@
+<h2>Preguntas al vendedor</h2>
+{% if user.is_authenticated %}
+<form method="POST"> {% csrf_token %}
+  {{ask_form.ask}}
+  <button type="submit" class="btn btn-success btn-block btn-comment"><i class="fa fa-question-circle"></i> Preguntar</button>
+</form>
+{% else%}
+<div class="alert alert-warning" role="alert">
+  Para hacer un comentario tienes que <a href="{% url 'login' %}" class="alert-link">iniciar sesión.</a>
+</div>
+{% endif%}
+<br>
+{% if comments %}
+  {% for comment in comments %}
+    <div class="media">
+      <div class="media-left">
+      <a href="{% url 'user_profile' comment.buyer.username %}">
+        <img class="media-object img-circle img-avatar" src="{{MEDIA_URL}}{{comment.buyer.avatar}}">
+      </a>
+    </div>
+    <div class="media-body">
+      <a href="{% url 'user_profile' comment.buyer.username %}"><h4 class="media-heading">{{comment.buyer.fullName}}</h4></a>
+      {{comment.ask}}
+      <p><small>Hace {{comment.date_post_ask|timesince}}</small></p>
+      {%if comment.reply%}
+      <div class="media">
+        <div class="media-left">
+          <a href="{% url 'user_profile' comment.buyer.username %}">
+            <img class="media-object img-avatar img-circle" src="{{MEDIA_URL}}{{comment.seller.avatar}}">
+          </a>
+        </div>
+        <div class="media-body"><a href="{% url 'user_profile' comment.buyer.username %}"><h4 class="media-heading" >{{comment.seller.fullName}}</h4></a>
+          {{comment.reply}}
+          <p><small>Hace {{comment.date_post_reply|timesince}}</small></p>
+        </div>
+      </div>
+      {% else %}
+        <div class="alert alert-success">Pregunta sin responder.</div>
+      {%endif%}
+    </div>
+  </div>
+  <hr>
+  {% endfor %}
+{% else %}
+<div class="alert alert-success">No se han realizado preguntas.</div>
+{% endif %}

@@ -1,0 +1,50 @@
+{% extends "./base_template.html" %}
+{% block title %}Respuesta{% endblock title %}
+{% block subtitle %}Respuesta{% endblock subtitle %}
+{% block img_banner %}{{MEDIA_URL}}{{user_profile.banner}}{% endblock img_banner%}
+{% block img_avatar %}{{MEDIA_URL}}{{user_profile.user.avatar}}{% endblock img_avatar%}
+{% block name_profile %}{{full_name}}{% endblock name_profile %}
+{% block slogan %}{{user_profile.occupation}}{% endblock slogan %}
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/bootstrap-wysihtml5.css">
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/wysiwyg-color.css">
+{% endblock extra_css %}
+{% block breadcrumbs %}
+	<ol class="breadcrumb">
+	  <li><a href="{% url 'home' %}">Inicio</a></li>
+	  <li><a href="{% url 'comments' %}">Preguntas</a></li>
+	  <li class="active">Respuesta</li>
+	</ol>
+{% endblock breadcrumbs %}
+{% block content %}
+<div class="media">
+  <div class="media-left">
+    <a href="">
+      <img src="{{MEDIA_URL}}{{comment.buyer.avatar}}" class="img-circle product-image"> <a href="">
+    </a>
+  </div>
+  <div class="media-body">
+    <h4 class="media-heading"><a href=""><strong>{{comment.buyer}}</strong></a></h4>
+    {{comment.ask|truncatewords:5 }}
+    <br>Producto: <strong><a href="{% url 'product' comment.product.slug %}">{{comment.product}}</a></strong>
+    <br><small>Fecha: <strong>{{comment.date_post}}</strong></small>
+  </div>
+</div><br>
+<form method="post">{% csrf_token %}
+	<div class="col-md-12">
+	  <div class="form-group">
+	    <label for="id_reply">Respuesta</label>
+	      {{form.reply}}
+	  </div>
+	  <button class="btn btn-success" type="submit">Responder</button>
+	</div>
+</form>
+
+{% endblock content %}
+{% block extra_js %}
+<script type="text/javascript">
+	$(function () {
+	  $('[data-toggle="tooltip"]').tooltip()
+	});
+</script>
+{% endblock extra_js %}

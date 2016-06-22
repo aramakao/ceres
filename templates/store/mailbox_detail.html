@@ -1,0 +1,53 @@
+{% extends "./base.html" %}
+{% block title %}Sugerencia{% endblock title %}
+
+{% block main-menu %}
+ 	{% include "./menu_myfarm.html" with active_mailbox="active" admin_in="in"%}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li><a href="{% url 'mailbox' %}">Buzón de Sugerencias</a></li>
+    <li class="active">Sugerencia</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Sugerencia</h1>
+  </div>
+  <div class="col-md-12">
+    <p><strong>Fecha: </strong>{{suggesting.date}}</p>
+    <p><strong>Usuario: </strong>{{suggesting.user}}</p>
+    <p><strong>Teléfono: </strong>{{suggesting.phone}}</p>
+    <p><strong>Email: </strong>{{suggesting.email}}</p>
+    <p><strong>Mensaje: </strong><br>{{suggesting.message}}</p>
+    {% if not suggesting.reply %}
+    <hr>
+    <form method="POST" id="form">{% csrf_token %}
+      <textarea name="reply" id="reply" class="form-control box-comment" placeholder="Escribe una respuesta..." required="True" rows="4"></textarea>
+      <button type="submit" id="btn_comment_bx" class="btn btn-success btn-block btn-comment"><i class="fa fa-comment"></i> Responder</button>
+    </form>
+    {% else %}
+    <p><strong>Respuesta: </strong><br>{{suggesting.reply}}</p>
+    {% endif%}
+  </div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+  <script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function(){
+    $("#form").validate({
+			messages: {
+				reply: "Este campo es requerido",
+			}
+		});
+  });
+  </script>
+{% endblock extra_js %}

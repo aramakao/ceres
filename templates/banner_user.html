@@ -1,0 +1,27 @@
+<div class="banner-main">
+  <section class="bg-1 text-center"  style="background: url('{{MEDIA_URL}}{{profile.banner}}') no-repeat fixed center 8px / cover  transparent;">
+      <img id="image" class="img-profile img-circle responsive-img" src={{MEDIA_URL}}{{profile.user.avatar}}>
+      <div class="banner">
+        <div class="banner-content no_margin">
+          <h3 class="name_profile no_margin">{{ name|title }}</h3>
+          <label class="profession_profile no_margin">{{ user_profile.get_occupation }}</label>
+          <p class="no_margin">
+          {% if user_profile.facebook %}
+            <a href="http://fb.me/{{profile.facebook}}" target="_blank"><i class="fa fa-facebook icon_profile"></i></a>
+          {%endif%}
+          {%if user_profile.twitter%}
+            <a href="http://twitter.com/{{profile.twitter}}" target="_blank"><i class="fa fa-twitter icon_profile"></i></a>
+          {%endif%}
+          </p>
+          <p class="no_margin"><i class="fa fa-envelope"></i> {{ user_profile.user.email }}
+            {% if user_profile.mobile %}
+             | <i class="fa fa-phone"></i> {{ user_profile.mobile }}
+            {% endif %}
+            {% if user_profile.address %}
+             | <i class="fa fa-map-marker"></i> {{ user_profile.address }}
+            {% endif %}
+          </p>
+        </div>
+      </div>
+  </section>
+</div>

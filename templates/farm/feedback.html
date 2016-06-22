@@ -1,0 +1,88 @@
+{% extends "./base.html" %}
+{% block title %}Opiniones{% endblock title %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_feedback="active" farm_in="in" %}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block extra_css %}
+  <link type="text/css" href="{{STATIC_URL}}css/star-rating.min.css"  rel="stylesheet"/>
+{% endblock extra_css %}
+
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+		<li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+		<li class="active">Opiniones <span class="badge"> {{ paginator.count }}  resultados</span></li>
+	</ol>
+	<div class="page-header">
+		<h1 class="title-main">Opiniones</h1>
+	</div>
+  <div class="col-md-12">
+		<div class="col-md-6">
+			<small><strong>Comunicación: </strong><input type="number" class="feedback" value="{{feedback.communication|stringformat:"f"}}"></small>
+	    <small><strong>Rapidez: </strong><input type="number" class="feedback" value="{{feedback.quickness|stringformat:"f"}}"></small>
+	    <small><strong>Responsabilidad: </strong><input type="number" class="feedback" value="{{feedback.responsibility|stringformat:"f"}}"></small>
+		</div>
+		<div class="col-md-6">
+	    <strong>Calificación:</strong><h1 class="calification">{{feedback.total|floatformat}}</h1>
+	  </div>
+  </div>
+	<div class="col-md-12">
+		{% if feedback_farm %}<hr>
+		  {% for fb in feedback_farm %}
+		    <div class="pin-content">
+		      <a href="{% url 'user_profile' fb.order.buyer.username%}"><h4><strong>{{fb.full_name}}</strong></h4></a>
+		      <h5><strong>Orden de Compra <a href="{% url 'order_seller' fb.order.id%}">N° {{fb.order.id|stringformat:"06d"}}</a></strong></h5>
+		      <small><strong>Comunicación: </strong><input type="number" class="feedback" value="{{fb.communication|stringformat:"f"}}"></small>
+		      <small><strong>Rapidez: </strong><input type="number" class="feedback" value="{{fb.quickness|stringformat:"f"}}"></small>
+		      <small><strong>Responsabilidad: </strong><input type="number" class="feedback" value="{{fb.responsibility|stringformat:"f"}}"></small>
+		      <h5><strong>Observaciones: </strong>{{fb.observations}}</h5><hr>
+					{% if fb.reply_form %}
+						<h5><strong>Respuesta:</strong></h5>
+						<form method="post" id="form">{% csrf_token %}
+							{{fb.reply_form.reply}}
+							<br><button type="submit" class="btn btn-success" name="btnReply{{fb.id}}">Responder</button>
+						</form>
+					{% else %}
+					<h5><strong>Respuesta: </strong>{{fb.reply}}</h5>
+					{% endif %}<br>
+		      <small>Calificación realizada el {{fb.date}}</small>
+		    </div><br>
+		  {% endfor %}
+		{% else %}
+		  <div class="alert alert-success" role="alert">Aún no hay opiniones registradas!</div>
+		{% endif %}
+		{% include "./pagination.html"%}
+	</div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/star-rating.min.js" type="text/javascript"></script>
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+    $(".feedback").rating({'showCaption':true,showClear:false, disabled:true, 'stars':'5', 'min':'0', 'max':'5', 'step':'1', 'size':'xs',
+    starCaptions: function(val) {
+      if (val == 1) {
+        return val+' Estrella';
+      } else {
+        return val+' Estrellas';
+      }
+    }
+    });
+
+    $("#form").validate({
+			messages: {
+				reply: "Este campor es requerido",
+			}
+		});
+	});
+</script>
+{% endblock extra_js %}

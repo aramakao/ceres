@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>apps.blog.views &mdash; AgroCeres 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="AgroCeres 1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> AgroCeres
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/account.html">Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/store.html">Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/blog.html">Blog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/comment.html">Comment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/extras.html">Extras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/farm.html">Farm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/groups.html">Groups</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/messages.html">Messages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/product.html">Product</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/search.html">Search</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">AgroCeres</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>apps.blog.views</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for apps.blog.views</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">get_object_or_404</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="kn">import</span> <span class="n">DetailView</span><span class="p">,</span> <span class="n">ListView</span><span class="p">,</span> <span class="n">CreateView</span><span class="p">,</span> <span class="n">UpdateView</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">apps.account.models</span> <span class="kn">import</span> <span class="n">LoggedInMixin</span>
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">messages</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponseRedirect</span>
+<span class="kn">from</span> <span class="nn">django.core.urlresolvers</span> <span class="kn">import</span> <span class="n">reverse</span><span class="p">,</span> <span class="n">reverse_lazy</span>
+
+<div class="viewcode-block" id="EntryView"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.views.EntryView">[docs]</a><span class="k">class</span> <span class="nc">EntryView</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class allows view an entry&#39;&#39;&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Blog</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;blog/entry.html&#39;</span>
+</div>
+<div class="viewcode-block" id="EntryList"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.views.EntryList">[docs]</a><span class="k">class</span> <span class="nc">EntryList</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class list the entries&#39;&#39;&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Blog</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;blog/index.html&#39;</span>
+    <span class="n">paginate_by</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s">&#39;entries&#39;</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Blog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;-posted&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BlogList"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.views.BlogList">[docs]</a><span class="k">class</span> <span class="nc">BlogList</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class list the entries for the administrator&#39;&#39;&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Blog</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;blog/blog_list.httml&#39;</span>
+    <span class="n">paginate_by</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s">&#39;entries&#39;</span>
+
+<div class="viewcode-block" id="BlogList.get_queryset"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.views.BlogList.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function verified if the user is administrator&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Blog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;-posted&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Http404</span>
+</div>
+<div class="viewcode-block" id="BlogList.post"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.views.BlogList.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function allows delete an entry&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="s">&#39;delete&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="n">blog_id</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;delete&#39;</span><span class="p">][</span><span class="mi">7</span><span class="p">:]</span>
+            <span class="n">Blog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">blog_id</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span><span class="s">&quot;Entrada borrada!&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;blog&#39;</span><span class="p">))</span>
+</div></div>
+<div class="viewcode-block" id="BlogAddView"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.views.BlogAddView">[docs]</a><span class="k">class</span> <span class="nc">BlogAddView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">CreateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class allows create an entry&#39;&#39;&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Blog</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;blog/blog_add.html&#39;</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">BlogForm</span>
+    <span class="n">success_url</span><span class="o">=</span><span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;blog&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form_class</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">form_class</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_form_kwargs</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Http404</span>
+
+<div class="viewcode-block" id="BlogAddView.form_valid"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.views.BlogAddView.form_valid">[docs]</a>    <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">form</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function checks if the form is valid&#39;&#39;&#39;</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Entrada agregada exitosamente!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">BlogAddView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="BlogView"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.views.BlogView">[docs]</a><span class="k">class</span> <span class="nc">BlogView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">DetailView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class allows view an entry&#39;&#39;&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Blog</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="s">&#39;entry&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;blog/entry_view.html&#39;</span>
+</div>
+<div class="viewcode-block" id="BlogUpdateView"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.views.BlogUpdateView">[docs]</a><span class="k">class</span> <span class="nc">BlogUpdateView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">UpdateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class allows update an entry&#39;&#39;&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Blog</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;blog/blog_update.html&#39;</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">BlogForm</span>
+    <span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;blog&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">form_class</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">form_class</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_form_kwargs</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Http404</span>
+
+    <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">form</span><span class="p">):</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Entrada actualizada exitosamente!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">BlogUpdateView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CategoryList"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.views.CategoryList">[docs]</a><span class="k">class</span> <span class="nc">CategoryList</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class list all categories&#39;&#39;&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Category</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;blog/categories.html&#39;</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s">&#39;categories&#39;</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">Category</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CategoryBlogView"><a class="viewcode-back" href="../../../modules/blog.html#apps.blog.views.CategoryBlogView">[docs]</a><span class="k">class</span> <span class="nc">CategoryBlogView</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class returns an entries list filter by categories&#39;&#39;&#39;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Blog</span>
+    <span class="n">template_name</span><span class="o">=</span><span class="s">&#39;blog/category.html&#39;</span>
+    <span class="n">paginate_by</span><span class="o">=</span><span class="mi">10</span>
+    <span class="n">context_object_name</span><span class="o">=</span> <span class="s">&#39;entries&#39;</span>
+
+    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">object_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">category__slug</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">object_list</span>
+
+    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">category</span><span class="o">=</span><span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Category</span><span class="p">,</span><span class="n">slug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">])</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">CategoryBlogView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s">&#39;category&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">category</span>
+        <span class="k">return</span> <span class="n">context</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, AgroCeres.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

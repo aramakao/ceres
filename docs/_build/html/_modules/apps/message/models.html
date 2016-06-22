@@ -1,0 +1,308 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>apps.message.models &mdash; AgroCeres 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="AgroCeres 1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> AgroCeres
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/account.html">Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/store.html">Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/blog.html">Blog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/comment.html">Comment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/extras.html">Extras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/farm.html">Farm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/groups.html">Groups</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/messages.html">Messages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/product.html">Product</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/search.html">Search</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">AgroCeres</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>apps.message.models</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for apps.message.models</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+<span class="kn">from</span> <span class="nn">django.utils.timesince</span> <span class="kn">import</span> <span class="n">timesince</span>
+<span class="kn">from</span> <span class="nn">apps.account.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">apps.groups.models</span> <span class="kn">import</span> <span class="n">Group</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Q</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<div class="viewcode-block" id="MessageManager"><a class="viewcode-back" href="../../../modules/messages.html#apps.message.models.MessageManager">[docs]</a><span class="k">class</span> <span class="nc">MessageManager</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Manager</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This manager allows extends the message model&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="MessageManager.getConversations"><a class="viewcode-back" href="../../../modules/messages.html#apps.message.models.MessageManager.getConversations">[docs]</a>    <span class="k">def</span> <span class="nf">getConversations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">user</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function group all messages by sender and receiver&#39;&#39;&#39;</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Q</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="n">user</span><span class="p">)</span><span class="o">|</span><span class="n">Q</span><span class="p">(</span><span class="n">receiver</span><span class="o">=</span><span class="n">user</span><span class="p">))</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;-date&#39;</span><span class="p">)</span>
+        <span class="n">conversations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="s">&#39;timesince&#39;</span><span class="p">,</span><span class="n">timesince</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">date</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">sender</span> <span class="o">==</span> <span class="n">user</span><span class="p">:</span>
+                <span class="n">receiver</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">sender</span>
+                <span class="n">message</span><span class="o">.</span><span class="n">sender</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">receiver</span>
+                <span class="n">message</span><span class="o">.</span><span class="n">receiver</span> <span class="o">=</span> <span class="n">receiver</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="s">&#39;icon&#39;</span><span class="p">,</span><span class="s">&#39;fa fa-reply&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="s">&#39;icon&#39;</span><span class="p">,</span><span class="s">&#39;fa fa-inbox&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">sender</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+                <span class="n">conversations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">sender</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">conversations</span>
+</div>
+<div class="viewcode-block" id="MessageManager.getMessages"><a class="viewcode-back" href="../../../modules/messages.html#apps.message.models.MessageManager.getMessages">[docs]</a>    <span class="k">def</span> <span class="nf">getMessages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">user</span><span class="p">,</span><span class="n">sender</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function list the messages from sender and receiver&#39;&#39;&#39;</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Q</span><span class="p">(</span><span class="n">sender</span><span class="o">=</span><span class="n">user</span><span class="p">,</span><span class="n">receiver</span><span class="o">=</span><span class="n">sender</span><span class="p">)</span><span class="o">|</span><span class="n">Q</span><span class="p">(</span><span class="n">receiver</span><span class="o">=</span><span class="n">user</span><span class="p">,</span><span class="n">sender</span><span class="o">=</span><span class="n">sender</span><span class="p">))</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;-date&#39;</span><span class="p">)</span>
+        <span class="n">conversations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="s">&#39;timesince&#39;</span><span class="p">,</span><span class="n">timesince</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">date</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">sender</span> <span class="o">==</span> <span class="n">user</span><span class="p">:</span>
+                <span class="n">receiver</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">sender</span>
+                <span class="n">message</span><span class="o">.</span><span class="n">sender</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">receiver</span>
+                <span class="n">message</span><span class="o">.</span><span class="n">receiver</span> <span class="o">=</span> <span class="n">receiver</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="s">&#39;is_receiver&#39;</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="s">&#39;is_receiver&#39;</span><span class="p">,</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">filename</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="s">&#39;filename&#39;</span><span class="p">,</span><span class="n">Message</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+            <span class="n">conversations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">conversations</span>
+</div>
+<div class="viewcode-block" id="MessageManager.filename"><a class="viewcode-back" href="../../../modules/messages.html#apps.message.models.MessageManager.filename">[docs]</a>    <span class="k">def</span> <span class="nf">filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">message</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function returns the path from a file&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="MessageManager.countUnread"><a class="viewcode-back" href="../../../modules/messages.html#apps.message.models.MessageManager.countUnread">[docs]</a>    <span class="k">def</span> <span class="nf">countUnread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">receiver</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function counts unread messages&#39;&#39;&#39;</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">receiver</span><span class="o">=</span><span class="n">receiver</span><span class="p">,</span><span class="n">is_read</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">count</span>
+</div>
+<div class="viewcode-block" id="MessageManager.updateRead"><a class="viewcode-back" href="../../../modules/messages.html#apps.message.models.MessageManager.updateRead">[docs]</a>    <span class="k">def</span> <span class="nf">updateRead</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">user</span><span class="p">,</span><span class="n">sender</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;this function update the state read from message&#39;&#39;&#39;</span>
+        <span class="n">Message</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">receiver</span><span class="o">=</span><span class="n">user</span><span class="p">,</span><span class="n">sender</span><span class="o">=</span><span class="n">sender</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">is_read</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div></div>
+<div class="viewcode-block" id="Message"><a class="viewcode-back" href="../../../modules/messages.html#apps.message.models.Message">[docs]</a><span class="k">class</span> <span class="nc">Message</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This model allows create messages&#39;&#39;&#39;</span>
+    <span class="n">sender</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">,</span><span class="n">related_name</span><span class="o">=</span><span class="s">&#39;sender_message&#39;</span><span class="p">)</span>
+    <span class="n">receiver</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">,</span><span class="n">related_name</span><span class="o">=</span><span class="s">&#39;receiver_message&#39;</span><span class="p">)</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="nb">file</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FileField</span><span class="p">(</span><span class="n">upload_to</span><span class="o">=</span><span class="s">&#39;messages&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">is_read</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">MessageManager</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">username</span>
+</div>
+<div class="viewcode-block" id="MessageGroupManager"><a class="viewcode-back" href="../../../modules/messages.html#apps.message.models.MessageGroupManager">[docs]</a><span class="k">class</span> <span class="nc">MessageGroupManager</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Manager</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This manager allows extends the message model&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="MessageGroupManager.getMessages"><a class="viewcode-back" href="../../../modules/messages.html#apps.message.models.MessageGroupManager.getMessages">[docs]</a>    <span class="k">def</span> <span class="nf">getMessages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">group</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function lists the messages by group&#39;&#39;&#39;</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="n">MessageGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;-date&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span><span class="s">&#39;full_name&#39;</span><span class="p">,</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">getFullName</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">user</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">messages</span>
+</div></div>
+<div class="viewcode-block" id="MessageGroup"><a class="viewcode-back" href="../../../modules/messages.html#apps.message.models.MessageGroup">[docs]</a><span class="k">class</span> <span class="nc">MessageGroup</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This model allows create messages&#39;&#39;&#39;</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Group</span><span class="p">)</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="nb">file</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FileField</span><span class="p">(</span><span class="n">upload_to</span><span class="o">=</span><span class="s">&#39;messages&#39;</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">MessageGroupManager</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">Group</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">isMemberGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">MessageGroup</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s">&#39;Error&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span>
+
+<div class="viewcode-block" id="MessageGroup.filename"><a class="viewcode-back" href="../../../modules/messages.html#apps.message.models.MessageGroup.filename">[docs]</a>    <span class="k">def</span> <span class="nf">filename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function return the file path&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, AgroCeres.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

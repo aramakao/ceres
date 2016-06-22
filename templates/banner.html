@@ -1,0 +1,17 @@
+<section class="bg-1 text-center"  style="background: url('{{MEDIA_URL}}{{profile.banner}}') no-repeat fixed center 8px / cover  transparent;">
+
+  <img id="image" class="img-profile img-circle responsive-img" src={{MEDIA_URL}}{{profile.logo}}>
+  <div>
+    <h3 class="name_profile">{{ profile.farm.name|title }}</h3>
+    <label class="profession_profile">{{ profile.slogan }}</label>
+    <p>
+    {% if profile.facebook %}
+      <a href="http://fb.me/{{profile.facebook}}" target="_blank"><i class="fa fa-facebook icon_profile"></i></a>
+    {%endif%}
+    {%if profile.twitter%}
+      <a href="http://twitter.com/{{profile.twitter}}" target="_blank"><i class="fa fa-twitter icon_profile"></i></a>
+    {%endif%}
+    </p>
+    <p>{{profile.farm.address}} | Tel: {{profile.farm.phone}}</p>
+  </div>
+</section>

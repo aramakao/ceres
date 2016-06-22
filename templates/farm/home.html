@@ -1,0 +1,114 @@
+{% extends "./base.html" %}
+{% block title %}{{full_name|title}}{% endblock title %}
+
+{% block extra_css %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jasny-bootstrap.min.css">
+{% endblock extra_css %}
+
+{% block main-menu %}
+	{% include "./menu_myfarm.html" with active_agro="active" %}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li class="active">Mi Agro</li>
+  </ol>
+	<div class="page-header">
+		<h1 class="title-main">Mi Agro</h1>
+	</div>
+	<div class="col-md-12">
+		<div class="pin">
+			<div class="title">
+				Actualiza tu estado!
+			</div>
+		  <form enctype="multipart/form-data" method="post" name="state_form" id="state_form">{% csrf_token %}
+	      <div class="content">
+	        <div class="main">
+	          <div class="form-group">
+	            {{state_form.text}}
+							<p>
+								<small id="text_length">{{state_form.text.field.widget.attrs.maxlength}}</small>
+							</p>
+	          </div>
+	        </div>
+	      </div>
+	      <div class="footer">
+	        <div class="fileinput fileinput-new" data-provides="fileinput">
+	          <span class="btn btn-default btn-file"><span class="fileinput-new"><li class="fa fa-camera"></li> Añadir foto</span><span class="fileinput-exists">Cambiar</span>{{state_form.picture}}</span>
+	          <span class="fileinput-filename"></span>
+	          <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+	        </div>
+					<button type="submit" name="btn_state" class="btn btn-success btn-block btn-post"><li class="fa fa-pencil-square-o"></li> Publicar</button>
+	      </div>
+		  </form>
+		</div>
+		<div class="col-md-12">
+			{% for state in status %}
+			  <div class="row">
+					<form name="delete_form" method="post">{% csrf_token %}
+			    	{% include "./card_state.html" with state=state profile_name=full_name profile=user_profile %}
+					</form>
+			  </div>
+			{% endfor %}
+		</div>
+		{% include "./pagination_state.html" %}
+	</div>
+</div>
+{% include "./card_comments.html" with comments_form=comments_form %}
+{% endblock container %}
+
+{% block extra_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jasny-bootstrap.min.js"></script>
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+  $( document ).ready(function() {
+    $('#id_text[maxlength]').keyup(function(){
+        var limit = parseInt($(this).attr('maxlength'));
+        var text = $(this).val();
+        var chars = text.length;
+        $('#text_length').html(limit-chars);
+    });
+		$(".comments").click(function(event) {
+				$("#id_state").val(event.target.id);
+		});
+
+		$(".comments").click(function(event) {
+			var url_comments = ("{% url 'api_status_comments' 999%}").replace("999",$(this).attr('id'));
+			$.getJSON(url_comments,function(data){
+				if(data.length>0){
+					$("#comments-list").empty();
+					$.each(data,function(key,val){
+						if(val.picture!=null){
+							var image ='<img src="'+val.picture+'" class="img-rounded img-responsive img-state" />';
+						}
+						else{
+							var image="";
+						}
+						var url_user = ("{% url 'user_profile' 999 %}").replace("999",val.user['username']);
+						$("#comments-list").append('<div class="media">'+
+							'<div class="media-left"><a href="'+url_user+'"><img class="media-object img-circle img-avatar" src="'+val.user['avatar']+'">'+
+							'</a></div><div class="media-body"><a href="'+url_user+'"><h4 class="media-heading">'+val.user['full_name']+'</h4></a>'+val.text+
+							'</div><br><small>Hace '+val.date_post+'</small></div><hr>'+image
+							);
+					});
+				}else {
+					$("#comments-list").html('<div class="alert alert-success" role="alert">Se el primero en hacer un comentario!</div>');
+				}
+			});
+		});
+
+		$("#state_form").validate({
+			messages: {
+				text: "Este campor es requerido",
+			}
+		});
+
+  });
+</script>
+{% endblock extra_js %}

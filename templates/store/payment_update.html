@@ -1,0 +1,52 @@
+{% extends "./base.html" %}
+{% block title %}{{payment.get_payment_display}}{% endblock title %}
+
+{% block messages%}
+	{% include './messages.html'%}
+{% endblock messages%}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_payments="active" farm_in="in" %}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li><a href="{% url 'payments' %}">Formas de Pago</a></li>
+    <li class="active">{{payment.get_payment_display}}</li>
+  </ol>
+  <div class="page-header">
+		<h2>{{payment.get_payment_display}}</h2>
+	</div>
+	<div class="col-md-9">
+		<form method="post" enctype="multipart/form-data" id="form">{% csrf_token %}
+	    <div class="form-group">
+	      <label for="id_name">Nombre</label>
+	      {{ form.payment }}
+	    </div>
+	    <div class="form-group">
+	      <label for="id_summary">Descripción</label>
+	      {{ form.description }}
+	    </div>
+			<button type="submit" class="btn btn-success btn-lg btn-block">Actualizar</button>
+	  </form>
+	</div>
+ </div>
+{% endblock container %}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover();
+		$("#form").validate({
+			messages: {
+				payment: "Este campo es requerido",
+				description: "Este campo es requerido",
+			}
+		});
+});
+</script>
+{% endblock extra_js %}

@@ -1,0 +1,90 @@
+{% extends "reports/base.html" %}
+{% load humanize %}
+
+{% block content %}
+  <table>
+    <td>
+      <p class="logo"><img src="{{order.farm.logo.url}}" style="width:auto; height:100px;"/></p>
+    </td>
+    <td>
+        <p>
+          <p>
+            <strong>{{order.farm.name|title}}</strong>
+            <br> {{order.farm.user.fullName}}
+          </p>
+          {{order.farm.address}} <br>
+          Tél: {{order.farm.phone}}
+        </p>
+        <p>
+          <h1 style="color:#8BC34A;">Orden N°: {{order.id|stringformat:"06d"}}</h1>
+        </p>
+    </td>
+  </table>
+  <table class="info">
+    <td>
+      <strong>Cliente: </strong>{{order.buyer.fullName|title}}
+      <br><strong>Email: </strong>{{order.buyer.email}}
+      <br><strong>Dirección: </strong>{{order.address}}
+    </td>
+    <td>
+      <strong>Fecha/Hora: </strong>{{order.date|date:"M d, Y / P"}}
+      <br><strong>Forma de Pago: </strong>{{order.payment.get_payment_display}}
+    </td>
+  </table>
+  <div class="main">
+    <p class="title"><strong>Productos</strong></p>
+    <table>
+      <thead>
+        <th class="text-left" width="200%">
+          Descripción
+        </th>
+        <th class="text-center">
+          Cant.
+        </th>
+        <th class="text-center">
+          Precio
+        </th>
+        <th class="text-center">
+          Envío
+        </th>
+        <th class="text-right">
+          Subtotal
+        </th>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="text-left">
+            {{order.product.name|title}}
+          </td>
+          <td class="text-center">
+            {{order.quantity}}
+          </td>
+          <td class="text-center">
+            ${{order.price|intcomma}}
+          </td>
+          <td class="text-center">
+            ${{order.total_shipping|intcomma}}
+          </td>
+          <td class="text-right">
+            ${{order.total_order|intcomma}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <br>
+<table>
+  <tr>
+      <td style="text-align:right;" colspan="4"><strong>Total Productos </strong></td>
+      <td style="text-align:right;"><strong>${{order.price|intcomma}}</strong></td>
+  </tr>
+  <tr>
+      <td style="text-align:right;" colspan="4"><strong>Total Envío</strong></td>
+      <td style="text-align:right;"><strong>${{order.total_shipping|intcomma}}</strong></td>
+  </tr>
+  <tr>
+      <td style="text-align:right; color:#8BC34A;" colspan="4"><h1>Total</h1></td>
+      <td style="text-align:right; color:#8BC34A;"><h1>${{order.total_order|intcomma}}</h1></td>
+  </tr>
+</table>
+{% endblock %}

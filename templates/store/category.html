@@ -1,0 +1,47 @@
+{% extends "./base.html" %}
+{% block title %}{{category.name|title}}{% endblock title %}
+{% block active_categories %}active{% endblock %}
+
+{% block banner %}
+  {% include './banner_app.html' with image=category.image title=category.name subtitle="Categoría" %}
+{% endblock banner %}
+
+{% block seo %}
+  {% include "./seo.html" with m_keywords="AgroCeres,Campo,agricultura,Nariño,Productos" m_description=category.countProductsMeta m_title=category.name|title|add:" | AgroCeres" m_image=category.getPictureMeta%}
+{% endblock seo %}
+
+{% block second_menu %}
+    {% include "./menu_product_category.html" %}
+{% endblock %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'category_list' %}">Categorías</a></li>
+    <li class="active">{{category.name|title}} <span class="badge"> {{ paginator.count }}  resultados</span></li>
+  </ol>
+  <div class="row">
+    {% if products %}
+      {% for product in products %}
+        {% url 'product' product.slug as url_prod %}
+        {% include "./card_product.html" with product=product class="col-sm-4 col-lg-6 col-md-6" url_prod=url_prod%}
+      {% endfor %}
+    {% else %}
+      <div class="col-md-12">
+        <div class="alert alert-success" role="alert">No hay productos en esta categoría.</div>
+      </div>
+    {% endif %}
+  </div>
+  {% include "./pagination.html" %}
+</div>
+{% endblock container%}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/parallax.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+     $("#"+"{{category.slug}}").addClass("active");
+  });
+</script>
+{% endblock extra_js %}

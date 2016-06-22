@@ -1,0 +1,66 @@
+{% extends "./base.html" %}
+{% block title %}Registrar Asociación{% endblock title %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_group_register="active" group_in="in" %}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'mi_agro' %}">Inicio</a></li>
+    <li><a href="{% url 'groups_app:my_groups' %}">Mis Asociaciones</a></li>
+    <li class="active">Registrar</li>
+  </ol>
+  <div class="page-header">
+		<h1 class="title-main">Registrar Asociación</h1>
+	</div>
+  <div class="col-md-12">
+    <div class="row">
+      <form method="post" id="form">{% csrf_token %}
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="id_name">Nombre</label>
+            {{form.name}}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="id_phone">Teléfono</label>
+            {{form.phone}}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="id_address">Dirección</label>
+            {{form.address}}
+          </div>
+        </div>
+        <div class="col-md-12">
+          <br>
+          <button type="submit" class="btn btn-success btn-lg btn-block">Registrar Asociación</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+      $("#form").validate({
+        messages: {
+				  name: "Por favor ingresa el nombre de tu grupo",
+          phone: "Por favor ingresa un número de teléfono",
+          address: "Por favor ingrese una dirección",
+        }
+      });
+    });
+</script>
+{% endblock extra_js %}

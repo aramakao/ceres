@@ -1,0 +1,98 @@
+{% extends "./base.html" %}
+{% block title %}Mis productos en {{group.group.name}}{% endblock title %}
+
+{% block banner %}
+  {% include "./banner_group.html" with group_profile=group%}
+{% endblock banner %}
+
+{% block extra_css %}
+  <link href="{{STATIC_URL}}css/bootstrap-switch.min.css" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_group="active" group_in="in"%}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li><a href="{% url 'groups_app:my_groups' %}">Asociaciones</a></li>
+    <li><a href="{% url 'groups_app:my_group' group.group.slug %}">{{group.group.name}}</a></li>
+    <li class="active">Mis Productos</li>
+  </ol>
+  <div class="page-header">
+		<h1 class="title-main">Mis Productos en {{group.group.name}}</h1>
+	</div>
+  <div class="col-md-12">
+    <div class="pin-content">
+      {% for product in my_products %}
+      <div class="media">
+        <div class="media-left">
+          <a href="{% url 'product' product.slug %}">
+            <img src="{{MEDIA_URL}}{{product.getPicture}}" class="img-circle product-image-list"> <a href="{% url 'product' product.slug %}">
+          </a>
+        </div>
+        <div class="media-body">
+          <h4 class="media-heading"><a href="{% url 'product' product.slug %}"><strong>{{product.name|title}}</strong></a></h4>
+          <small>Granja <strong><a href="{% url 'farm' product.farm.slug %}">{{product.farm.name|title}}</a></strong></small>
+          <br>Agregado al grupo: <input type="checkbox" id="{{product.id}}" name="my-checkbox" data-size="mini" {% if product.in_farm %}checked{%endif%} data-off-color="warning" data-on-color="success" data-on-text="SI" data-off-text="NO">
+        </div>
+      </div>
+      <hr>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock container %}
+
+{% block extra_js %}
+  <script type="text/javascript">
+    (function($) {
+    $.fn.parallax = function(options) {
+              var windowHeight = $(window).height();
+              var settings = $.extend({
+                  speed        : 0.15
+              }, options);
+              return this.each( function() {
+                var $this = $(this);
+                $(document).scroll(function(){
+                      var scrollTop = $(window).scrollTop();
+                            var offset = $this.offset().top;
+                            var height = $this.outerHeight();
+            if (offset + height <= scrollTop || offset >= scrollTop + windowHeight) {
+              return;
+            }
+            var yBgPosition = Math.round((offset - scrollTop) * settings.speed);
+                $this.css('background-position', 'center ' + yBgPosition + 'px');
+                });
+              });
+          }
+      }(jQuery));
+
+      $('.bg-1').parallax({
+        speed : 0.15
+      });
+  </script>
+  <script src="{{STATIC_URL}}js/bootstrap-switch.min.js"></script>
+  <script src="{{STATIC_URL}}js/django-ajax.js"></script>
+  <script type="text/javascript">
+    $( document ).ready(function() {
+      ajaxDjango();
+      $("[name='my-checkbox']").bootstrapSwitch();
+      $('input[name="my-checkbox"]').on('switchChange.bootstrapSwitch', function(event, state) {
+        $.ajax({
+          type: "POST",
+          url: "{% url 'product_app:update_products_group' %}",
+          data: {product:this.id,state:state,group:'{{group.group.id}}'},
+          success: function(msg){
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert(errorThrown);}
+          });
+      });
+    });
+  </script>
+{% endblock extra_js %}

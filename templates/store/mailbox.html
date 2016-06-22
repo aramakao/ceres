@@ -1,0 +1,66 @@
+{% extends "./base.html" %}
+{% block title %}Buzón de Sugerencias{% endblock title %}
+
+{% block main-menu %}
+ 	{% include "./menu_myfarm.html" with active_mailbox="active" admin_in="in"%}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li class="active">Buzón de Sugerencias</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Buzón de Sugerencias</h1>
+  </div>
+  <div class="col-md-12">
+    {% if suggestings %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th style="width:20%;">Fecha/Hora</th>
+            <th>Sugerencia</th>
+            <th style="width:20%;">Respuesta</th>
+            <th>Ver</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for suggesting in suggestings %}
+          <tr>
+            <td>
+              {{suggesting.date|date:"m-d-Y/f"}}
+            </td>
+            <td>
+              <div class="media">
+                <div class="media-body">
+                  {{suggesting.message|truncatechars:80}}
+                </div>
+              </div>
+            </td>
+            <td>
+              {% if suggesting.reply %}
+                <span class="label label-success">{{suggesting.reply|truncatechars:20}}</span>
+              {% else %}
+                <span class="label label-danger">Sin Responder</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href={% url 'mailbox_response' suggesting.id %} class="btn btn-success btn-xs" title="Ver sugerencia"><span class="glyphicon glyphicon-eye-open"></span></a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="alert alert-success" role="alert">No hay sugerencias registradas..</div>
+    {% endif %}
+    {% include './pagination.html' %}
+  </div>
+</div>
+{% endblock container %}

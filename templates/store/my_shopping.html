@@ -1,0 +1,83 @@
+{% extends "./base.html" %}
+{% load humanize %}
+{% block title %}Mis Compras{% endblock title %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_my_shopping="active" %}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li class="active">Mis Compras</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Mis Compras</h1>
+  </div>
+  <div class="col-md-12">
+    {% if not orders %}
+  		<div class="alert alert-success" role="alert">
+  			<strong>Información!</strong> No tienes compra registradas. Puedes empezar a comprar siguiendo este <a href="{% url 'home' %}" class="alert-link">enlace</a>
+  		</div>
+  	{% else %}
+  	<br>
+  	{% for order in orders %}
+  	<table class="table pin-content">
+  		<thead>
+  			<tr>
+  				<td>
+  					Orden N°: <strong><a href="{% url 'order_buyer' order.id %}">{{order.id|stringformat:"06d"}}</a></strong><br>
+  					Fecha y Hora: <strong>{{ order.date|date:"D d M Y" }}</strong>/<strong>{{order.date|time:"h:i a" }}</strong>
+  				</td>
+  				<td>
+  					Granja: <strong><a href="{% url 'farm' order.farm.slug %}">{{order.farm.name|title}}</a></strong><br>
+  					Vendedor: <strong><a href="{% url 'user_profile' order.farm.user %}">{{order.farm.user.fullName}}</a></strong>
+  				</td>
+  				<td>
+  					Total: <strong>${{order.total_order|intcomma}}</strong><br>
+  					Estado: <strong>{{order.get_state_display}}</strong>
+  				</td>
+  			</tr>
+  		</thead>
+  		<tbody>
+  			<tr>
+  				<th>Producto</th>
+  				<th>Envío</th>
+  				<th>Subtotal</th>
+  			</tr>
+				<tr>
+					<td>
+						<div class="media">
+							<div class="media-left">
+								<a href="{% url 'product_farm' order.product.farm.slug order.product.slug %}">
+									<img class="img-circle product-image-list" src="{{MEDIA_URL}}{{order.product.getPicture}}">
+								</a>
+							</div>
+							<div class="media-body media-nobody">
+								<a href="{% url 'product_farm' order.product.farm.slug order.product.slug %}"><h4 class="media-heading">{{order.product.name|title}}</h4></a>
+								<small>Cantidad: <strong>{{order.quantity}}</strong></small><br>
+								<small>Valor Unidad: <strong>${{order.price|intcomma}}</strong></small>
+							</div>
+						</div>
+					</td>
+					<td class="col-shipping">
+						<small>{{order.shipping}}</small>
+					</td>
+					<td>
+						<strong>${{order.total_order|intcomma}}</strong>
+					</td>
+				</tr>
+  		</tbody>
+  	</table>
+  	{% endfor %}
+  	{% endif %}
+  	{% include './pagination.html'%}
+  </div>
+</div>
+{% endblock container %}

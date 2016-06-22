@@ -1,0 +1,67 @@
+{% extends "./base.html" %}
+{% block title %}Mensajes de {{sender.get_full_name}}{% endblock title %}
+
+{% block main-menu %}
+ 	{% include "./menu_myfarm.html" with active_conversations="active" %}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block extra_css %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jasny-bootstrap.min.css">
+{% endblock extra_css %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li><a href="{% url 'message_app:conversations' %}">Conversaciones</a></li>
+    <li class="active">{{sender.get_full_name}}</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Mensajes de <a href="{% url 'user_profile' sender %}">{{sender.get_full_name}}</a></h1>
+  </div>
+  <div class="col-md-12">
+    {% if my_messages %}
+      {% for message in my_messages %}
+        <div class="pin-content container2">
+          {% include "./card_message_timeline.html" with message=message %}
+        </div>
+      {% endfor %}
+      {% include "./pagination_messages.html" %}
+      <div class="well">
+        <form enctype="multipart/form-data" method="post" name="message_form" id="message_form">{% csrf_token %}
+          {{message_form.message}}
+          <p>
+            <div class="fileinput fileinput-new" data-provides="fileinput">
+              <span class="btn btn-default btn-file"><span class="fileinput-new"><li class="fa fa-paperclip"></li> Adjuntar archivo</span><span class="fileinput-exists">Cambiar</span>{{message_form.file}}</span>
+              <span class="fileinput-filename"></span>
+              <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+              <button name="btn_message" type="submit" class="btn btn-success pull-right"><li class="fa fa-paper-plane-o"></li> Enviar mensaje</button>
+            </div>
+          </p>
+        </form>
+      </div>
+    {% else%}
+      <div class="alert alert-success" role="alert">Lo sentimos no tienes mensajes!</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jasny-bootstrap.min.js"></script>
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+  $( document ).ready(function() {
+    $("#message_form").validate({
+			messages: {
+				message: "Este campor es requerido",
+			}
+		});
+  });
+</script>
+{% endblock extra_js %}

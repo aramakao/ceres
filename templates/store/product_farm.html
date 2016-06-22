@@ -1,0 +1,332 @@
+{% extends "./base.html" %}
+{% load humanize %}
+{% block title %}{{farm.farm.name|title}} - {{ product.name|title }}{% endblock title %}
+{% block active_farms %}active{% endblock %}
+
+{% block card_profile %}
+  {% url 'user_profile' farm.farm.user as url_user %}
+  {% include "./card_user.html" with farmer_profile=farmer_profile url_user=url_user name_user=farmer_name%}
+{% endblock card_profile %}
+
+{% block second_menu %}
+  {% include "./menu_category_farm.html" %}
+{% endblock %}
+
+{% block seo %}
+  {% include "./seo.html" with m_keywords="AgroCeres,Campo,agricultura,Nariño,Productos" m_description=product.summary  m_title=product.name|title|add:" | "|add:product.farm.name|title  m_image=product.getPictureMeta %}
+{% endblock seo %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block banner %}
+  {% include "./banner_farm.html" with farm_profile=farm%}
+{% endblock banner %}
+
+{% block extra_css %}
+  <link type="text/css" href="{{STATIC_URL}}css/star-rating.min.css"  rel="stylesheet"/>
+  <link  rel="stylesheet" href="{{STATIC_URL}}owl-carousel/owl.carousel.css"/>
+  <link  rel="stylesheet" href="{{STATIC_URL}}owl-carousel/owl.theme.css"/>
+  <link rel="stylesheet"  href="{{STATIC_URL}}css/lightslider.css"/>
+	<style>
+    ul{
+			list-style: none outside none;
+		  padding-left: 0;
+      margin: 0;
+		}
+		.content-slider li{
+		  background-color: #ed3020;
+		  text-align: center;
+		  color: #FFF;
+		}
+		.content-slider h3 {
+		    margin: 0;
+		    padding: 70px 0;
+		}
+    </style>
+  <style>
+    #owl_products .item{
+        background: #3fbf79;
+        padding: 30px 0px;
+        margin: 10px;
+        color: #FFF;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        text-align: center;
+    }
+    .customNavigation{
+      text-align: center;
+    }
+    .customNavigation a{
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+  </style>
+{% endblock extra_css %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'farms' %}">Granjas</a></li>
+    <li><a href="{% url 'farm' farm.farm.slug  %}">{{farm.farm.name|title}}</a></li>
+    <li><a href="{% url 'products_list' farm.farm.slug %}">Nuestros Productos</a></li>
+    <li class="active">{{product.name|title}}</li>
+  </ol>
+</div>
+<div class="col-md-12">
+  <div class="page-header">
+    <h1 class="title-main">{{product.name|title}}</h1>
+  </div>
+</div>
+<div class="col-md-8">
+  {% include './slider.html' with images=product.getAllPicture2 %}
+</div>
+<div class="col-md-4 detail-color">
+  <div class="col-md-12">
+    <h4><strong>Calificación: {{fbProducts.total|stringformat:"1.1f"}} <small>Total Vendidos: <strong>{{fbProducts.count}}</strong></small></strong></h4>
+    <small><strong>Calidad: </strong><input type="number" class="feedback" value="{{fbProducts.quality|stringformat:"1.1f"}}"></small>
+    <small><strong>Precio: </strong><input type="number" class="feedback" value="{{fbProducts.price|stringformat:"1.1f"}}"></small>
+    <small><strong>Descripción: </strong><input type="number" class="feedback" value="{{fbProducts.description|stringformat:"1.1f"}}"></small>
+  </div>
+  <div class="col-md-12">
+    <h4><small>Precio: </small><strong>${{product.price|intcomma}}</strong></h4>
+    <h4><small>Cantidad: </small><strong>{{product.quantity}} <small>unidades</small></strong></h4>
+    <h4><small>Categoría: </small><strong>{{product.category}}</strong></h4>
+    <h4><small>Resumen: </small><strong>{{product.summary}}</strong></h4>
+  </div>
+</div>
+<div class="col-md-12">
+  <div class="well">
+    <div class="form-group">
+      <label for="id_quantity">Cantidad: </label>
+      <input class="id_quantity" id="id_quantity" name="quantity" value="1" min="1" max="{{product.quantity}}" maxlength="5" autocomplete="off" type="number"> <small> ({{product.quantity}} productos disponibles)</small>
+    </div>
+    <div class="form-group">
+      <label for="shipping" >Formas de Envío:</label>
+      {% for shipping in shippings %}
+        <div class="radio">
+          <label id="lbl_{{shipping.id}}">
+            {% if shipping.price %}
+              <input type="radio" name="shippings" id="{{shipping.id}}" value="p{{shipping.price}}" checked>
+            {% else %}
+              <input type="radio" name="shippings" id="{{shipping.id}}" value="e{{shipping.porcentage}}" checked>
+            {% endif %}
+            <div id="shipping_options{{shipping.id}}">
+              {{shipping.name}}
+              <br>
+              <small><strong>Precio: </strong>
+              {% if shipping.price %}
+                El envío tiene un costo fijo de <strong>${{shipping.price|intcomma}}</strong>
+              {% else %}
+                El envío tiene un costo adicional del <strong>{{shipping.porcentage}}%</strong> sobre este producto
+              {% endif %}
+              </small>
+              <br><small><strong>Descripción: </strong>{{shipping.detail}}</small>
+            </div>
+          </label>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      <h2>Precio total: $<label id="total_price">{{product.price|intcomma}}</label></h2>
+        <a class="btn btn-success btn-block" id="{{product.slug}}" data-toggle="modal" data-target="#add_car"><strong><i class="fa fa-shopping-cart"></i> Agregar al Carrito</strong></a>
+    </div>
+  </div>
+  <!--Tabs-->
+  <div class="well">
+    <ul id="tabProduct" class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#description" id="description-tab" role="tab" data-toggle="tab" aria-controls="description" aria-expanded="true">Descripción</a></li>
+      <li class="" role="presentation"><a aria-expanded="false" href="#asks" role="tab" id="feedback-tab" data-toggle="tab" aria-controls="asks">Preguntas</a></li>
+      <li class="" role="presentation"><a aria-expanded="false" href="#feedback" role="tab" id="feedback-tab" data-toggle="tab" aria-controls="feedback">Opiniones</a></li>
+    </ul>
+    <div id="tabProductContent" class="tab-content">
+      <div role="tabpanel" class="tab-pane fade active in" id="description" aria-labelledby="description-tab">
+        <p class="text-justify">{{product.description|safe}}</p>
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="asks" aria-labelledby="asks-tab">
+        {% include './card_ask_product.html' %}
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="feedback" aria-labelledby="feedback-tab">
+        {% include './card_feedback_product.html' %}
+      </div>
+    </div>
+  </div>
+  {% include "./carousel_products.html" with products=latest_products name="Otros Productos de "|add:farm.farm.name class="" source="farm" %}
+</div>
+  <!-- Add car -->
+  <div class="modal fade" id="add_car" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Información</h4>
+        </div>
+        <div class="modal-body">
+          <strong>{{product.name}}</strong>  agregado al carrito de compras.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal"><strong>Seguir Comprando</strong></button>
+          <a class="btn btn-success" href="{% url 'shopping_cart' %}"><strong><i class="fa fa-shopping-cart"></i> Ver Carrito de Compras</strong></a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock container %}
+{% block extra_js %}
+  <script src="{{STATIC_URL}}/owl-carousel/owl.carousel.js"></script>
+  <script src="{{STATIC_URL}}js/star-rating.min.js" type="text/javascript"></script>
+  <script type="text/javascript" src="{{STATIC_URL}}js/lightslider.js"></script>
+  <script src="{{STATIC_URL}}js/parallax.js"></script>
+  <script type="text/javascript">
+    var subtotal={{product.price}};
+    $(document).ready(function() {
+      $("#content-slider").lightSlider({
+        loop:true,
+        keyPress:true
+      });
+      $('#image-gallery').lightSlider({
+          gallery:true,
+          item:1,
+          slideMargin: 0,
+          speed:500,
+          auto:true,
+          loop:true,
+          onSliderLoad: function() {
+              $('#image-gallery').removeClass('cS-hidden');
+          }
+      });
+      $(".feedback").rating({'showCaption':true,showClear:false, disabled:true, 'stars':'5', 'min':'0', 'max':'5', 'step':'1', 'size':'xs',
+      starCaptions: function(val) {
+        if (val == 1) {
+          return val+' Estrella';
+        } else {
+          return val+' Estrellas';
+        }
+      }
+      });
+      var pro=parseFloat({{product.price}});
+      var total_product=0;
+      var owl = $("#owl_products");
+        owl.owlCarousel({
+          items : 3, //10 items above 1000px browser width
+          itemsDesktop : [1000,3], //5 items between 1000px and 901px
+          itemsDesktopSmall : [900,2], // 3 items betweem 900px and 601px
+          itemsTablet: [600,1], //2 items between 600 and 0;
+          });
+
+      owl.trigger('owl.play',5000);
+
+      $("input[name=shippings]:radio").change(function () {
+        loadPrice();
+      });
+
+      $("input[type=number]").bind('keyup input', function(){
+        loadPrice();
+      });
+
+      function loadPrice(){
+        var cant=parseInt($("#id_quantity").val());
+        var shipping = $("input[name=shippings]:checked").val();
+        var slice = shipping.slice(0,1);
+        if(slice=='p'){
+          var p_shipping=parseFloat(shipping.slice(1));
+          subtotal = cant*(pro+p_shipping);
+          $("#total_price").html(subtotal.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1."));
+        }
+        else{
+          var p_shipping=parseFloat(shipping.slice(1));
+          subtotal = cant*((pro*(p_shipping/100))+pro);
+          $("#total_price").html(subtotal.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1."));
+        }
+      };
+
+      loadPrice();
+      $("#{{product.slug}}").click(function(){
+        $.ajax({
+          data : {'id': "{{product.slug}}"},
+          url : "{% url 'api_product' product.slug %}",
+          type : 'get',
+          success: function(data){
+            var text= JSON.stringify(data);
+            var product=JSON.parse(text)
+            var obj={};
+
+            obj.product_slug=product.slug;
+            obj.farm_slug=product.farm.slug;
+            obj.image=product.getPicture;
+            obj.price=product.price;
+            obj.farm=product.farm.name;
+            obj.product_name=product.name;
+            obj.n_quantity=$("#id_quantity").val();
+            obj.shipping_price= $("input[name=shippings]:checked").val();
+            obj.shipping=$("#shipping_options"+$("input[name=shippings]:checked").attr('id')).html();
+            //obj.subtotal =parseFloat($("#total_price").html());
+            obj.subtotal = subtotal;
+            obj.shipping_id=$("input[name=shippings]:checked").attr('id');
+            text=JSON.stringify(obj);
+            if(isAuth){
+              addProduct(text);
+            }
+            if (localStorage.shopping_cart) {
+              var products = JSON.parse(localStorage.shopping_cart);
+              var ban=false;
+              for(i=0;i<products.length;i++){
+                var product =JSON.parse(products[i])
+                if(product.product_name==obj.product_name){
+                  products[i]=text;
+                  ban=true;
+                }
+              }
+              if(ban==false){
+                products.push(text);
+              }
+              localStorage.shopping_cart=JSON.stringify(products);
+              var products = JSON.parse(localStorage.shopping_cart);
+              $("#cart_count").html(products.length+" productos");
+            }
+            else {
+                var products = [];
+                products.push(text);
+                localStorage.shopping_cart=JSON.stringify(products);
+                $("#cart_count").html("1 producto");
+            }
+          },
+          error: function(error) {
+            alert(error);
+          }
+        });
+      });
+
+    });
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org/",
+    "@type": "Product",
+    "name": "{{product.name|title}}",
+    "image": "http://agroceres.org{{MEDIA_URL}}{{product.getPicture}}",
+    "description": "{{product.summary}}",
+    "organization": {
+      "@type": "Thing",
+      "name": "{{farm.farm.name|title}}"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "{{fbProducts.total|stringformat:"1.1f"}}",
+      "ratingCount": "{{fbProducts.count}}"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "{{product.price|intcomma}}",
+      "priceCurrency": "$"
+    }
+  }
+  </script>
+{% endblock extra_js %}

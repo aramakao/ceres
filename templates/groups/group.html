@@ -1,0 +1,297 @@
+{% extends "./base.html" %}
+{% block title %}{{ group.group.name|title }}{% endblock title %}
+{% block active_groups %}active{% endblock %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block meta %}
+  <meta name="description" content="{{ group.group.name|title }} - {{ group.slogan }} - Dirección: {{group.group.address}} | Tél: {{group.group.phone}}" />
+  <meta name="keywords" content="AgroCeres,Campo,agricultura,Nariño,granja,asociaciones,{{ group.group.name|title }}">
+{% endblock meta %}
+
+{% block seo %}
+  {% include "./seo.html" with m_keywords="AgroCeres,Campo,agricultura,Nariño,granja,asociaciones" m_description=group.group.name|title|add:" - "|add:group.slogan|add:" | Dirección: "|add:group.group.address|add:" | Tél: "|add:group.group.phone m_title=group.group.name|title|add:" | AgroCeres" m_image=group.getImageMeta%}
+{% endblock seo %}
+
+{% block extra_css %}
+  <link  rel="stylesheet" href="{{STATIC_URL}}owl-carousel/owl.carousel.css"/>
+  <link  rel="stylesheet" href="{{STATIC_URL}}owl-carousel/owl.theme.css"/>
+  <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/jasny-bootstrap.min.css">
+  <style>
+    #owl_products .item{
+        padding: 30px 0px;
+        margin: 10px;
+        color: #FFF;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        text-align: center;
+    }
+    .customNavigation{
+      text-align: center;
+    }
+    .customNavigation a{
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+  </style>
+{% endblock extra_css %}
+
+{% block second_menu %}
+  {% include "./menu_group.html" %}
+{% endblock %}
+
+{% block banner %}
+  {% include "./banner_group.html" with group_profile=group%}
+{% endblock banner %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'groups' %}">Asociaciones</a></li>
+    <li class="active">{{ group.group.name|title }}</li>
+  </ol>
+  <div class="pin-content pin col-md-12">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="active"><a href="#activity" aria-controls="home" role="tab" data-toggle="tab">Actividad</a></li>
+      <li><a href="#members" aria-controls="members" role="tab" data-toggle="tab">Participantes</a></li>
+      <li><a href="#products" aria-controls="products" role="tab" data-toggle="tab">Productos</a></li>
+      <li><a href="#location" aria-controls="location" role="tab" data-toggle="tab">Nuestra Ubicación</a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="activity">
+        {% for state in status %}
+        		<form name="delete_form" method="post">{% csrf_token %}
+            	{% include "./card_state.html" with state=state profile_name=state.full_name profile=state.user_profile %}
+        		</form>
+        {% endfor %}
+        {% include "./pagination_state.html" %}
+        {% include "./card_comments.html" with comments_form=comments_form %}
+      </div>
+      <div role="tabpanel" class="tab-pane" id="members">
+        {% for member in members %}
+          {% url 'user_profile' member.user as url_user %}
+          <div class="media">
+            <div class="media-left">
+              <a href="{{url_user}}">
+                <img class="media-object img-circle img-avatar" src="{{MEDIA_URL}}{{member.user.avatar}}">
+              </a>
+            </div>
+            <div class="media-body">
+              <a href="{{url_user}}"><h4 class="media-heading">{{member.user_name|title}}</h4></a>
+              <small>Se unió hace {{member.joined|timesince}}</small>
+            </div>
+          </div>
+        {%endfor%}
+      </div>
+      <div role="tabpanel" class="tab-pane" id="products">
+        {% if products_group %}
+          {% for product in products_group %}
+          <div class="media">
+            <div class="media-left">
+              <a href="#">
+                <img src="{{MEDIA_URL}}{{product.product.getPicture}}" class="img-circle product-image-list"> <a href="#">
+              </a>
+            </div>
+            <div class="media-body">
+              <h4 class="media-heading"><a href="{% url 'product' product.product.slug %}"><strong>{{product.product.name|title}}</strong></a></h4>
+              Aportado por <a href="{% url 'user_profile' product.product.farm.user %}"><strong>{{product.product.farm.user.get_full_name}}</strong></a>
+              <br><small>Granja <strong><a href="{% url 'farm' product.product.farm.slug %}">{{product.product.farm.name|title}}</a></strong></small>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="alert alert-success" role="alert">Lo sentimos no hay productos!</div>
+        {% endif %}
+      </div>
+      <div role="location" class="tab-pane" id="location">
+        <div class="map-canvas" id="map-canvas"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Send Invitation -->
+<form method="post">{% csrf_token %}
+  <div class="modal fade" id="sendInvitation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Enviar Invitación a {{group.group.name|title}}</h4>
+        </div>
+        <div class="modal-body">
+          {{invitation_form.comment}}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" name='btn_invitation' class="btn btn-success"><i class="fa fa-paper-plane"></i> Enviar Invitación</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- Send Message -->
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+  <div class="modal fade" id="sendMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Enviar Mensaje a {{group.group.name|title}}</h4>
+        </div>
+        <div class="modal-body">
+          {{message_form.message}}
+          <p>
+            <div class="fileinput fileinput-new" data-provides="fileinput">
+              <span class="btn btn-default btn-file"><span class="fileinput-new"><li class="fa fa-paperclip"></li> Adjuntar archivo</span><span class="fileinput-exists">Cambiar</span>{{message_form.file}}</span>
+              <span class="fileinput-filename"></span>
+              <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+            </div>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button name="btn_messages" type="submit" class="btn btn-success"><li class="fa fa-paper-plane-o"></li> Enviar mensaje</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&libraries=places"></script>
+<script type="text/javascript">
+  var latitude=('{{group.latitude}}').replace(/,/g, '.');
+  var longitude=('{{group.longitude}}').replace(/,/g, '.');
+
+  function initialize() {
+		var myLatlng = new google.maps.LatLng(parseFloat(latitude),parseFloat(longitude));
+
+    var mapOptions = {
+      zoom: 9,
+      center: myLatlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+	   };
+
+	  var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+	  var marker = new google.maps.Marker({
+	    position: myLatlng,
+	    map:map,
+	    animation: google.maps.Animation.DROP,
+	    title:"{{group.group.name}}"
+	  });
+
+  	var contentString = '<div id="content">'+
+    '<div id="siteNotice">'+
+    '</div>'+
+    '<h4 id="firstHeading" class="firstHeading">{{group.group.name|title}} <small><i>{{group.slogan}}</i></small></h4>'+
+        '<div id="bodyContent">'+
+        '<b>Dirección: </b>{{group.group.address}}<br/>' +
+        '<b>Télefono: </b>{{group.group.phone}}<br/>' +
+        '</div>'+
+        '</div>';
+
+    var infowindow = new google.maps.InfoWindow({content: contentString});
+
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.open(map,marker);
+    });
+  }
+  google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+{% endblock container %}
+{% block extra_js %}
+<script src="{{STATIC_URL}}/owl-carousel/owl.carousel.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jasny-bootstrap.min.js"></script>
+<script type="text/javascript">
+  (function($) {
+  $.fn.parallax = function(options) {
+            var windowHeight = $(window).height();
+            var settings = $.extend({
+                speed        : 0.15
+            }, options);
+            return this.each( function() {
+              var $this = $(this);
+              $(document).scroll(function(){
+                    var scrollTop = $(window).scrollTop();
+                          var offset = $this.offset().top;
+                          var height = $this.outerHeight();
+          if (offset + height <= scrollTop || offset >= scrollTop + windowHeight) {
+            return;
+          }
+          var yBgPosition = Math.round((offset - scrollTop) * settings.speed);
+              $this.css('background-position', 'center ' + yBgPosition + 'px');
+              });
+            });
+        }
+    }(jQuery));
+
+    $('.bg-1').parallax({
+      speed : 0.15
+    });
+</script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+  	   initialize();
+    });
+    var owl = $("#owl_products");
+    owl.owlCarousel({
+      items : 3,
+      itemsDesktop : [1000,3], //5 items between 1000px and 901px
+      itemsDesktopSmall : [900,2], // 3 items betweem 900px and 601px
+      itemsTablet: [600,1], //2 items between 600 and 0;
+    });
+
+    owl.trigger('owl.play',5000);
+
+    $('#id_text[maxlength]').keyup(function(){
+        var limit = parseInt($(this).attr('maxlength'));
+        var text = $(this).val();
+        var chars = text.length;
+        $('#text_length').html(limit-chars);
+    });
+    $(".comments").click(function(event) {
+      console.log(event.target.id);
+        $("#id_state").val(event.target.id);
+    });
+
+    $(".comments").click(function(event) {
+          var url_comments = ("{% url 'api_group_comments' 999%}").replace("999",$(this).attr('id'));
+          $.getJSON(url_comments,function(data){
+            if(data.length>0){
+              $("#comments-list").empty();
+              $.each(data,function(key,val){
+                if(val.picture!=null){
+                  var image ='<img src="'+val.picture+'" class="img-rounded img-responsive img-state" />';
+                }
+                else{
+                  var image="";
+                }
+                var url_user = ("{% url 'user_profile' 999 %}").replace("999",val.user['username']);
+                $("#comments-list").append('<div class="media">'+
+                  '<div class="media-left"><a href="'+url_user+'"><img class="media-object img-circle img-avatar" src="'+val.user['avatar']+'">'+
+                  '</a></div><div class="media-body"><a href="'+url_user+'"><h4 class="media-heading">'+val.user['full_name']+'</h4></a>'+val.text+
+                  '</div><br><small>Hace '+val.date_post+'</small></div><hr>'+image
+                  );
+              });
+            }else {
+              $("#comments-list").html('<div class="alert alert-success" role="alert">Se el primero en hacer un comentario!</div>');
+            }
+          });
+    });
+
+  });
+
+</script>
+{% endblock extra_js %}

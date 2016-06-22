@@ -1,0 +1,31 @@
+{% extends "account/base_template.html" %}
+{% block title %}Restablecer contraseña{% endblock title %}
+{% block modal_title %}¿Olvidaste tu contraseña?{% endblock modal_title %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block content %}
+  <form method="post" class="form-signin">{% csrf_token %}
+    <div class="modal-body">
+      Por favor ingresa tu dirección de correo electrónico que usaste al registrar tu
+      cuenta de AgroCeres.<br/>
+      Te enviaremos un correo que te permitirá reinicializar tu contraseña.
+      {{reset_form.email}}
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-success btn-lg btn-block">Enviar correo de verificación</button>
+    </div>
+  </form>
+{% endblock content %}
+
+{% block account_link %}
+  <p class="text-center">
+    Ya tienes una cuenta
+    <a href="{% url  'account:login' %}"class="text-green"> inicia sesión</a>
+    o registrate
+    <a href="{% url 'account:register' %}"class="text-green">aquí</a>
+  </p>
+
+{% endblock account_link%}

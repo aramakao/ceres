@@ -1,0 +1,79 @@
+{% extends "./base.html" %}
+{% block title %}Notificaciones{% endblock title %}
+
+{% block main-menu %}
+ 	{% include "./menu_myfarm.html" with active_notifications="active"%}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li class="active">Notificaciones</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Notificaciones</h1>
+  </div>
+  <div class="col-md-12">
+    {% if notifications %}
+    <form method="post">
+      <div class="pin-content container2">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <tbody>
+            {% for notification in notifications %}
+              <tr
+                {% if notification.unread %}
+                  class="success"
+                {% endif %}>
+                <td>
+                  {% if notification.description == 'fa fa-comments'%}
+                    {% url 'user_profile' notification.recipient as url_notification %}
+                  {% elif notification.description == 'fa fa-users' %}
+                    {% url 'groups_app:my_group' notification.target.slug as url_notification %}
+                  {% elif notification.description == 'fa fa-angellist' %}
+                      {% url 'friends_invitations' as url_notification %}
+                  {% elif notification.description == 'fa fa-shopping-cart' %}
+                    {% url 'order_seller' notification.target as url_notification %}
+                  {% elif notification.description == 'fa fa-flag' %}
+                    {% url 'order_seller' notification.target as url_notification %}
+                  {% elif notification.description == 'fa fa-flag-o' %}
+                    {% url 'order_buyer' notification.target as url_notification %}
+                  {% elif notification.description == 'fa fa-question-circle' %}
+                    {% url 'product_comment' as url_notification %}
+                  {% else %}
+                  {% endif %}
+                  <a href="{{url_notification}}?state={{notification.id}}" class="notification">
+                    <div class="media">
+                      <div class="media-left">
+                        <img class="media-object img-circle img-avatar" src="{{MEDIA_URL}}{{notification.actor.avatar}}">
+                      </div>
+                      <div class="media-body">
+                        <h4 class="media-heading">{{notification.actor.get_full_name}}</h4>
+                        {{notification.verb}}
+                        {% if notification.target %}
+                          <strong>{{notification.target}}</strong>
+                        {% endif %}
+                        <p>
+                          <i class="{{notification.description}}"></i>
+                          <small> Hace {{notification.timesince}}</small>
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+            </form>
+          </tbody>
+        </table>
+        {% include './pagination.html' %}
+        {% else %}
+          <div class="alert alert-success" role="alert"><strong>Información! </strong>Aún no has recibido notificaciones!</div>
+        {% endif %}
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock container %}

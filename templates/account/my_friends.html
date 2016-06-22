@@ -1,0 +1,84 @@
+{% extends "./base.html" %}
+{% block title %}Mis Amigos{% endblock title %}
+{% block subtitle %}Mis Amigos{% endblock subtitle %}
+
+{% block main-menu %}
+ 	{% include "./menu_myfarm.html" with active_my_friends="active" friends_in="in" %}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li class="active">Mis Amigos</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Mis Amigos <span class="badge">Resultados {{paginator.count}}</span></h1>
+  </div>
+  <div class="col-md-12">
+
+      {% if friends %}
+      <div class="pin-content container2">
+        {% for friend in friends %}
+        <div class="media">
+          <div class="media-left">
+            <a href="{% url 'user_profile' friend.friend %}">
+              <img class="media-object img-circle img-avatar" src="{{MEDIA_URL}}{{friend.friend.avatar}}">
+            </a>
+          </div>
+          <div class="media-body">
+            <a href="{% url 'user_profile' friend.friend %}"><h4 class="media-heading" id="{{friend.id}}">{{friend.full_name|title}}</h4></a>
+            <small><i class="fa fa-envelope"></i> {{ friend.user.email }}</small><br>
+            <small>Amigos hace {{friend.date|timesince}}</small>
+          </div>
+          {% if not member.admin %}
+            <a id="friend:{{friend.id}}" class="friend btn btn-danger btn-xs" data-toggle="modal" data-target="#friends"><i class="fa fa-times"></i> Dejar amistad</a>
+          {% endif %}
+        </div>
+        <hr>
+        {% endfor %}
+        {% include './pagination.html' %}
+      </div>
+      {% else%}
+        <div class="alert alert-success" role="alert">Lo sentimos no tienes amigos registrados!</div>
+      {% endif %}
+  </div>
+</div>
+<form method="post">{% csrf_token %}
+  <div class="modal fade" id="friends" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Dejar Amistad</h4>
+        </div>
+        <div class="modal-body">
+          ¿Estás seguro que quieres quitar a <label id="user_name"></label> de tu lista de amigos?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" name="leaveGroup" class="btn btn-success">Aceptar</button>
+          {{friend_form.as_p}}
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock container %}
+{% block extra_js %}
+  <script type="text/javascript" src="{{STATIC_URL}}js/jasny-bootstrap.min.js"></script>
+  <script type="text/javascript">
+    $( document ).ready(function() {
+  		$(".friend").click(function(event) {
+          $("#user_name").html($("#"+event.target.id.slice(7)).html());
+           $('#id_user').val(event.target.id.slice(7));
+
+  		});
+    });
+  </script>
+{% endblock extra_js %}

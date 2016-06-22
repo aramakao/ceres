@@ -1,0 +1,64 @@
+{% extends "./base.html" %}
+{% block title %}{{category.name}}{% endblock title %}
+{% block active_blog %}active{% endblock %}
+
+{% block banner %}
+  {% include './banner_app.html' with image=category.image title="AgroBlog" subtitle=category.name %}
+{% endblock banner %}
+
+{% block second_menu %}
+  {% include './menu_blog.html' %}
+{% endblock second_menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'blog_app:agro_blog' %}">AgroBlog</a></li>
+    <li><a href="{% url 'blog_app:categories' %}">Categorías</a></li>
+    <li class="active">{{category.name}} <span class="badge">{{category.countEntries}} Entradas</span></li>
+  </ol>
+</div>
+{% if entries %}
+  {% for entry in entries %}
+    {% include './card_blog.html' with entry=entry %}
+  {% endfor %}
+{% else %}
+<div class="col-md-12">
+  <div class="alert alert-success" role="alert">No hay entradas disponibles</div>
+</div>
+{% endif %}
+{% include './pagination.html' %}
+{% endblock container %}
+
+{% block extra_js %}
+  <script src="{{STATIC_URL}}js/comments.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      (function($) {
+      $.fn.parallax = function(options) {
+        var windowHeight = $(window).height();
+        var settings = $.extend({
+        speed:0.5
+        }, options);
+          return this.each(function() {
+          var $this = $(this);
+          $(document).scroll(function(){
+          var scrollTop = $(window).scrollTop();
+          var offset = $this.offset().top;
+          var height = $this.outerHeight();
+          if (offset + height <= scrollTop || offset >= scrollTop + windowHeight) {
+            return;
+          }
+          var yBgPosition = Math.round((offset - scrollTop) * settings.speed);
+          $this.css('background-position', 'center ' + yBgPosition + 'px');
+          });
+        });
+      }
+      }(jQuery));
+      $('.bg-1').parallax({
+        speed : 0.5
+      });
+    });
+  </script>
+{% endblock extra_js %}

@@ -1,0 +1,526 @@
+{% extends "./base.html" %}
+{% block title %}Estadísticas{% endblock title %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_statistics="active" farm_in="in" %}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+		<li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+		<li class="active">Estadísticas</li>
+	</ol>
+	<div class="page-header">
+		<h1 class="title-main">Estadísticas</h1>
+	</div>
+	<div class="col-md-12"><br>
+    {% if total_sales %}
+    Seleccione un período
+    <div class="btn-group" role="group" aria-label="...">
+      <button type="button" id="btn_day" class="btn btn-default">Día</button>
+      <button type="button" id="btn_week" class="btn btn-default">Semana</button>
+      <button type="button" id="btn_month" class="btn btn-default">Mes</button>
+      <button type="button" id="btn_year" class="btn btn-default">Año</button>
+      <button type="button" id="btn_origin" class="btn btn-default">Origen de los tiempos</button>
+    </div>
+    <hr>
+    <div id="day_sales">
+      <div class="page-header">
+        <h4><strong>Período Diario</strong></h4>
+      </div>
+      <h5>Total Ventas: <strong>${{total_sales}}</strong></h5>
+      <h5>Ventas Día <strong>{% now "l" %} ${{day_sales.total_day}}</strong></h5>
+      <h5>Cantidades Vendidas: <strong>{{day_sales.total_products}}</strong></h5>
+      <p class="text-center"><strong>
+        <i style="color:#8BC34A;" class="fa fa-circle"></i> Ventas en Pesos</strong>
+      </p>
+      <canvas id="day_sales1" height="300" width="600"></canvas>
+      <small>La gráfica describe las ventas que se han realizado.</small>
+      <p class="text-center">
+        <br><strong><i style="color:#8BC34A;" class="fa fa-circle"></i> Cantidad Productos Vendidos</strong>
+      </p>
+      <canvas id="day_sales2" height="300" width="600"></canvas>
+      <small>La gráfica muestra la cantidad de productos que se han vendido.</small>
+      <p class="text-center">
+        <br><strong>Productos Vendidos</strong>
+      </p>
+      <canvas id="day_sales3" width="300" height="300"></canvas>
+      <br><small>La gráfica describe la cantidad de productos que se han vendido.</small><br>
+    </div>
+    <div id="week_sales">
+      <div class="page-header">
+        <h4><strong>Período Semanal</strong></h4>
+      </div>
+      <h5>Total Ventas: <strong>${{total_sales}}</strong></h5>
+      <h5>Ventas de la Semana <strong>${{week_sales.total_day}}</strong></h5>
+      <h5>Cantidades Vendidas: <strong>{{week_sales.total_products}}</strong></h5>
+      <p class="text-center"><strong>
+        <i style="color:#8BC34A;" class="fa fa-circle"></i> Ventas en Pesos</strong>
+      </p>
+      <canvas id="week_sales1" height="300" width="600"></canvas>
+      <small>La gráfica muestra las ventas que se han realizado durante esta semana.</small>
+      <p class="text-center">
+        <br><strong><i style="color:#8BC34A;" class="fa fa-circle"></i> Cantidad Productos Vendidos</strong>
+      </p>
+      <canvas id="week_sales2" height="300" width="600"></canvas>
+      <small>La gráfica muestra la Cantidad Productos Vendidos durante esta semana.</small>
+      <p class="text-center">
+        <br><strong>Productos Vendidos</strong>
+      </p>
+      <canvas id="week_sales3" width="300" height="300"></canvas>
+      <br><small>La gráfica describe la cantidad de productos que se han vendido.</small><br>
+    </div>
+    <div id="month_sales">
+      <div class="page-header">
+        <h4><strong>Período Mensual</strong></h4>
+      </div>
+      <h5>Total Ventas: <strong>${{total_sales}}</strong></h5>
+      <h5>Ventas <strong>{% now "F" %} ${{month_sales.total_month}}</strong></h5>
+      <h5>Cantidades Vendidas: <strong>{{month_sales.total_products}}</strong></h5>
+      <p class="text-center"><strong>
+        <i style="color:#8BC34A;" class="fa fa-circle"></i> Ventas en Pesos</strong>
+      </p>
+      <canvas id="month_sales1" height="300" width="600"></canvas>
+      <small>La gráfica muestra las ventas que se han realizado durante el mes de {% now "F" %}.</small>
+      <p class="text-center">
+        <br><strong><i style="color:#8BC34A;" class="fa fa-circle"></i> Cantidad Productos Vendidos</strong>
+      </p>
+      <canvas id="month_sales2" height="300" width="600"></canvas>
+      <small>La gráfica muestra la Cantidad Productos Vendidos durante el mes de {% now "F" %}.</small>
+      <p class="text-center">
+        <br><strong>Productos Vendidos Durante {% now "F" %}</strong>
+      </p>
+      <canvas id="month_sales3" width="300" height="300"></canvas>
+      <br><small>La gráfica describe la cantidad de productos que se han vendido.</small><br>
+    </div>
+    <div id="year_sales">
+      <div class="page-header">
+        <h4><strong>Período Anual</strong></h4>
+      </div>
+      <h5>Total Ventas: <strong>${{total_sales}}</strong></h5>
+      <h5>Ventas en el año {% now "Y" %}: <strong> ${{year_sales.total_year}}</strong></h5>
+      <h5>Cantidades Vendidas: <strong>{{year_sales.total_products}}</strong></h5>
+      <p class="text-center"><strong>
+        <i style="color:#8BC34A;" class="fa fa-circle"></i> Ventas en Pesos</strong>
+      </p>
+      <canvas id="year_sales1" height="300" width="600"></canvas>
+      <small>La gráfica describe las ventas que se han realizado.</small>
+      <p class="text-center">
+        <br><strong><i style="color:#8BC34A;" class="fa fa-circle"></i> Cantidad Productos Vendidos</strong>
+      </p>
+      <canvas id="year_sales2" height="300" width="600"></canvas>
+      <small>La gráfica muestra la cantidad de productos que se han vendido.</small>
+      <p class="text-center">
+        <br><strong>Productos Vendidos</strong>
+      </p>
+      <canvas id="year_sales3" width="300" height="300"></canvas>
+      <br><small>La gráfica describe la cantidad de productos que se han vendido.</small><br>
+    </div>
+    <div id="origin_sales">
+      <div class="page-header">
+        <h4><strong>Orígen de los Tiempos</strong></h4>
+      </div>
+      <h5>Total Ventas: <strong>${{total_sales}}</strong></h5>
+      <h5>Cantidades Vendidas: <strong>{{origin_sales.total_products}}</strong></h5>
+      <p class="text-center"><strong>
+        <i style="color:#8BC34A;" class="fa fa-circle"></i> Ventas en Pesos</strong>
+      </p>
+      <canvas id="origin_sales1" height="300" width="600"></canvas>
+      <small>La gráfica describe las ventas que se han realizado.</small>
+      <p class="text-center">
+        <br><strong><i style="color:#8BC34A;" class="fa fa-circle"></i> Cantidad Productos Vendidos</strong>
+      </p>
+      <canvas id="origin_sales2" height="300" width="600"></canvas>
+      <small>La gráfica muestra la cantidad de productos que se han vendido.</small>
+      <p class="text-center">
+        <br><strong>Productos Vendidos</strong>
+      </p>
+      <canvas id="origin_sales3" width="300" height="300"></canvas>
+      <br><small>La gráfica describe la cantidad de productos que se han vendido.</small><br>
+    </div>
+    {% else %}
+    <div class="alert alert-success" role="alert">No hay ventas registradas</div>
+    {% endif %}
+	</div>
+</div>
+{% endblock container %}
+{% if total_sales %}
+{% block extra_js %}
+  <script src="{{STATIC_URL}}js/Chart.min.js"></script>
+  <script src="{{STATIC_URL}}js/Chart.Bar.js"></script>
+  <script type="text/javascript">
+  var data_month = {
+    labels : {{month_sales.labels}},
+    datasets : [
+      {
+        fillColor : "rgba(139,195,74, 0.5)",
+        strokeColor : "rgba(56,142,60,0.8)",
+        highlightFill: "rgba(139,195,74,0.75)",
+        highlightStroke: "rgba(56,142,60,1)",
+        data : {{month_sales.values}}
+      }
+    ]
+  };
+  var data_month2 = {
+    labels : {{month_sales.labels}},
+    datasets : [
+      {
+        fillColor : "rgba(139,195,74, 0.5)",
+        strokeColor : "rgba(56,142,60,0.8)",
+        highlightFill: "rgba(139,195,74,0.75)",
+        highlightStroke: "rgba(56,142,60,1)",
+        data : {{month_sales.count}}
+      }
+    ]
+  };
+  var data_month3 = [
+    {% for product in month_sales.products %}
+      {
+        value:{{product.count}},
+        label:"{{product.product__name}}",
+        color:getRandomColor(),
+        highlight: colors,
+      },
+    {% endfor %}
+
+      ];
+  var colors="";
+  var data_day = {
+    labels : ["0-4 hrs","4-8 hrs","8-12 hrs","12-14 hrs","14-18 hrs","18-24 hrs"],
+    datasets : [
+      {
+        fillColor : "rgba(139,195,74, 0.5)",
+        strokeColor : "rgba(56,142,60,0.8)",
+        highlightFill: "rgba(139,195,74,0.75)",
+        highlightStroke: "rgba(56,142,60,1)",
+        data : {{day_sales.values}}
+      }
+    ]
+  };
+  var data_day2 = {
+    labels : ["0-4 hrs","4-8 hrs","8-12 hrs","12-14 hrs","14-18 hrs","18-24 hrs"],
+    datasets : [
+      {
+        fillColor : "rgba(139,195,74, 0.5)",
+        strokeColor : "rgba(56,142,60,0.8)",
+        highlightFill: "rgba(139,195,74,0.75)",
+        highlightStroke: "rgba(56,142,60,1)",
+        data : {{day_sales.count}}
+      }
+    ]
+  };
+  var data_day3 = [
+    {% if day_sales.products %}
+      {% for product in day_sales.products %}
+        {
+          value:{{product.count}},
+          label:"{{product.product__name}}",
+          color:getRandomColor(),
+          highlight: colors,
+        },
+      {% endfor %}
+    {% else %}
+    {
+      value:1,
+      label:"No hay productos",
+      color:"#F7464A",
+      highlight: "#FF5A5E",
+    },
+    {% endif %}
+
+      ];
+
+  var data_week1 = {
+    labels : ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"],
+    datasets : [
+      {
+        fillColor : "rgba(139,195,74, 0.5)",
+        strokeColor : "rgba(56,142,60,0.8)",
+        highlightFill: "rgba(139,195,74,0.75)",
+        highlightStroke: "rgba(56,142,60,1)",
+        data : {{week_sales.values}}
+      }
+    ]
+  };
+  var data_week2 = {
+    labels : ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"],
+    datasets : [
+      {
+        fillColor : "rgba(139,195,74, 0.5)",
+        strokeColor : "rgba(56,142,60,0.8)",
+        highlightFill: "rgba(139,195,74,0.75)",
+        highlightStroke: "rgba(56,142,60,1)",
+        data : {{week_sales.count}}
+      }
+    ]
+  };
+  var data_week3 = [
+    {% if week_sales.products %}
+      {% for product in week_sales.products %}
+        {
+          value:{{product.count}},
+          label:"{{product.product__name}}",
+          color:getRandomColor(),
+          highlight: colors,
+        },
+      {% endfor %}
+    {% else %}
+    {
+      value:1,
+      label:"No hay productos",
+      color:"#F7464A",
+      highlight: "#FF5A5E",
+    },
+    {% endif %}
+
+      ];
+
+  var data_year1 = {
+    labels : ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+    datasets : [
+      {
+        fillColor : "rgba(139,195,74, 0.5)",
+        strokeColor : "rgba(56,142,60,0.8)",
+        highlightFill: "rgba(139,195,74,0.75)",
+        highlightStroke: "rgba(56,142,60,1)",
+        data : {{year_sales.values}}
+      }
+    ]
+  };
+  var data_year2 = {
+    labels : ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+    datasets : [
+      {
+        fillColor : "rgba(139,195,74, 0.5)",
+        strokeColor : "rgba(56,142,60,0.8)",
+        highlightFill: "rgba(139,195,74,0.75)",
+        highlightStroke: "rgba(56,142,60,1)",
+        data : {{year_sales.count}}
+      }
+    ]
+  };
+  var data_year3 = [
+    {% if year_sales.products %}
+      {% for product in year_sales.products %}
+        {
+          value:{{product.count}},
+          label:"{{product.product__name}}",
+          color:getRandomColor(),
+          highlight: colors,
+        },
+      {% endfor %}
+    {% else %}
+    {
+      value:1,
+      label:"No hay productos",
+      color:"#F7464A",
+      highlight: "#FF5A5E",
+    },
+    {% endif %}
+
+      ];
+
+  var data_origin = {
+    labels : {{origin_sales.labels}},
+    datasets : [
+      {
+        fillColor : "rgba(139,195,74, 0.5)",
+        strokeColor : "rgba(56,142,60,0.8)",
+        highlightFill: "rgba(139,195,74,0.75)",
+        highlightStroke: "rgba(56,142,60,1)",
+        data : {{origin_sales.values}}
+      }
+    ]
+  };
+  var data_origin2 = {
+    labels : {{origin_sales.labels}},
+    datasets : [
+      {
+        fillColor : "rgba(139,195,74, 0.5)",
+        strokeColor : "rgba(56,142,60,0.8)",
+        highlightFill: "rgba(139,195,74,0.75)",
+        highlightStroke: "rgba(56,142,60,1)",
+        data : {{origin_sales.count}}
+      }
+    ]
+  };
+  var data_origin3 = [
+    {% if origin_sales.products %}
+      {% for product in origin_sales.products %}
+        {
+          value:{{product.count}},
+          label:"{{product.product__name}}",
+          color:getRandomColor(),
+          highlight: colors,
+        },
+      {% endfor %}
+    {% else %}
+    {
+      value:1,
+      label:"No hay productos",
+      color:"#F7464A",
+      highlight: "#FF5A5E",
+    },
+    {% endif %}
+
+      ];
+
+  monthEvents();
+  dayEvents();
+  weekEvents();
+  yearEvents();
+  originEvents();
+  function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+
+    var num = parseInt(color.slice(1),16), amt = Math.round(2.55 * 10), R = (num >> 16) + amt, G = (num >> 8 & 0x00FF) + amt, B = (num & 0x0000FF) + amt;
+    colors = "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
+
+
+    return color;
+  }
+
+  function monthEvents(){
+    var ctx = document.getElementById("month_sales1").getContext("2d");
+    var monthBar1 = new Chart(ctx).Bar(data_month, {
+      responsive : true,
+      tooltipTemplate: "<%= 'Día '+label+' : $'+value+' en Ventas' %>"
+    });
+
+    var ctx2 = document.getElementById("month_sales2").getContext("2d");
+    var monthBar2 = new Chart(ctx2).Bar(data_month2, {
+      responsive : true,
+      tooltipTemplate: "<%= 'Día '+label+' : '+value+' Productos Vendidos' %>"
+    });
+
+    var ctx3 = document.getElementById("month_sales3").getContext("2d");
+    var monthBar3 = new Chart(ctx3).Pie(data_month3);
+  }
+
+  function dayEvents(){
+    var day1 = document.getElementById("day_sales1").getContext("2d");
+    var dayBar1 = new Chart(day1).Bar(data_day, {
+      responsive : true,
+      tooltipTemplate: "<%= label+' : $'+value+' en Ventas' %>"
+    });
+    var day2 = document.getElementById("day_sales2").getContext("2d");
+    var dayBar2 = new Chart(day2).Bar(data_day2, {
+      responsive : true,
+      tooltipTemplate: "<%= label+' : '+value+' Productos Vendidos' %>"
+    });
+    var day3 = document.getElementById("day_sales3").getContext("2d");
+    var dayBar3 = new Chart(day3).Pie(data_day3);
+
+  }
+
+  function weekEvents(){
+    var week1 = document.getElementById("week_sales1").getContext("2d");
+    var weekBar1 = new Chart(week1).Bar(data_week1, {
+      responsive : true,
+      tooltipTemplate: "<%= label+' : $'+value+' en Ventas' %>"
+    });
+    var week2 = document.getElementById("week_sales2").getContext("2d");
+    var weekBar2 = new Chart(week2).Bar(data_week2, {
+      responsive : true,
+      tooltipTemplate: "<%= label+' : '+value+' Productos Vendidos' %>"
+    });
+    var week3 = document.getElementById("week_sales3").getContext("2d");
+    var weekBar3 = new Chart(week3).Pie(data_week3);
+  }
+
+  function yearEvents(){
+    var year1 = document.getElementById("year_sales1").getContext("2d");
+    var yearBar1 = new Chart(year1).Bar(data_year1, {
+      responsive : true,
+      tooltipTemplate: "<%= label+' : $'+value+' en Ventas' %>"
+    });
+    var year2 = document.getElementById("year_sales2").getContext("2d");
+    var yearBar2 = new Chart(year2).Bar(data_year2, {
+      responsive : true,
+      tooltipTemplate: "<%= label+' : '+value+' Productos Vendidos' %>"
+    });
+    var year3 = document.getElementById("year_sales3").getContext("2d");
+    var yearBar3 = new Chart(year3).Pie(data_year3);
+  }
+
+  function originEvents(){
+    var origin1 = document.getElementById("origin_sales1").getContext("2d");
+    var originBar1 = new Chart(origin1).Bar(data_origin, {
+      responsive : true,
+      tooltipTemplate: "<%= label+' : $'+value+' en Ventas' %>"
+    });
+    var origin2 = document.getElementById("origin_sales2").getContext("2d");
+    var originBar2 = new Chart(origin2).Bar(data_origin2, {
+      responsive : true,
+      tooltipTemplate: "<%= label+' : '+value+' Productos Vendidos' %>"
+    });
+    var origin3 = document.getElementById("origin_sales3").getContext("2d");
+    var originBar3 = new Chart(origin3).Pie(data_origin3);
+  }
+
+  window.onload = function(){
+    $("#day_sales").hide();
+    $("#week_sales").hide();
+    $("#year_sales").hide();
+    $("#origin_sales").hide();
+
+    $("#btn_day").on( "click",function(){
+      $("#day_sales").show();
+      $("#month_sales").hide();
+      $("#week_sales").hide();
+      $("#year_sales").hide();
+      $("#origin_sales").hide();
+      dayEvents();
+
+    });
+
+    $("#btn_month").on( "click",function(){
+      $("#day_sales").hide();
+      $("#month_sales").show();
+      $("#week_sales").hide();
+      $("#year_sales").hide();
+      $("#origin_sales").hide();
+      $("#month_sales").load();
+      monthEvents();
+    });
+
+    $("#btn_week").on( "click",function(){
+      $("#day_sales").hide();
+      $("#month_sales").hide();
+      $("#week_sales").show();
+      $("#year_sales").hide();
+      $("#origin_sales").hide();
+      weekEvents();
+
+    });
+
+    $("#btn_year").on( "click",function(){
+      $("#day_sales").hide();
+      $("#month_sales").hide();
+      $("#week_sales").hide();
+      $("#year_sales").show();
+      $("#origin_sales").hide();
+      //$("#year_sales").width($(window).width());
+      yearEvents();
+    });
+
+    $("#btn_origin").on( "click",function(){
+      $("#day_sales").hide();
+      $("#month_sales").hide();
+      $("#week_sales").hide();
+      $("#year_sales").hide();
+      $("#origin_sales").show();
+      originEvents();
+    });
+
+
+  }
+  </script>
+{% endblock extra_js %}
+{% endif %}

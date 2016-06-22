@@ -1,0 +1,94 @@
+<div id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="col-md-3">
+    <div class="panel panel-default">
+      <div class="list-group">
+        <strong class="list-group-item panel-title {{ active_agro }}" ><a href="{% url 'mi_agro' %}">Mi Agro</a></strong>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="list-group">
+        <strong class="list-group-item panel-title" role="tab" id="headingProfile" data-toggle="collapse" data-parent="#accordion" href="#collapseProfile" aria-expanded="true" aria-controls="collapseProfile"><i class="fa fa-arrow-circle-down"></i> Perfil</strong>
+        <div id="collapseProfile" class="panel-collapse collapse {{profile_in}}" role="tabpanel" aria-labelledby="headingProfile">
+          <a class="list-group-item {{ active_profile_edit }}" href="{% url 'profile' %}"><li class="fa fa-user"></li> Mi Perfil</a>
+          <a class="list-group-item {{active_update_password}}" href="{% url 'update_password' %}"><i class="fa fa-key"></i> Cambiar Contraseña</a>
+          <a class="list-group-item {{active_address}}" href="{% url 'address' %}"><i class="fa fa-map-marker"></i> Dirección de Envío</a></dd>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="list-group">
+        <strong class="list-group-item panel-title" role="tab" id="headingFarm" data-toggle="collapse" data-parent="#accordion" href="#collapseFarm" aria-expanded="true" aria-controls="collapseFarm"><i class="fa fa-arrow-circle-down"></i> Granja</strong>
+        <div id="collapseFarm" class="panel-collapse collapse {{farm_in}}" role="tabpanel" aria-labelledby="headingFarm">
+          {% if not haveFarm %}
+            <a class="list-group-item {{active_register_farm}}" href="{% url 'register_farm' %}"><li class="fa fa-home"></li> Registre su Granja</a>
+          {%else%}
+            {% if farmIsActive %}
+            <a class="list-group-item {{active_myfarm}}" href="{% url 'my_farm' %}"><li class="fa fa-home"></li> Mi Granja</a>
+            <a class="list-group-item {{active_products}}" href="{% url 'product_app:product_list' %}"><i class="fa fa-tree"></i> Productos</a>
+            <a class="list-group-item {{active_purchase_orders}}" href="{% url 'purchase_orders' %}"><i class="fa fa-shopping-cart"></i> Ordenes de Compra</a>
+            <a class="list-group-item {{active_shipping_options}}" href="{% url 'shipping_options' %}"><i class="fa fa-truck"></i> Opciones de Envío</a>
+            <a class="list-group-item {{active_payments}}" href="{% url 'payments' %}"><i class="fa fa-money"></i> Formas de Pago</a>
+            <a class="list-group-item {{active_feedback}}" href="{% url 'feedback' %}"><i class="fa fa-comment"></i> Opiniones</a>
+            <a class="list-group-item {{active_statistics}}" href="{% url 'statistics' %}"><i class="fa fa-line-chart"></i> Estadísticas</a>
+            <a class="list-group-item {{active_deactivate}}" href="{% url 'deactivate_farm' %}"><li class="fa fa-thumbs-o-down"></li> Desactivar</a>
+            {% else %}
+            <a class="list-group-item {{active_activate}}" href="{% url 'activate_farm' %}"><li class="fa fa-thumbs-o-up"></li> Activar</a>
+            {% endif %}
+          {%endif%}
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="list-group">
+        <strong class="list-group-item panel-title" role="tab" id="headingGroup" data-toggle="collapse" data-parent="#accordion" href="#collapseGroup" aria-expanded="true" aria-controls="collapseGroup"><i class="fa fa-arrow-circle-down"></i> Asociaciones</strong>
+        <div id="collapseGroup" class="panel-collapse collapse {{group_in}}" role="tabpanel" aria-labelledby="headingGroup">
+          {% if allGroups %}
+            {% for group in allGroups %}
+              <a class="list-group-item" id="{{group.group.slug}}" href="{% url 'groups_app:my_group' group.group.slug %}"><i class="fa fa-users"></i> {{group.group.name}}</a>
+            {% endfor %}
+          {% endif %}
+          <a class="list-group-item {{active_group_register}}" href="{% url 'groups_app:register'%}"><i class="fa fa-users"></i> Nueva Asociación</a>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="list-group">
+        <strong class="list-group-item panel-title" role="tab" id="headingFriends" data-toggle="collapse" data-parent="#accordion" href="#collapseFriends" aria-expanded="true" aria-controls="collapseFriends"><i class="fa fa-arrow-circle-down"></i> Amigos</strong>
+        <div id="collapseFriends" class="panel-collapse collapse {{friends_in}}" role="tabpanel" aria-labelledby="headingFriends">
+          <a class="list-group-item {{active_my_friends}}" href="{% url 'my_friends' %}"><i class="fa fa-user"></i> Mis Amigos</a>
+          <a class="list-group-item {{active_friends_invitation}}" href="{% url 'friends_invitations' %}"><i class="fa fa-angellist"></i> Solicitudes</a>
+        </div>
+      </div>
+    </div>
+    {% if user.is_superuser %}
+    <div class="panel panel-default">
+      <div class="list-group">
+        <strong class="list-group-item panel-title" role="tab" id="headingAdmin" data-toggle="collapse" data-parent="#accordion" href="#collapseAdmin" aria-expanded="true" aria-controls="collapseAdmin"><i class="fa fa-arrow-circle-down"></i> Administración</strong>
+        <div id="collapseAdmin" class="panel-collapse collapse {{admin_in}}" role="tabpanel" aria-labelledby="headingAdmin">
+          <a class="list-group-item {{active_blog}}" href="{% url 'blog' %}"><i class="fa fa-pagelines"></i> AgroBlog</a>
+          <a class="list-group-item {{active_mailbox}}" href="{% url 'mailbox' %}"><i class="fa fa-inbox"></i> Buzón de Sugerencias</a>
+          <a class="list-group-item {{active_product_category}}" href="{% url 'product_app:category' %}"><i class="fa fa-tint"></i> Categorías de Productos</a>
+          <a class="list-group-item {{active_occupations}}" href="{% url 'extras_app:occupations_list' %}"><i class="fa fa-user-secret"></i> Ocupaciones</a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="list-group">
+        <a class="list-group-item {{active_notifications}}" href="{% url 'notifications' %}"><i class="fa fa-bell"></i> Notificaciones
+        {% if unread_count %}
+         <span class="badge">{{ unread_count }}</span>
+        {% endif %}
+        </a>
+        <a class="list-group-item {{active_my_shopping}}" href="{% url 'my_shopping' %}"><i class="fa fa-shopping-cart"></i> Mis Compras</a>
+        <a class="list-group-item {{active_conversations}}" href="{% url 'message_app:conversations' %}"><i class="fa fa-envelope-o"></i> Mensajes
+        {% if unread_messages %}
+        <span class="badge">{{unread_messages}}</span>
+        {% endif %}
+        </a>
+        <a class="list-group-item {{active_product_comment}}" href="{% url 'product_comment' %}"><i class="fa fa-question-circle"></i> Preguntas</a>
+        <a class="list-group-item" href="{% url 'account:logout' %}"><i class="fa fa-sign-out"></i> Salir</a>
+      </div>
+    </div>
+  </div>
+</div>

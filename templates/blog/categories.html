@@ -1,0 +1,30 @@
+{% extends "./base.html" %}
+{% block title %}Categorías{% endblock title %}
+{% block active_blog %}active{% endblock %}
+
+{% block banner %}
+  {% include './banner_app.html' with image="banners/agro_blog.jpeg" title="AgroBlog" subtitle="Categorías" %}
+{% endblock banner %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'blog_app:agro_blog' %}">AgroBlog</a></li>
+    <li class="active">Categorías</li>
+  </ol>
+</div>
+{% if categories %}
+  {% for category in categories %}
+    {% url 'blog_app:category' category.slug as url_category %}
+    {% include "./card_category_blog.html" with category=category class="col-xs-12 col-sm-6 col-md-8 col-lg-6 col-md-6 list-margin" url_category=url_category count=category.countEntries%}
+  {% endfor %}
+{% else %}
+  <div class="alert alert-success" role="alert">No hay categorías disponibles</div>
+{% endif %}
+{% endblock container %}
+
+{% block extra_js %}
+  <script src="{{STATIC_URL}}js/comments.js" type="text/javascript"></script>
+  <script src="{{STATIC_URL}}js/parallax.js" type="text/javascript"></script>
+{% endblock extra_js %}

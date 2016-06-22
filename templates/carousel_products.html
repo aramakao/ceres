@@ -1,0 +1,47 @@
+{% block extra_css %}
+  <link  rel="stylesheet" href="{{STATIC_URL}}owl-carousel/owl.carousel.css"/>
+  <link  rel="stylesheet" href="{{STATIC_URL}}owl-carousel/owl.theme.css"/>
+  <style>
+    #owl_products .item{
+        background: #3fbf79;
+        padding: 5px 0px;
+        margin: 5px;
+        color: #FFF;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        text-align: center;
+    }
+    .customNavigation{
+      text-align: center;
+    }
+    .customNavigation a{
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+  </style>
+{% endblock extra_css %}
+  <div class="col-md-12">
+    <div class="page-header">
+      <h1 class="title-main">{{name}}</h1>
+    </div>
+    <div class="col-md-12">
+      <div id="owl_products" class="owl-carousel">
+        {% if source == 'farm' %}
+          {% for product in products %}
+            {% url 'product_farm' product.farm.slug product.slug as url_product %}
+            {% include './card_product.html' with url_prod=url_product product=product %}
+          {% endfor %}
+        {% else %}
+          {% for product in products %}
+            {% url 'product' product.slug as url_prod %}
+            {% include './card_product.html' with url_prod=url_prod product=product class=""%}
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>

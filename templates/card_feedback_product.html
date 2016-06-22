@@ -1,0 +1,14 @@
+{% if feedback %}
+  {% for fb in feedback %}
+  <h3>{{fb.order.buyer.username|slice:"2"}}***</h3>
+  <div class="media-body">
+    <small><strong>Calidad: </strong><input type="number" class="feedback" value="{{fb.quality}}"></small>
+    <small><strong>Precio: </strong><input type="number" class="feedback" value="{{fb.price}}"></small>
+    <small><strong>Descripción: </strong><input type="number" class="feedback" value="{{fb.description}}"></small>
+    <small><strong>Observación: </strong>{{fb.comment}}</small>
+  </div>
+  <hr>
+  {% endfor %}
+{% else %}
+  <div class="alert alert-success">No hay opiniones registradas.</div>
+{% endif %}

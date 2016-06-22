@@ -1,0 +1,78 @@
+{% extends "./base.html" %}
+{% block title %}{{ category.name|title }}{% endblock title %}
+{% block active_farms %}active{% endblock %}
+
+{% block banner %}
+  {% include "./banner_farm.html" with farm_profile=farm%}
+{% endblock banner %}
+
+{% block second_menu %}
+  {% include "./menu_category_farm.html" %}
+{% endblock %}
+
+{% block extra_css %}
+  <link type="text/css" href="{{STATIC_URL}}css/star-rating.min.css"  rel="stylesheet"/>
+{% endblock extra_css %}
+
+{% block menu %}
+  {% include "./menu.html" with name="Categorías" list=categories farm=farm %}
+{% endblock menu %}
+
+{% block meta %}
+  <meta name="description" content="Más de {{ paginator.count }} productos en {{category.name|title}} de la granja {{farm.farm|title}}" />
+  <meta name="keywords" content="AgroCeres,Campo,agricultura,Nariño,granja,productos">
+{% endblock meta %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'farms' %}">Granjas</a></li>
+    <li><a href="{% url 'farm' farm.farm.slug  %}">{{farm.farm|title}}</a></li>
+    <li><a href="{% url 'category_farm' farm.farm.slug %}">Categorías</a></li>
+    <li class="active">{{category.name|title}} <span class="badge"> {{ paginator.count }}  resultados</span></li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">{{category.name|title}}</h1>
+  </div>
+  <div class="col-md-12">
+  {% for product in products %}
+    {% url 'product_farm' product.farm.slug product.slug as url_product %}
+    {% include "./card_product.html" with product=product class="col-xs-12 col-sm-6 col-md-8 col-lg-6 col-md-6 list-margin" url_prod=url_product%}
+  {% endfor %}
+  </div>
+  <div class="col-md-12">
+    {% include "./pagination.html"%}
+  </div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}/owl-carousel/owl.carousel.js"></script>
+<script src="{{STATIC_URL}}js/star-rating.min.js" type="text/javascript"></script>
+<script src="{{STATIC_URL}}js/parallax.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $("#"+"{{category.slug}}").addClass("active");
+  $(".feedback").rating({'showCaption':true,showClear:false, disabled:true, 'stars':'5', 'min':'0', 'max':'5', 'step':'1', 'size':'xs',
+  starCaptions: function(val) {
+    if (val == 1) {
+      return val+' Estrella';
+    } else {
+      return val+' Estrellas';
+    }
+  }
+  });
+
+  var owl = $("#owl_products");
+    owl.owlCarousel({
+      items : 3, //10 items above 1000px browser width
+      itemsDesktop : [1000,3], //5 items between 1000px and 901px
+      itemsDesktopSmall : [900,2], // 3 items betweem 900px and 601px
+      itemsTablet: [600,1], //2 items between 600 and 0;
+      });
+      owl.trigger('owl.play',5000);
+    });
+</script>
+{% endblock extra_js %}

@@ -1,0 +1,21 @@
+{% load humanize %}
+<h3>Otros productos</h3>
+{% for pro_ads in ads %}
+<a href="{% url 'product' pro_ads.slug %}" data-toggle="tooltip" data-placement="left" title="{{pro_ads.name|title}}">
+  <div class="pin-container">
+    <div class="pin">
+      <div class="cover">
+        <img class="img-responsive" src="{{MEDIA_URL}}{{pro_ads.getPicture}}">
+      </div>
+      <div class="content">
+        <div class="main">
+          <p class="farm">{{pro_ads.farm.name|title}}</p>
+          <h3 class="name">{{pro_ads.name|title|truncatechars:20}}</h3>
+          <p class="summary">{{pro_ads.summary|truncatechars:30}}</p>
+          <p class="price">${{pro_ads.price|intcomma}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</a><br>
+{% endfor %}

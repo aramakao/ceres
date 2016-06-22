@@ -1,0 +1,34 @@
+{% extends "./base.html" %}
+{% block title %}AgroBlog{% endblock title %}
+{% block active_blog %}active{% endblock %}
+
+{% block banner %}
+  {% include './banner_app.html' with image="banners/agro_blog.jpg" title="AgroBlog" subtitle="Noticias, notas y mucho más!" %}
+{% endblock banner %}
+
+{% block second_menu %}
+  {% include './menu_blog.html' %}
+{% endblock second_menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li class="active">AgroBlog <span class="badge"> {{ paginator.count }}  resultados</span></li>
+  </ol>
+</div>
+{% if entries %}
+  {% for entry in entries %}
+    {% include './card_blog.html' with entry=entry %}
+  {% endfor %}
+{% else %}
+  <div class="alert alert-success" role="alert">No hay entradas disponibles</div>
+{% endif %}
+<div class="col-md-12">
+  {% include './pagination.html' %}
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+  <script src="{{STATIC_URL}}js/parallax.js"></script>
+{% endblock extra_js %}

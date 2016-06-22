@@ -1,0 +1,79 @@
+{% extends "./base.html" %}
+{% block title %}{{farm.farm.name|title}} - Nuestros Productos{% endblock title %}
+{% block active_farms %}active{% endblock %}
+
+{% block second_menu %}
+  {% include "./menu_category_farm.html" %}
+{% endblock %}
+
+{% block banner %}
+  {% include "./banner_farm.html" with farm_profile=farm%}
+{% endblock banner %}
+
+{% block meta %}
+  <meta name="description" content="Encuentra aquí todos los productos de {{farm.farm.name|title}}." />
+  <meta name="keywords" content="AgroCeres,Campo,agricultura,Nariño,granja,productos">
+{% endblock meta %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'farms' %}">Granjas</a></li>
+    <li><a href="{% url 'farm' farm.farm.slug  %}">{{farm.farm.name|title}}</a></li>
+    <li class="active">Nuestros Productos</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Nuestros Productos</h1>
+  </div>
+  {% for product in products %}
+    {% url 'product_farm' product.farm.slug product.slug as url_product %}
+    {% include "./card_product.html" with product=product class="col-xs-12 col-sm-6 col-md-8 col-lg-6 col-md-4 list-margin" url_prod=url_product%}
+  {% endfor %}
+  {% include "./pagination.html" %}
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+  <script src="{{STATIC_URL}}js/star-rating.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $(".feedback").rating({'showCaption':true,showClear:false, disabled:true, 'stars':'5', 'min':'0', 'max':'5', 'step':'1', 'size':'xs',
+      starCaptions: function(val) {
+        if (val == 1) {
+          return val+' Estrella';
+        } else {
+          return val+' Estrellas';
+        }
+      }
+      });
+    });
+  </script>
+  <script type="text/javascript">
+    (function($) {
+    $.fn.parallax = function(options) {
+              var windowHeight = $(window).height();
+              var settings = $.extend({
+                  speed        : 0.15
+              }, options);
+              return this.each( function() {
+                var $this = $(this);
+                $(document).scroll(function(){
+                      var scrollTop = $(window).scrollTop();
+                            var offset = $this.offset().top;
+                            var height = $this.outerHeight();
+            if (offset + height <= scrollTop || offset >= scrollTop + windowHeight) {
+              return;
+            }
+            var yBgPosition = Math.round((offset - scrollTop) * settings.speed);
+                $this.css('background-position', 'center ' + yBgPosition + 'px');
+                });
+              });
+          }
+      }(jQuery));
+
+      $('.bg-1').parallax({
+        speed : 0.15
+      });
+  </script>
+{% endblock extra_js %}

@@ -1,0 +1,37 @@
+{% extends "./base.html" %}
+{% block title %}Mis Asociaciones{% endblock title %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_group="active" group_in="in"%}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li class="active">Mis Asociaciones <span class="badge">{{groups.count}}</span></li>
+  </ol>
+  <div class="page-header">
+		<h1 class="title-main">Mis Asociaciones</h1>
+	</div>
+  <div class="col-md-12">
+    <a href="{% url 'groups_app:register' %}" class="btn btn-success">Nueva Asociación</a>
+    <div class="row"><br>
+    {% if groups %}
+      {% for group in groups %}
+        {% url 'groups_app:my_group' group.group.slug as url_group %}
+        {% include "./card_group.html" with url_group=url_group group=group.profile class="col-xs-12 col-sm-6 col-md-8 col-lg-6 col-md-6 list-margin"  members=group.members%}
+      {% endfor %}
+    {% else %}
+    <div class="alert alert-success" role="alert">
+      <strong>Información!</strong> No perteneces a una asociación. Puedes ver las asociaciones registradas <a href="{% url 'groups_app:groups' %}" class="alert-link">aquí...</a> y enviar una solicitud para que puedas hacer parte de esta.
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock container %}

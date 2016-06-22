@@ -1,0 +1,57 @@
+{% extends "./base.html" %}
+{% block title %}Ocupaciones{% endblock title %}
+
+{% block messages%}
+	{% include './messages.html'%}
+{% endblock messages%}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_occupations="active"  admin_in="in"%}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+		<li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+		<li><a href="{% url 'extras_app:occupations_list' %}">Ocupaciones</a></li>
+		<li class="active">Actualizar Ocupación</li>
+	</ol>
+	<div class="page-header">
+    <h1 class="title-main">Actualizar Ocupación</h1>
+  </div>
+	<div class="col-md-12">
+		<form method="post" id="form">{% csrf_token %}
+      <div class="col-md-12">
+        <div class="col-md-6">
+  				<div class="form-group">
+  					<label for="id_name">Nombre</label>
+  					{{ form.name }}
+  				</div>
+  			</div>
+      </div>
+			<div class="col-md-12">
+        <div class="col-md-6">
+          <button type="submit" class="btn btn-lg btn-success btn-block">Actualizar Ocupación</button>
+        </div>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+    <script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+          $("#form").validate({
+            rules: {
+              name: {required: true,},
+            },
+            messages: {
+              name: "Este campo es requerido",
+            }
+          });
+        });
+    </script>
+{% endblock extra_js %}

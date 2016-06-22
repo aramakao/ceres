@@ -1,0 +1,15 @@
+{% extends "./base.html" %}
+{% block title %}Registre su Tienda{% endblock title %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_register_farm="active" %}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <div class="page-header">
+		<h1 class="title-main">Felicitaciones... ahora puede vender sus productos por este medio!!</h1>
+    <h3><a href="{% url 'my_farm' %}">Continuar</a></h3>
+	</div>
+</div>
+{% endblock container %}

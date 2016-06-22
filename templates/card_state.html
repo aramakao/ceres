@@ -1,0 +1,32 @@
+<div class="pin">
+  {% if admin %}
+  <button type="submit" name="btn_delete:{{state.id}}" class="close btn-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+  {% endif %}
+  <div class="content">
+    <div class="main">
+      <div class="media">
+        <div class="media-left">
+          <a href="{% url 'user_profile' state.user %}">
+            <img class="media-object img-circle img-avatar" src="{{MEDIA_URL}}{{state.user.avatar}}" alt="{{ state.user.get_full_name |title }}">
+          </a>
+        </div>
+        <div class="media-body">
+          <h4 class="media-heading"><a href="{% url 'user_profile' state.user %}">{{ state.user.get_full_name |title }}</a></h4>
+          {{state.text}}
+        </div>
+        {% if state.picture%}
+          <img src="{{MEDIA_URL}}{{state.picture}}" class="img-rounded img-responsive img-state" alt="Imagén de una Publicación" />
+        {% endif %}
+      </div><br><small>Hace {{state.date|timesince}}</small>
+    </div>
+  </div>
+  <div class="footer">
+    {% if user.is_authenticated %}
+    <span class="btn badge fa fa-comment comments" id="{{state.id}}" data-toggle="modal" data-target="#modal_comments"> {{state.count_comments}}</span>
+    {% else %}
+    <div class="container">
+      <div class="alert alert-success" role="alert"><strong>Importante! </strong>Para ver los comentarios debes iniciar sesión <a href="{% url 'login'%}">aquí.</a></div>
+    </div>
+    {% endif %}
+  </div>
+</div>

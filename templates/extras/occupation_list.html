@@ -1,0 +1,56 @@
+{% extends "./base.html" %}
+{% block title %}Ocupaciones{% endblock title %}
+{% block subtitle %}Ocupaciones{% endblock subtitle %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_occupations="active" admin_in="in" %}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+		<li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+		<li class="active">Ocupaciones</li>
+	</ol>
+	<div class="page-header">
+    <h1 class="title-main">Ocupaciones</h1>
+  </div>
+	<div class="col-md-12">
+		<h3><a href="{% url 'extras_app:occupation_add' %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Nueva Ocupación</a></h3>
+		{% if not occupations %}
+			<div class="alert alert-success" role="alert">
+				<strong>Información!</strong> No hay ocupaciones registradas..
+			  <a href="{% url 'extras_app:occupation_add' %}" class="alert-link">Agregue un Ocupación</a>
+			</div>
+		{% else %}
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Ocupación</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for occupation in occupations %}
+				<tr>
+					<td width="70%">
+						<h4 class="media-heading"><a href={% url 'extras_app:occupation_update' occupation.id %}><strong>{{occupation.name}}</strong></a></h4>
+					</td>
+					<td>
+						<a href={% url 'extras_app:occupation_update' occupation.id %} class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="top" title="Editar"><span class="glyphicon glyphicon-edit"></span></a>
+						<a href={% url 'extras_app:occupation_delete' occupation.id %} class="delete btn btn-danger btn-xs" data-toggle="tooltip" data-placement="top" title="Borrar"><span class="glyphicon glyphicon-trash"></span></a>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+		{% include './pagination.html'%}
+	</div>
+</div>
+{% endblock container %}

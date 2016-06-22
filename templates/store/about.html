@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="es-co">
+<head>
+    <meta charset="utf-8">
+    {% include "./seo.html" with m_keywords="AgroCeres,Campo,agricultura,Nariño" m_description="AGROCERES es una plataforma donde podrás conectarte en torno al mundo TICs en la agricultura." m_title="AgroCeres - The Social Agro Marketplace" m_image="/static/img/banner.jpg"%}
+    <link rel="shortcut icon" type="image/png" href="{{STATIC_URL}}img/favicon.png" />
+    <link rel="apple-touch-icon" sizes="57x57" href="{{STATIC_URL}}img/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="{{STATIC_URL}}img/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="{{STATIC_URL}}img/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{STATIC_URL}}img/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="{{STATIC_URL}}img/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="{{STATIC_URL}}img/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="{{STATIC_URL}}img/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{STATIC_URL}}img/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{STATIC_URL}}img/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="{{STATIC_URL}}img/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{STATIC_URL}}img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{STATIC_URL}}img/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{STATIC_URL}}img/favicon-16x16.png">
+    <link rel="manifest" href="{{STATIC_URL}}img/manifest.json">
+    <meta name="msapplication-TileColor" content="#8BC34A">
+    <meta name="msapplication-TileImage" content="{{STATIC_URL}}img/ms-icon-144x144.png">
+    <meta name="theme-color" content="#8BC34A">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/bootstrap.css">
+    <link rel="stylesheet" id="ppstyle" type="text/css" href="{{STATIC_URL}}css/style_landing.css">
+    <link rel='stylesheet' href='{{STATIC_URL}}css/animate.css' /><link rel='stylesheet' href='{{STATIC_URL}}css/font-awesome.min.css'/><link rel='stylesheet' href='{{STATIC_URL}}css/linecons.min.css'/><link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <script src="{{STATIC_URL}}js/jquery-2.1.0.min.js"></script>
+    <script src="{{STATIC_URL}}js/bootstrap.js"></script>
+    <script src="{{STATIC_URL}}js/blocs.js"></script>
+    <title>AgroCeres</title>
+</head>
+<body>
+<!-- Main container -->
+<div class="page-container">
+<!-- Hero Bloc -->
+<div id="hero-bloc" class="bloc hero bgc-white b-parallax bg-3020337-poster-p-1-with-farmplicity-the-farm-to-table-movement-meets-the-21st-century d-bloc">
+	<div class="container bloc-sm hero-nav">
+		<nav class="navbar row">
+			<div class="navbar-header">
+				<button id="nav-toggle" type="button" class="ui-navbar-toggle navbar-toggle" data-toggle="collapse" data-target=".navbar-1">
+					<span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+				</button>
+			</div>
+			<div class="navbar-collapse navbar-1 collapse in">
+				<ul class="site-navigation nav navbar-nav">
+				</ul>
+			</div>
+		</nav>
+	</div>
+	<div class="v-center text-center">
+		<div class="vc-content">
+			<h1 class=" lg-shadow animated zoomIn">
+				AgroCeres
+			</h1>
+			<h3 class=" lg-shadow animated zoomIn">
+				The Social Agro Marketplace
+			</h3><br /><br /><br /><a href={% url 'home' %} class="btn btn-xl btn-d">Ingresar</a>
+      <a id="scroll-hero" class="btn-dwn" ><span class="fa fa-chevron-down icon-2"></span></a>
+		</div>
+	</div>
+</div>
+<!-- Hero Bloc END -->
+
+<!-- bloc-2 -->
+<div class="bloc b-parallax bgc-white tc-dim-gray" id="bloc-2">
+	<div class="container bloc-md">
+		<div class="row">
+			<div class="col-sm-12">
+				<h2 class="text-center mg-md tc-dark-jungle-green">
+					Nuestro equipo
+				</h2>
+				<p class="sub-heading text-center">
+					Le ponemos el corazón a nuestro trabajo
+				</p>
+			</div>
+		</div>
+		<div class="row voffset">
+			<div class="col-sm-2">
+				<img src="{{STATIC_URL}}img/11202666_957048087649953_3993146988558567354_n.jpg" class="img-responsive img-circle" alt="Jonhatan Fajardo" />
+			</div>
+			<div class="col-sm-4">
+				<h3 class="mg-md tc-dark-jungle-green">
+					Jonhatan Fajardo
+				</h3>
+				<p>
+				</p><br /><a href={% url 'home' %} target="_blank"><span class="fa fa-twitter icon-sm pull-left icon-green-ryb"></span></a><a href={% url 'home' %} target="_blank"><span class="fa fa-facebook icon-sm pull-left icon-green-ryb"></span></a><a href={% url 'home' %} target="_blank"><span class="fa fa-dribbble icon-sm pull-left icon-green-ryb"></span></a>
+			</div>
+			<div class="col-sm-2">
+				<img src="{{STATIC_URL}}img/12140852_1054967594548289_6699007299533293262_n.jpg" class="img-responsive img-circle" alt="Mayra Arteaga"/>
+			</div>
+			<div class="col-sm-4">
+				<h3 class="mg-md tc-dark-jungle-green">
+					Mayra Arteaga
+				</h3>
+				<p>
+				</p><br /><a href={% url 'home' %} target="_blank"><span class="fa fa-twitter icon-sm pull-left icon-green-ryb"></span></a><a href={% url 'home' %} target="_blank"><span class="fa fa-facebook icon-sm pull-left icon-green-ryb"></span></a><a href={% url 'home' %} target="_blank"><span class="fa fa-dribbble icon-sm pull-left icon-green-ryb"></span></a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- bloc-2 END -->
+
+<!-- bloc-3 -->
+<div class="bloc bgc-green-ryb d-bloc" id="bloc-3">
+	<div class="container bloc-md">
+		<div class="col-sm-12 col-md-8 col-md-offset-2">
+			<h4 class="text-center ">
+				AGROCERES es una plataforma donde podrás conectarte en torno al mundo TICs en la agricultura. Es una propuesta enfocada al sector agropecuario para lograr su competitividad, dejando atrás la comercialización tradicional y optando por las nuevas tecnologías.
+			</h4>
+			<div class="text-center">
+				<a href={% url 'home' %} class="btn  btn-d btn-lg">Únete ya!</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- bloc-3 END -->
+
+<!-- Footer - bloc-4 -->
+<div class="bloc b-parallax bgc-white tc-dim-gray" id="bloc-4">
+	<div class="container bloc-md">
+		<div class="row">
+			<div class="col-sm-6">
+				<img src="{{STATIC_URL}}img/rsz_06-05-2013foodmarket.jpg" class="img-responsive img-rd" alt="El Problema"/>
+			</div>
+			<div class="col-sm-6">
+				<h2 class="mg-md">
+					El Problema
+				</h2>
+				<p class="mg-lg">
+          En el territorio Colombiano y más específicamente en Nariño, la Agricultura es la actividad productiva más desarrollada, por la gran cantidad de tierras y zonas naturales que aún no han sido construidas. Es una región rica en paisajes y tierras cultivables que expone los mejores productos alimenticios a nivel nacional, sin embargo, el sector agropecuario posee un bajo nivel de competitividad, debido a la escasa oferta de tecnologías de la información y comunicación (TIC’s), la no identificación de mercados atractivos, la baja tecnología del sector agropecuario, entre otros factores, que generan un bajo nivel de comercialización y por ende un escaso nivel de competitividad ante otros sectores de la sociedad. Adicionalmente, la comercialización se hace de forma individual, actividad que realiza el mismo campesino y en la que la mayoría de las veces no recibe un precio justo que compense la ardua labor que realiza en el campo, ya que sus productos son vendidos al primer eslabón de una larga cadena de intermediarios. Al ser una comercialización individual, no opta por la organización en Gremios o Asociaciones que le permitan la comercialización en mayor volumen. Finalmente el mayor problema que actualmente sacude al campesino nariñense es el Tratado de Libre Comercio (TLC). Es un hecho que el Gobierno Nacional ha adoptado este sistema y por lo tanto el agro nariñense y colombiano, debe prepararse para competir con éxito en los mercados internacionales.
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Footer - bloc-4 END -->
+
+<!-- Footer - bloc-5 -->
+<div class="bloc bgc-white b-parallax tc-dim-gray" id="bloc-5">
+	<div class="container bloc-sm">
+		<div class="row">
+			<div class="col-sm-6">
+				<h2 class="mg-md text-right">
+					La Solución
+				</h2>
+				<p class="mg-lg text-right">
+          Agroceres brinda una alternativa para la difusión y comercialización de productos agropecuarios utilizando Tecnologías de la información y Comunicación (TIC’s). Es una herramienta que permite al campesino solucionar algunos problemas existentes, acercándolo a la tecnología y así mismo dándolo a conocer en el mercado, ya que no se debe permitir la decadencia de un sector tan importante y representativo en la región.
+Es muy importante proponer un mercado fácil y atractivo para el agricultor que lo incentive en el trabajo que ha sido su sustento a lo largo de los años; es muy importante familiarizarlo con la tecnología, motivarlo al trabajo colectivo y sobretodo motivarlo a la comercialización directa con empresas manufactureras, fábricas o personas demandantes de productos, de una manera sencilla e innovadora que beneficie sus ingresos y que le permita ser competitivo en el mercado nacional e internacional.
+				</p>
+			</div>
+			<div class="col-sm-6">
+				<img src="{{STATIC_URL}}img/rsz_2491680_0_635167857945395803.jpg" class="img-responsive img-rd" alt="La Solución" />
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Footer - bloc-5 END -->
+
+<!-- Footer - bloc-6 -->
+<div class="bloc bgc-green-ryb d-bloc" id="bloc-6">
+	<div class="container bloc-sm">
+		<div class="row">
+			<div class="text-center">
+				<a href={% url 'home' %} class="btn  btn-d btn-xl">Has parte de esta nueva red!</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Footer - bloc-6 END -->
+
+<!-- Footer - bloc-7 -->
+<div class="bloc l-bloc bgc-white feature-list tc-dim-gray" id="bloc-7">
+	<div class="container bloc-md">
+		<div class="row">
+			<div class="col-sm-12">
+				<h2 class="text-center tc-dark-jungle-green mg-sm">
+					Características
+				</h2>
+			</div>
+		</div>
+		<div class="row voffset">
+			<div class="col-sm-6">
+				<div class="col-sm-9">
+					<h3 class="text-right mg-md tc-dark-jungle-green">
+						AgroBlog
+					</h3>
+					<p class="text-right">
+						Amigo productor! Este es un espacio para que usted pueda producir y publicar contenidos acerca de su granja, productos, avisos, noticias, servicios y actividades que quiera compartir con otros miembros de la Plataforma. De igual manera usted podrá mirar ofertas, demandas y servicios relacionados con el sector agropecuario.
+					</p>
+				</div>
+				<div class="col-sm-3">
+					<div class="text-center">
+						<span class="fa fa-newspaper-o icon-md icon-round icon-green-ryb"></span>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="col-sm-3">
+					<div class="text-center">
+						<span class="fa fa-group icon-round icon-md icon-green-ryb"></span>
+					</div>
+				</div>
+				<div class="col-sm-9">
+					<h3 class="mg-md tc-dark-jungle-green">
+						Asociaciones
+					</h3>
+					<p>
+						AgroCeres brinda un espacio para que usted pueda crear su propio Gremio o Asociación dedicada a una misma actividad comercial. Si usted quiere dar a conocer sus productos y comercializar de forma organizada, esta herramienta es la adecuada para usted. Que espera para probarla!
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="row voffset">
+			<div class="col-sm-6">
+				<div class="col-sm-9">
+					<h3 class="text-right mg-md tc-dark-jungle-green">
+						Sistema de Comunicaciones
+					</h3>
+					<p class="text-right">
+						Esta sección ha sido diseñada pensando en todos aquellos productores, comerciantes y profesionales del sector agropecuario que desean establecer comunicación directa para la comercialización de sus productos y servicios. Manténgase siempre en contacto con sus amigos y socios y haga crecer su negocio!
+					</p>
+				</div>
+				<div class="col-sm-3">
+					<div class="text-center">
+						<span class="li_bubble icon-round icon-md icon-green-ryb"></span>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="col-sm-3">
+					<div class="text-center">
+						<span class="fa fa-user icon-round icon-md icon-green-ryb"></span>
+					</div>
+				</div>
+				<div class="col-sm-9">
+					<h3 class="mg-md tc-dark-jungle-green">
+						Usuarios
+					</h3>
+					<p>
+						Agroceres le permite crear su propio perfil de usuario para que otras personas lo puedan ubicar, conocer y contactarse con usted. Así mismo usted puede buscar y agregar nuevos amigos, socios, Empresas y fábricas, para negociar y comercializar productos y también compartir nuevas experiencias agrícolas.
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="row voffset">
+			<div class="col-sm-6">
+				<div class="col-sm-9">
+					<h3 class="text-right mg-md tc-dark-jungle-green">
+						Granjas
+					</h3>
+					<p class="text-right">
+						Este es un espacio diseñado para que usted fortalezca su negocio por medio de la creación de su propia granja on-line que le permita difundir, negociar y comercializar los productos que usted ofrece, con el fin de cosechar las mejores ganancias para su negocio.
+					</p>
+				</div>
+				<div class="col-sm-3">
+					<div class="text-center">
+						<span class="li_shop icon-round icon-md icon-green-ryb"></span>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="col-sm-3">
+					<div class="text-center">
+						<span class="fa fa-map-marker icon-round icon-md icon-green-ryb"></span>
+					</div>
+				</div>
+				<div class="col-sm-9">
+					<h3 class="mg-md tc-dark-jungle-green">
+						GeoGranjas
+					</h3>
+					<p>
+						Es una herramienta para dar a conocer sus granjas y productos en el mapa, para que Empresas, Fábricas o personas demandantes de productos puedan localizarlo de forma más fácil y rápida.
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Footer - bloc-7 END -->
+
+<!-- Footer - bloc-8 -->
+<div class="bloc bgc-green-ryb d-bloc" id="bloc-8">
+	<div class="container bloc-sm">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="row">
+					<div class="col-sm-6">
+						<a href="https://www.facebook.com/AgroCeres.org/" target="_blank"><span class="fa fa-facebook pull-right icon-lg icon-white"></span></a>
+					</div>
+					<div class="col-sm-6">
+						<a href="https://twitter.com/AgroCeres" target="_blank"><span class="fa fa-twitter pull-left icon-lg icon-white"></span></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Footer - bloc-8 END -->
+
+<!-- Footer - bloc-9 -->
+<div class="bloc d-bloc bgc-white" id="bloc-8">
+	<div class="container bloc-sm">
+		<div class="row">
+      <div class="col-sm-12">
+        <div class="col-sm-12">
+          <a target="_blank" href="https://play.google.com/store/apps/details?id=co.playsoft.agroceres&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-AC-global-none-all-co-pr-py-PartBadges-Oct1515-1"><img class="img-responsive" alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/apps/es-419-play-badge.png" style="margin-left: auto;margin-right: auto;display: block;width:25%;"/></a>
+  			</div>
+      </div>
+		</div>
+	</div>
+</div>
+<!-- Footer - bloc-9 END -->
+
+<!-- Footer - bloc-10 -->
+<div class="bloc l-bloc bgc-white tc-dark-jungle-green" id="bloc-10">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<p class="text-center">
+					AgroCeres {% now "Y" %}  - Hecho con el <i class="fa fa-heart icon-sm icon-green-ryb"></i>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Footer - bloc-10 END -->
+</div>
+<!-- Main container END -->
+
+</body>
+
+<!-- Google Analytics -->
+
+<!-- Google Analytics END -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-72704630-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '100738913618415',
+      xfbml      : true,
+      version    : 'v2.6'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+</html>

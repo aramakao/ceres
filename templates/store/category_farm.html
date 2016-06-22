@@ -1,0 +1,42 @@
+{% extends "./base.html" %}
+{% block title %}Categorías{% endblock title %}
+{% block active_farms %}active{% endblock %}
+
+{% block second_menu %}
+  {% include "./menu_category_farm.html" %}
+{% endblock %}
+
+{% block banner %}
+  {% include "./banner_farm.html" with farm_profile=farm%}
+{% endblock banner %}
+
+{% block meta %}
+  <meta name="description" content="Más de {{ paginator.count }} productos en la granja {{farm.farm|title}}" />
+  <meta name="keywords" content="AgroCeres,Campo,agricultura,Nariño,granja,productos">
+{% endblock meta %}
+
+{% block extra_css %}
+  <link type="text/css" href="{{STATIC_URL}}css/star-rating.min.css"  rel="stylesheet"/>
+{% endblock extra_css %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'farms' %}">Granjas</a></li>
+    <li><a href="{% url 'farm' farm.farm.slug  %}">{{farm.farm|title}}</a></li>
+    <li class="active">Categorías <span class="badge"> {{ paginator.count }}  resultados</span></li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Categorías</h1>
+  </div>
+  {% for category in categories %}
+    {% url 'category_product_farm' farm.farm.slug category.category.slug as url_category %}
+    {% include "./card_category.html" with category=category.category url_category=url_category count=category.count%}
+  {% endfor %}
+  {% include "./pagination.html"%}
+</div>
+{% endblock container %}
+{% block extra_js %}
+  <script src="{{STATIC_URL}}js/parallax.js"></script>
+{% endblock extra_js %}

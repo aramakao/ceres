@@ -1,0 +1,39 @@
+<div class="banner-main">
+  <section class="bg-1 text-center" id="image-banner"  style="background: url('{{MEDIA_URL}}{{profile.banner}}') no-repeat fixed center 8px / cover  transparent;">
+    <div class="image-upload">
+      <label for="file-input-profile">
+        <img id="image-profile" style="cursor:pointer" class="img-profile-edit img-circle responsive-img" src={{MEDIA_URL}}{{profile.user.avatar}}>
+      </label>
+      <input id="file-input-profile" type="file"  accept="image/*"/>
+    </div>
+    <div class="banner">
+      <div class="banner-content no_margin">
+        <h3 class="name_profile no_margin">{{ name|title }}</h3>
+        <label class="profession_profile no_margin">{{ user_profile.occupation }}</label>
+        <p class="no_margin">
+        {% if user_profile.facebook %}
+          <a href="http://fb.me/{{profile.facebook}}" target="_blank"><i class="fa fa-facebook icon_profile"></i></a>
+        {%endif%}
+        {%if user_profile.twitter%}
+          <a href="http://twitter.com/{{profile.twitter}}" target="_blank"><i class="fa fa-twitter icon_profile"></i></a>
+        {%endif%}
+        </p>
+        <p class="no_margin"><i class="fa fa-envelope"></i> {{ user_profile.user.email }}
+          {% if user_profile.mobile %}
+           | <i class="fa fa-phone"></i> {{ user_profile.mobile }}
+          {% endif %}
+          {% if user_profile.address %}
+           | <i class="fa fa-map-marker"></i> {{ user_profile.address }}
+          {% endif %}
+        </p>
+      </div>
+    </div>
+    <br>
+    <div class="image-upload">
+      <label for="file-input-bg" class="change-img" title="Cambiar imagen de fondo">
+        <i class="fa fa-camera"></i> Cambiar fondo
+      </label>
+      <input id="file-input-bg" type="file"  accept="image/*"/>
+    </div>
+  </section>
+</div>

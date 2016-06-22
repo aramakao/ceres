@@ -1,0 +1,29 @@
+<section class="bg-1 text-center" id="image-banner"  style="background: url('{{MEDIA_URL}}{{group_profile.banner}}') no-repeat fixed center 8px / cover  transparent;">
+  <div class="image-upload">
+    <label for="file-input-profile" title="Cambiar imagen de perfil">
+      <img id="image-profile" style="cursor:pointer" class="img-profile-edit img-profile img-circle responsive-img" src={{MEDIA_URL}}{{group_profile.group.logo}}>
+    </label>
+    <input id="file-input-profile" type="file"  accept="image/*"/>
+  </div>
+  <div class="banner">
+    <div class="banner-content no_margin">
+      <h3 class="name_profile no_margin">{{ group_profile.group.name|title }}</h3>
+      <label class="profession_profile no_margin">{{ group_profile.slogan }}</label>
+      <p class="no_margin">
+      {% if group_profile.facebook %}
+        <a href="http://fb.me/{{farm_profile.facebook}}" target="_blank"><i class="fa fa-facebook icon_profile"></i></a>
+      {%endif%}
+      {%if group_profile.twitter%}
+        <a href="http://twitter.com/{{group_profile.twitter}}" target="_blank"><i class="fa fa-twitter icon_profile"></i></a>
+      {%endif%}
+      </p>
+      <p><i class="fa fa-map-marker"></i> {{group_profile.group.address}} | <i class="fa fa-phone"></i> {{group_profile.group.phone}}</p>
+    </div>
+  </div>
+  <div class="image-upload">
+    <label for="file-input-bg" class="change-img" title="Cambiar imagen de fondo">
+      <i class="fa fa-camera"></i> Cambiar fondo
+    </label>
+    <input id="file-input-bg" type="file"  accept="image/*"/>
+  </div>
+</section>

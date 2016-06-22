@@ -1,0 +1,32 @@
+{% extends "./base.html" %}
+{% block title %}Activar Granja{% endblock title %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_activate="active" farm_in="in" %}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+		<li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+		<li class="active">Activar Granja</li>
+	</ol>
+	<div class="page-header">
+		<h1 class="title-main">¿Deseas activar tu granja?</h1>
+	</div>
+	<div class="col-md-12">
+		<div class="alert alert-success" role="alert"><strong>Importante!!!</strong>
+			Al activar la granja, los productos y el perfil de tu granja serán visibles para que tus clientes
+			adquieran tus productos.</div>
+			<form method="post">{% csrf_token %}
+				<input type="submit" class="btn btn-success btn-block" name="name" value="ACTIVAR GRANJA"><br>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock container %}

@@ -1,0 +1,30 @@
+{% extends "./base.html" %}
+{% block title %}Granjas{% endblock title %}
+{% block active_farms %}active{% endblock %}
+
+{% block banner %}
+  {% include './banner_app.html' with image="banners/granjas.jpg" title="Granjas" subtitle="Unión y participación" %}
+{% endblock banner %}
+
+{% block meta %}
+  <meta name="description" content="Este es un espacio diseñado para que el agricultor fortalezca su negocio por medio de la creación de su propia granja on-line que le permita difundir, negociar y comercializar sus productos." />
+  <meta name="keywords" content="AgroCeres,Campo,agricultura,Nariño,granja,asociaciones,{{ group.group.name|title }}">
+{% endblock meta %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li class="active">Granjas <span class="badge"> {{ paginator.count }}  resultados</span></li>
+  </ol>
+</div>
+  {% for farm in farms %}
+    {% include "./card_farm.html" with profile=farm class="col-sm-4 col-lg-6 col-md-6" %}
+  {% endfor %}
+  <div class="col-md-12">
+    {% include "./pagination.html" %}
+  </div>
+{% endblock container%}
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/parallax.js"></script>
+{% endblock extra_js %}

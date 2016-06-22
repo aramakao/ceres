@@ -1,0 +1,47 @@
+{% extends "account/base_template.html" %}
+{% block title %}Bienvenido de Nuevo{% endblock title %}
+{% block modal_title %}Iniciar Sesión{% endblock modal_title %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block content %}
+<form method="POST" class="form-signin">{% csrf_token %}
+  <div class="modal-body">
+    {{login_form.username}}
+    {{login_form.password}}
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" value="" id="remember_me" name="remember_me"> Recordar mi cuenta
+      </label>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-lg btn-success btn-block" type="submit">Ingresar</button><hr>
+    <p class="text-center no_margin">
+      También puedes:
+    </p>
+    <a href="{% url 'social:begin' 'twitter' %}" class="btn btn-block btn-social btn-twitter">
+     <i class="fa fa-twitter"></i>
+     Ingresar con Twitter
+    </a>
+    <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-block btn-social btn-facebook">
+      <i class="fa fa-facebook"></i>
+      Ingresar con Facebook
+    </a>
+    <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-block btn-social btn-google">
+      <i class="fa fa-google-plus"></i>
+      Ingresar con Google
+    </a>
+  </div>
+</form>
+{% endblock content %}
+
+{% block account_link %}
+  <p class="text-center">
+    <a href="{% url 'account:reset' %}">¿Olvidaste la contraseña?</a><br/>
+    ¿No tienes una cuenta?
+    <a href="{% url 'account:register' %}"class="text-green">Crear cuenta</a>
+  </p>
+{% endblock account_link%}

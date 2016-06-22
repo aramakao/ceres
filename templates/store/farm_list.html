@@ -1,0 +1,25 @@
+{% extends "./base.html" %}
+{% block pin_profile %}{% endblock pin_profile %}
+{% block title %}{{category.name|title}}{% endblock title %}
+{% block subtitle %}{{category.name|title}}{% endblock subtitle %}
+{% block menu %}{% endblock menu %}
+
+{% block master_content %}
+<div class="col-sm-12 pin">
+  {% block breadcrumbs %}
+    <ol class="breadcrumb">
+      <li><a href="{% url 'home' %}">Inicio</a></li>
+      <li class="active">Granjas <span class="badge"> {{ paginator.count }}  resultados</span></li>
+    </ol>
+  {% endblock breadcrumbs %}
+  <div class="page-header">
+    <h1>{{category.name|title}}</h1>
+  </div><br>
+  <div class="row">
+  {% for farm in farms %}
+    {% include "./card_farm.html" whith farm=farm class="col-sm-4 col-lg-4 col-md-4" %}
+  {% endfor %}
+  </div>
+  {% include "./pagination.html"%}
+</div>
+{% endblock master_content%}

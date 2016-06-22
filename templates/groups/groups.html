@@ -1,0 +1,53 @@
+{% extends "./base_farm.html" %}
+{% block active_groups %}active{% endblock %}
+{% block title %}Asociacionesx{% endblock title %}
+
+{% block banner %}
+  {% include './banner_app.html' with image="banners/asociaciones.jpg" title="Asociaciones" subtitle="Unión y participación" %}
+{% endblock banner %}
+
+{% block seo %}
+  {% include "./seo.html" with m_keywords="AgroCeres,Campo,agricultura,Nariño,granja,asociaciones" m_description="AgroCeres brinda un espacio para que usted pueda crear su propio Gremio o Asociación dedicada a una misma actividad comercial." m_title="Asociaciones | AgroCeres" m_image="/media/banners/asociaciones.jpg"%}
+{% endblock seo %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li class="active">Asociaciones <span class="badge"> {{ paginator.count }}  resultados</span></li>
+  </ol>
+</div>
+  {% for group in groups %}
+    {% include "./card_group.html" with group=group class="col-xs-12 col-sm-6 col-md-6 col-lg-6 list-margin" %}
+  {% endfor %}
+  {% include "./pagination.html" %}
+{% endblock container %}
+{% block extra_js %}
+<script type="text/javascript">
+  (function($) {
+  $.fn.parallax = function(options) {
+            var windowHeight = $(window).height();
+            var settings = $.extend({
+                speed        : 0.15
+            }, options);
+            return this.each( function() {
+              var $this = $(this);
+              $(document).scroll(function(){
+                    var scrollTop = $(window).scrollTop();
+                          var offset = $this.offset().top;
+                          var height = $this.outerHeight();
+          if (offset + height <= scrollTop || offset >= scrollTop + windowHeight) {
+            return;
+          }
+          var yBgPosition = Math.round((offset - scrollTop) * settings.speed);
+              $this.css('background-position', 'center ' + yBgPosition + 'px');
+              });
+            });
+        }
+    }(jQuery));
+
+    $('.bg-1').parallax({
+      speed : 0.15
+    });
+</script>
+{% endblock extra_js %}

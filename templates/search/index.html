@@ -1,0 +1,39 @@
+{% extends "./base.html" %}
+{% block title %}Buscar{% endblock title %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li class="active">Buscar</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Buscar</h1>
+  </div>
+  <div class="col-md-12">
+    {% if word %}
+      <span class="badge">{{results|length}} Resultados para {{word|title}}</span>
+    {% endif %}
+    <div>
+      {% if results%}
+        {% for result in results %}
+        <div class="col-md-6">
+          <a href="{{result.url}}">
+          <div class="pin pin-content container2">
+            <div class="media-left">
+              <img class="media-object img-circle img-avatar" src="/media/{{result.image}}">
+            </div>
+            <div class="media-body">
+              <h4 class="media-heading"> {{result.text}}</h4><li class="fa fa-arrow-right"></li> {{result.source}}
+            </div>
+          </div>
+          </a>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="alert alert-success" role="alert">Lo sentimos pero no hay resultados!</div>
+      {% endif %}
+      {% include "./pagination.html" %}
+  </div>
+</div>
+{% endblock container %}

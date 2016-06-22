@@ -1,0 +1,65 @@
+{% extends "./base.html" %}
+{% block title %}Categorías de Productos{% endblock title %}
+{% block subtitle %}Categorías de Productos{% endblock subtitle %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_product_category="active" admin_in="in" %}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+		<li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+		<li class="active">Categorías de Productos</li>
+	</ol>
+	<div class="page-header">
+    <h1 class="title-main">Categorías de Productos</h1>
+  </div>
+	<div class="col-md-12">
+		<h3><a href="{% url 'product_app:category_add' %}" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Nueva Categoría</a></h3>
+		{% if not categories %}
+			<div class="alert alert-success" role="alert">
+				<strong>Información!</strong> No hay categorías registradas..
+			  <a href="{% url 'product_app:category_add' %}" class="alert-link">Agregue un Categoría</a>
+			</div>
+		{% else %}
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Categoría</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for category in categories %}
+				<tr>
+					<td width="70%">
+						<div class="media">
+						  <div class="media-left">
+						    <a href={% url 'product_app:category_update' category.slug %}>
+						      <img src="{{MEDIA_URL}}{{category.image}}" class="img-circle product-image-list"> <a href={% url 'product_app:category_update' category.slug %}>
+						    </a>
+						  </div>
+						  <div class="media-body">
+						    <h4 class="media-heading"><a href={% url 'product_app:category_update' category.slug %}><strong>{{category.name}}</strong></a></h4>
+						  </div>
+						</div>
+					</td>
+					<td>
+						<a href={% url 'product_app:category_update' category.slug %}  class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="top" title="Editar"><span class="glyphicon glyphicon-edit"></span></a>
+						<a href={% url 'product_app:category_delete' category.slug %}  class="delete btn btn-danger btn-xs" data-toggle="tooltip" data-placement="top" title="Borrar"><span class="glyphicon glyphicon-trash"></span></a>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+		{% include './pagination.html'%}
+	</div>
+</div>
+{% endblock container %}

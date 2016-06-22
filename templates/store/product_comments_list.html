@@ -1,0 +1,83 @@
+{% extends "./base.html" %}
+{% block title %}Preguntas{% endblock title %}
+
+{% block main-menu %}
+{% include "./menu_myfarm.html" with active_product_comment="active"  %}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li class="active">Preguntas</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Preguntas</h1>
+  </div>
+  <div class="col-md-12">
+    {% if comments %}
+      {% for comment in comments %}
+        <div class="media pin-content container2">
+          <div class="media-left">
+            <a href="{% url 'user_profile' comment.buyer %}">
+              <img class="media-object img-circle img-avatar" src="{{MEDIA_URL}}{{comment.buyer.avatar}}">
+            </a>
+          </div>
+          <div class="media-body">
+            <a href="{% url 'user_profile' comment.buyer %}"><h4 class="media-heading"> {{comment.buyer.fullName}}</a><br>
+            <strong>Pregunta: </strong>{{comment.ask}}<br>
+            <small><strong>Producto: </strong>{{comment.product.name}}</small>
+            <br>
+            <small>Enviada hace {{comment.date_post_ask|timesince}}</small>
+          </div><hr>
+          <div class="media-left">
+            <a href="{% url 'user_profile' comment.seller %}">
+              <img class="media-object img-circle img-avatar" src="{{MEDIA_URL}}{{comment.seller.avatar}}">
+            </a>
+          </div>
+          <div class="media-body">
+            <a href="{% url 'user_profile' comment.buyer %}"><h4 class="media-heading"> {{comment.seller.fullName}}</a><br>
+            {% if comment.reply %}
+              <strong>Respuesta: </strong>{{comment.reply}}<br>
+              <small>Enviada hace {{comment.date_post_reply|timesince}}</small>
+            {% else%}
+              {% if comment.seller == user %}
+              <div class="form-group"><br>
+                <form method="POST" id="form">{% csrf_token %}
+                  <textarea name="reply" id="reply" class="form-control box-comment" placeholder="Responde a esta pregunta..." rows="4" required="True"></textarea>
+                  <input type="hidden" name="comment" value="{{comment.id}}">
+                  <button type="submit" class="btn btn-success btn-block btn-comment"><i class="fa fa-reply"></i>  Responder</button>
+                </form>
+              </div>
+              {% else %}
+              <small><span class="label label-primary">Pregunta sin responder</span></small>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else%}
+      <div class="alert alert-success" role="alert">Lo sentimos no hay preguntas registradas!</div>
+    {% endif %}
+    {% include './pagination.html' %}
+  </div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+  $( document ).ready(function() {
+    $("#form").validate({
+			messages: {
+				reply: "Este campor es requerido",
+			}
+		});
+  });
+</script>
+{% endblock extra_js %}

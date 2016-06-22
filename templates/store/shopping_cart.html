@@ -1,0 +1,130 @@
+{% extends "./base.html" %}
+{% block title %}Carrito de Compras{% endblock title %}
+{% block active_car %}active{% endblock %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li class="active">Tu Carro de Compras</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Tu Carrito de Compras</h1>
+  </div>
+  <div class="col-md-12">
+    <div class="cart_list">
+    	<table class="table" id="tbl_products" hidden="hidden">
+    		<thead>
+    			<tr>
+    				<th>Producto</th>
+    				<th>Descripción</th>
+            <th>Detalles</th>
+    				<th>P. Unidad</th>
+    				<th>Cantidad</th>
+    				<th>Subtotal</th>
+    				<th></th>
+    			</tr>
+    		</thead>
+    		<tbody>
+    			<tr></tr>
+    		</tbody>
+    	</table>
+    </div>
+    <div class="pull-right">
+      <h1 class="total-price ">Total $<label id="tprice">0</label></h1>
+      <div id="btnPay">
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock container%}
+
+{% block extra_js %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    if (localStorage.shopping_cart == "[]"){
+    	localStorage.clear();
+    }
+  	if (localStorage.shopping_cart ) {
+      var products = JSON.parse(localStorage.shopping_cart);
+      var total = 0;
+      for(var i = 0; i < products.length; i++) {
+        var obj1 =JSON.parse(products[i]);
+        var url = '{% url "product" 999 %}'.replace (999, obj1.product_slug);
+        var url_farm = '{% url "farm" 999 %}'.replace (999, obj1.farm_slug);
+        total +=parseFloat(obj1.subtotal);
+        $("#tbl_products tr:last").after(
+          '<tr><td><a href="'+url+'"><img src="/media/'+obj1.image+'" class="product-image img-responsive img-thumbnail"></a></td>'+
+          '<td><a href="'+url+'""><h3>'+obj1.product_name+'</h3></a><small>Vendido por <strong><a href="'+url_farm+'">'+obj1.farm+'</a></strong></small></td>'+
+          '<td><strong>Opción de Envío: </strong>'+obj1.shipping+'<hr><strong>Forma de Pago: </strong>'+obj1.payment_name+'</td>'+
+          '<td>$'+obj1.price.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.")+'</td>'+
+          '<td><input class=id_quantity id="'+obj1.product_slug+'" name="quantity" value="'+obj1.n_quantity+'" min="1" maxlength="5" autocomplete="off" type="number"></td>'+
+          '<td><label class="'+obj1.product_slug+'">$'+obj1.subtotal.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.")+'</label></td>'+
+          '<td><a class="btn del_prod" id="'+obj1.product_slug+'"><i class="fa fa-trash-o"></i></a></td></tr>');
+          $("#btnPay").html("<a href='{% url 'shipping' %}' id='btn_payment' class='btn btn-success btn-lg btn-block' name='button'><i class='fa fa-shopping-cart'></i> Realizar Compra</a>");
+			}
+      $("#tbl_products").show();
+      $("#tprice").html(total.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1."));
+    }
+    else {
+      localStorage.clear();
+      $(".cart_list").html("<div class='alert alert-success' role='alert'>Tu carrito de compras está vacio... <a href='{% url 'home' %}' class='alert-link'>Comience a hacer sus compras ahora!</a></div>");
+    }
+
+    $("input[type=number]").bind('keyup input', function(){
+    	var pro=$(this).attr('id');
+      var price = 0;
+      var total = 0;
+    	var products = JSON.parse(localStorage.shopping_cart);
+      for(i=0;i<products.length;i++){
+        var product =products[i];
+        product=JSON.parse(product);
+        if(product.product_slug==pro){
+        	var obj = JSON.parse(products[i]);
+        	obj.n_quantity=$(this).val();
+          var slice = obj.shipping_price.slice(0,1);
+          var price = 0;
+          if(slice=='p'){
+            var p_shipping=parseFloat(obj.shipping_price.slice(1));
+            price = (parseFloat(obj.n_quantity)*(parseFloat(obj.price)+parseFloat(p_shipping)));
+            obj.subtotal=parseFloat(price);
+          }
+          else{
+            var p_shipping=parseFloat(obj.shipping_price.slice(1));
+            price = (parseFloat(obj.n_quantity)*((parseFloat(obj.price)*parseFloat(p_shipping))+parseFloat(obj.price)));
+            obj.subtotal=price;
+          }
+          var pr = $("."+obj.product_slug);
+          pr[0].innerHTML = "$"+price.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+          products[i]=JSON.stringify(obj);
+        }
+      }
+      for(i=0;i<products.length;i++){
+        var product =products[i]
+        product=JSON.parse(product);
+        total+=parseFloat(product.subtotal);
+      }
+      $("#tprice").html(parseFloat(total).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1."));
+      localStorage.shopping_cart= JSON.stringify(products);
+      var products = JSON.parse(localStorage.shopping_cart);
+	  });
+
+    $('.del_prod').click(function() {
+      var id = $(this).attr('id');
+      var products = JSON.parse(localStorage.shopping_cart);
+      for(i=0;i<products.length;i++){
+        var product =products[i]
+        product=JSON.parse(product);
+        console.log(product.product_slug);
+        if(product.product_slug==id){
+          products.splice(i, 1);
+          localStorage.shopping_cart= JSON.stringify(products);
+
+        }
+      }
+      location.reload();
+    });
+});
+</script>
+{% endblock extra_js %}

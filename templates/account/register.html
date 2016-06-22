@@ -1,0 +1,45 @@
+{% extends "account/base_template.html" %}
+{% block title %}Crear una Cuenta en AgroCeres{% endblock title %}
+{% block modal_title %}Registro{% endblock modal_title %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block content %}
+<form method="POST" class="form-signin">{% csrf_token %}
+  <div class="modal-body">
+    {{user_register.username}}
+    {{user_register.email}}
+    {{user_register.password}}
+    <input type="password" class="form-control re_password" name="re_password" value="" placeholder="Confirmar Contraseña" required>
+  </div><!--.card-heading-->
+  <div class="modal-footer"><br>
+    <button type="submit" class="btn btn-success btn-lg btn-block">Crear cuenta</button>
+    <br>
+    <p class="text-center no_margin">
+      También puedes:
+    </p>
+    <a href="{% url 'social:begin' 'twitter' %}" class="btn btn-block btn-social btn-twitter">
+     <i class="fa fa-twitter"></i>
+     Ingresar con Twitter
+    </a>
+    <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-block btn-social btn-facebook">
+      <i class="fa fa-facebook"></i>
+      Ingresar con Facebook
+    </a>
+    <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-block btn-social btn-google">
+      <i class="fa fa-google-plus"></i>
+      Ingresar con Google
+    </a>
+  </div><!--.card-footer-->
+</form>
+  {% if user_register.non_field_errors %}
+      <label class="red-text text-lighten-1">{{user_register.non_field_errors}}</label>
+  {% endif %}
+{% endblock content %}
+
+{% block account_link %}
+ ¿Ya tienes una cuenta? <a href="{% url  'account:login' %}"class="text-green">Iniciar sesión</a>
+
+{% endblock account_link%}

@@ -1,0 +1,169 @@
+{% extends "./base.html" %}
+{% block title %}{{product.name}}{% endblock title %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_products="active" farm_in="in" %}
+{% endblock main-menu %}
+
+{% block messages%}
+	{% include './messages.html'%}
+{% endblock messages%}
+
+{% block extra_css %}
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/bootstrap-wysihtml5.css">
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/wysiwyg-color.css">
+	<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/prettify.css">
+{% endblock extra_css %}
+
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+		<li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+		<li><a href="{% url 'product_app:product_list' %}">Mis Productos</a></li>
+	 <li class="active">{{product.name}}</li>
+	</ol>
+	<div class="page-header">
+    <h1 class="title-main">{{product.name}}</h1>
+  </div>
+	<div class="col-md-12">
+		<form method="post" id="form" enctype="multipart/form-data">{% csrf_token %}
+      <div class="col-md-12">
+				<div class="page-header">
+			    <h3 class="title-main">Información del Producto</h3>
+			  </div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="id_name">Nombre</label>
+					{{ form.name }}
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="id_summary">Resumen</label>
+						{{ form.summary }}
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+						<label for="id_category">Categoría</label>
+						{{ form.category }}
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="page-header">
+			    <h3 class="title-main">Información para la Venta</h3>
+			  </div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label class="active" for="id_quantity">Cantidad</label>
+					{{ form.quantity }}
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label class="active" for="id_price">Precio</label>
+					{{ form.price }}
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group">
+					<hr>
+					<label class="active" for="id_description">Descripción</label>
+					{{ form.description }}
+				</div>
+			</div>
+			<div class="col-md-12">
+					<div id="#filelist"></div>
+					<label class="active" for="id_description">Imágenes</label>
+					<input id="pictures_id" type="file" name="pictures" accept="image/*" >
+					<div class="table-responsive"><br>
+						<table class="table table-striped">
+							<tbody id="picture_list">
+							</tbody>
+						</table>
+					</div>
+				{% if product.getAllPicture2 %}
+				<table class="table table-striped">
+					<tbody>
+						{% for imagen in product.getAllPicture2 %}
+							<tr><td><img src="{{MEDIA_URL}}{{imagen.image}}" width="304" height="228" class="img-thumbnail img-responsive" alt="" /></td>
+								<td>{{imagen.image}}</td><td>
+									<button type="submit" name="btn_img{{imagen.id}}" class="btn btn btn-danger"><i class="fa fa-trash-o"></i> Borrar</button>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+				{% else %}
+				<div class="alert alert-success" role="alert">No has agregado imágenes!</div>
+				{% endif %}
+			</div>
+      <div class="col-md-12">
+        <button type="submit" class="btn btn-success btn-lg btn-block" id="update">Actualizar Información</button>
+      </div>
+		</form>
+	</div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/wysihtml5-0.3.0.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/bootstrap-wysihtml5.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/bootstrap-wysihtml5.es-ES.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/multifile.js"></script>
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	var multi_selector = new MultiSelector( document.getElementById('picture_list'), 10 );
+	multi_selector.addElement(document.getElementById('pictures_id'));
+
+	var myCustomTemplates = {
+	  html : function(locale) {
+	    return "<li>" +
+	           "<div class='btn-group'>" +
+	           "<a class='btn' data-wysihtml5-action='change_view' title='" + locale.html.edit + "'>HTML</a>" +
+	           "</div>" +
+	           "</li>";
+	  }
+	}
+	$('#id_description').wysihtml5({
+		"font-styles": true,
+		"emphasis": true,
+		"lists": true,
+		"html": true,
+		"link": true,
+		"image": true,
+		"color": true
+	});
+
+  $("#form").validate({
+    rules: {
+      quantity: {
+        number: true
+      },
+      price: {
+        number: true
+      }
+    },
+    messages: {
+      name: "Ingresa el nombre del producto",
+      summary: "Ingresa un resumen del producto",
+      category: "Selecciona una categoría",
+      quantity: {
+        required:"Ingresa la cantidad",
+        number:"Ingrese un número válido"
+      },
+      price: {
+        required:"Ingresa el precio",
+        number:"Ingrese un número válido"
+      },
+      description: "Ingresa una descripción del producto",
+    }
+  });
+
+});
+</script>
+{% endblock extra_js %}

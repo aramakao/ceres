@@ -1,0 +1,9 @@
+{% url 'user_profile' farm.farm.user as url_user %}
+{% include "./card_user.html" with profile=farmer_profile class="col-xs-12 col-sm-6 col-md-6 col-lg-6 list-margin"%}
+<div class="col-md-4">
+  <dt>Calificación {{feedback.total|stringformat:"1.1f"}} <small>(Total Ventas: {{feedback.count}})</small></dt>
+  <small><strong>Comunicación: </strong><input type="number" class="feedback" value="{{feedback.communication|stringformat:"1.1f"}}"></small>
+  <small><strong>Rapidez: </strong><input type="number" class="feedback" value="{{feedback.quickness|stringformat:"1.1f"}}"></small>
+  <small><strong>Responsabilidad: </strong><input type="number" class="feedback" value="{{feedback.responsibility|stringformat:"1.1f"}}"></small>
+  <dd><a href="{% url 'feedback_farm' farm.farm.slug %}"><i class="fa fa-comment"></i> Ver todas las opiniones</a></dd>
+</div>

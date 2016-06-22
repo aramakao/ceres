@@ -1,0 +1,26 @@
+{% extends "./base.html" %}
+{% block title %}Usuarios{% endblock title %}
+{% block active_users %}active{% endblock %}
+
+{% block banner %}
+  {% include './banner_app.html' with image="banners/user.jpg" title="Usuarios" subtitle="Haz amistades, negocios y comparte" %}
+{% endblock banner %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li class="active">Usuarios <span class="badge"> {{ paginator.count }}  resultados</span></li>
+  </ol>
+</div>
+{% for user in users %}
+  {% include "./card_user.html" with profile=user class="col-xs-12 col-sm-6 col-md-6 col-lg-6 list-margin"%}
+{% endfor %}
+<div class="col-md-12">
+  {% include "./pagination.html"%}
+</div>
+{% endblock container%}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/parallax.js"></script>
+{% endblock extra_js %}

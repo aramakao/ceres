@@ -1,0 +1,35 @@
+{% extends "./base.html" %}
+{% block title %}Desactivar Granja{% endblock title %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_deactivate="active" farm_in="in"%}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block breadcrumbs %}
+
+{% endblock breadcrumbs %}
+
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+		<li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+		<li class="active">Desactivar Granja</li>
+	</ol>
+	<div class="page-header">
+		<h1 class="title-main">¿Seguro que quieres desactivar tu granja?</h1>
+	</div>
+	<div class="col-md-12">
+		<div class="alert alert-danger" role="alert"><strong>Importante!!!</strong>
+			Al desactivar la granja, los productos y el perfil de tu granja ya no serán visibles.
+			Cierta información aún será visible para algunas personas.</div>
+			<form method="post">{% csrf_token %}
+				<input type="submit" class="btn btn-danger btn-block" name="name" value="DESACTIVAR GRANJA"><br>
+			</form>
+	</div>
+</div>
+{% endblock container %}

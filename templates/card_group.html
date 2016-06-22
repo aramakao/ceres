@@ -1,0 +1,19 @@
+<a href={% url 'group_profile' group.group.slug %}>
+  <div class="{{class}}">
+    <div class="pin">
+      <div class="cover">
+        <img class="img-responsive" src="{{MEDIA_URL}}{{group.banner}}" alt="{{group.group.name|title}}">
+      </div>
+      <div class="user">
+        <img class="img-responsive img-circle img-circle-profile" src="{{MEDIA_URL}}{{group.group.logo}}" alt="{{group.group.name|title}}">
+      </div>
+      <div class="content">
+        <div class="card-main">
+          <h3 class="name">{{group.group.name|title}}</h3>
+          <p class="summary">{{group.get_slogan}}</p>
+          <p><span class="badge">Participantes {{group.group.count_members}}</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</a>

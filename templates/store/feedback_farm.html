@@ -1,0 +1,90 @@
+{% extends "./base.html" %}
+{% block title %}Opiniones{% endblock title %}
+{% block active_farms %}active{% endblock %}
+
+{% block banner %}
+  {% include "./banner_farm.html" with farm_profile=farm%}
+{% endblock banner %}
+
+{% block second_menu %}
+  {% include "./menu_category_farm.html" %}
+{% endblock %}
+
+{% block extra_css %}
+  <link type="text/css" href="{{STATIC_URL}}css/star-rating.min.css"  rel="stylesheet"/>
+{% endblock extra_css %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'farms' %}">Granjas</a></li>
+    <li><a href="{% url 'farm' farm.farm.slug  %}">{{farm.farm|title}}</a></li>
+    <li class="active">Opiniones <span class="badge"> {{ paginator.count }}  resultados</span></li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Opiniones</h1>
+  </div>
+  <div class="col-md-12">
+    {% if feedback_farm %}
+      {% for fb in feedback_farm %}
+        <div class="pin-content">
+          <h4><strong>{{fb.order.buyer.username|slice:"2"}}***</strong></h4>
+          <small><strong>Comunicación: </strong><input type="number" class="feedback" value="{{fb.communication|stringformat:"f"}}"></small>
+          <small><strong>Rapidez: </strong><input type="number" class="feedback" value="{{fb.quickness|stringformat:"f"}}"></small>
+          <small><strong>Responsabilidad: </strong><input type="number" class="feedback" value="{{fb.responsibility|stringformat:"f"}}"></small>
+          <h5><strong>Observaciones: </strong>{{fb.observations}}</h5>
+          <small>Calificación realizada el {{fb.date}}</small>
+        </div><br>
+      {% endfor %}
+    {% else %}
+      <div class="alert alert-success" role="alert">Aún no hay opiniones registradas!</div>
+    {% endif %}
+    {% include "./pagination.html"%}
+  </div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/star-rating.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+  (function($) {
+  $.fn.parallax = function(options) {
+            var windowHeight = $(window).height();
+            var settings = $.extend({
+                speed        : 0.15
+            }, options);
+            return this.each( function() {
+              var $this = $(this);
+              $(document).scroll(function(){
+                    var scrollTop = $(window).scrollTop();
+                          var offset = $this.offset().top;
+                          var height = $this.outerHeight();
+          if (offset + height <= scrollTop || offset >= scrollTop + windowHeight) {
+            return;
+          }
+          var yBgPosition = Math.round((offset - scrollTop) * settings.speed);
+              $this.css('background-position', 'center ' + yBgPosition + 'px');
+              });
+            });
+        }
+    }(jQuery));
+
+    $('.bg-1').parallax({
+      speed : 0.15
+    });
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $(".feedback").rating({'showCaption':true,showClear:false, disabled:true, 'stars':'5', 'min':'0', 'max':'5', 'step':'1', 'size':'xs',
+  starCaptions: function(val) {
+    if (val == 1) {
+      return val+' Estrella';
+    } else {
+      return val+' Estrellas';
+    }
+  }
+  });
+});
+</script>
+{% endblock extra_js %}

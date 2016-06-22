@@ -1,0 +1,48 @@
+{% extends "./base.html" %}
+{% block title %}Conversaciones{% endblock title %}
+
+{% block main-menu %}
+ 	{% include "./menu_myfarm.html" with active_conversations="active" %}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li class="active">Conversaciones</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Conversaciones</h1>
+  </div>
+  <div class="col-md-12">
+    {% if conversations %}
+
+      {% for conversation in conversations %}
+        <div class="media pin-content container2">
+          <div class="media-left">
+            <a href="{% url 'message_app:message' conversation.sender %}">
+              <img class="media-object img-circle img-avatar" src="{{MEDIA_URL}}{{conversation.sender.avatar}}">
+            </a>
+          </div>
+          <div class="media-body">
+            <a href="{% url 'message_app:message' conversation.sender %}"><h4 class="media-heading"> {{conversation.sender.get_full_name|title}}
+              {% if conversation.count %}<span class="badge">{{conversation.count}}</span>
+              {% endif %}</h4></a>
+            <li class="{{conversation.icon}}"></li> {{conversation.message}}
+            <br>
+            <small>Enviado hace {{conversation.date|timesince}}</small>
+          </div>
+        </div>
+      {% endfor %}
+    {% else%}
+      <div class="alert alert-success" role="alert">Lo sentimos no hay conversaciones registradas!</div>
+    {% endif %}
+    {% include './pagination.html' %}
+  </div>
+</div>
+{% endblock container %}

@@ -1,0 +1,215 @@
+{% extends "./base.html" %}
+{% block title %}Geo-Granjas{% endblock title %}
+{% block active_geo %}active{% endblock %}
+
+{% block banner %}
+  {% include './banner_app.html' with image="banners/geofarm.jpg" title="GeoGranjas" subtitle="Explora, descubre!" %}
+{% endblock banner %}
+
+{% block second_menu %}
+  {%include './menu_geo.html' with categories=categories %}
+{% endblock second_menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li class="active">Geo Granjas</li>
+  </ol>
+  <div class="map-canvas" id="map-canvas"></div>
+</div>
+
+
+{% endblock container%}
+
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/parallax.js"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&libraries=places"></script>
+<script type="text/javascript">
+  window.onload = function () {
+    var markers = [];
+    var uniqueId = 1;
+    var lat=null;
+    var lng=null;
+
+    function DeleteMarker(id) {
+      for (var i = 0; i < markers.length; i++) {
+          if (markers[i].id == id) {
+              markers[i].setMap(null);
+              markers.splice(i, 1);
+              return;
+          }
+      }
+    };
+
+    function setAllMap(map) {
+      for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(map);
+      }
+      //setMapOnAll(null);
+      markers=[];
+    }
+    $("#all_categories").click(function(event){
+      setAllMap(null);
+      $(".category").removeClass("active");
+      $("#all_categories").addClass("active");
+      var url_cat="api/geofarms_all";
+      $.getJSON(url_cat, function(data) {
+        $.each(data,function(key,val){
+          var url_farm = ("{% url 'farm' 999 %}").replace("999",val.farm['slug']);
+          var contentString = '<div id="content" class="text-center">'+
+            '<div id="siteNotice">'+
+            '</div>'+
+            '<h4 id="firstHeading" class="firstHeading">'+val.farm['name']+'</h4>'+
+            '<div id="bodyContent">'+
+            '<img src='+val.banner+' class="img-rounded img-responsive img-geo"><br>'+
+            '<p>Dirección:<strong> '+val.farm['address']+'</strong> | Teléfono:<strong> '+val.farm['phone']+
+            '</strong><br>Visita nuestra granja: <strong><a href="'+url_farm+'" target="_blanck">'+val.farm['name']+'</a></p>'+
+            '</strong></div>'+
+            '</div>';
+
+          var infowindow = new google.maps.InfoWindow({
+              content: contentString
+          });
+
+          var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(val.latitude, val.longitude),
+            title: val.farm['name'],
+            map: map,
+            icon:'media/icons/marker_farms.png'
+          });
+          markers.push(marker);
+          google.maps.event.addListener(marker, 'click', function() {
+            infowindow.open(map,marker);
+          });
+
+        });
+      });
+    });
+
+    $(".category").click(function(event) {
+        setAllMap(null);
+        $(".category").removeClass("active");
+        $("#"+$(this).attr('id')).addClass("active");
+        var url_cat=("{% url 'geofarms_category' 999%}").replace("999",$(this).attr('id'));
+        $.getJSON(url_cat, function(data) {
+          $.each(data,function(key,val){
+            var url_farm = ("{% url 'farm' 999 %}").replace("999",val.farm['slug']);
+            var contentString = '<div id="content" class="text-center">'+
+              '<div id="siteNotice">'+
+              '</div>'+
+              '<h4 id="firstHeading" class="firstHeading">'+val.farm['name']+'</h4>'+
+              '<div id="bodyContent">'+
+              '<img src='+val.banner+' class="img-rounded img-responsive img-geo"><br>'+
+              '<p>Dirección:<strong> '+val.farm['address']+'</strong> | Teléfono:<strong> '+val.farm['phone']+
+              '</strong><br>Visita nuestra granja: <strong><a href="'+url_farm+'" target="_blanck">'+val.farm['name']+'</a></p>'+
+              '</strong></div>'+
+              '</div>';
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+
+            var marker = new google.maps.Marker({
+              position: new google.maps.LatLng(val.latitude, val.longitude),
+              title: val.farm['name'],
+              map: map,
+              icon: 'media/icons/marker_farms.png'
+            });
+            markers.push(marker);
+            google.maps.event.addListener(marker, 'click', function() {
+              infowindow.open(map,marker);
+            });
+
+          });
+        });
+    });
+
+
+    var myLatlng = new google.maps.LatLng(parseFloat(1.67684),parseFloat(-78.04487));
+
+    var mapOptions = {
+      zoom: 8,
+      center: myLatlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+     };
+
+    var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+      $.getJSON("{% url 'geofarms_countcity' %}", function(data) {
+
+        $.each( data, function( key, val ) {
+          $.getJSON("http://maps.googleapis.com/maps/api/geocode/json?address="+val.location+"&sensor=false",function(data_address){
+            lat=data_address.results[0].geometry.location.lat;
+            lng=data_address.results[0].geometry.location.lng;
+            var contentString = '<div id="content"><div id="siteNotice"></div>'+
+                '<h4 id="firstHeading" class="firstHeading"><strong>'+val.location.split(',')[0].toUpperCase()+
+                '</strong> <span class="badge">Granjas: '+val.count+'</span></h4></div>';
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+
+            var marker = new google.maps.Marker({
+              position: new google.maps.LatLng(lat,lng),
+              map:map,
+              icon: 'media/icons/marker_farms.png'
+            });
+
+            marker.id = uniqueId;
+            uniqueId++;
+            markers.push(marker);
+
+            google.maps.event.addListener(marker, 'mouseover', function() {
+              infowindow.open(map,marker);
+            });
+
+            google.maps.event.addListener(marker, 'mouseout', function() {
+              infowindow.close(map,marker);
+            });
+
+            google.maps.event.addListener(marker, 'click', function() {
+              DeleteMarker(marker.id);
+
+              var url = ("{% url 'geofarms_city' 999 %}").replace("999",val.location_slug);
+              $.getJSON(url, function(data) {
+
+                $.each( data, function( key, val ) {
+                  var url_farm = ("{% url 'farm' 999 %}").replace("999",val.farm['slug']);
+                  var contentString = '<div id="content" class="text-center">'+
+                    '<div id="siteNotice">'+
+                    '</div>'+
+                    '<h4 id="firstHeading" class="firstHeading">'+val.farm['name']+'</h4>'+
+                    '<div id="bodyContent">'+
+                    '<img src='+val.banner+' class="img-rounded img-responsive img-geo"><br>'+
+                    '<p>Dirección:<strong> '+val.farm['address']+'</strong> | Teléfono:<strong> '+val.farm['phone']+
+                    '</strong><br>Visita nuestra granja: <strong><a href="'+url_farm+'" target="_blanck">'+val.farm['name']+'</a></p>'+
+                    '</strong></div>'+
+                    '</div>';
+
+                  var infowindow = new google.maps.InfoWindow({
+                      content: contentString
+                  });
+
+                  var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(val.latitude, val.longitude),
+                    map:map,
+                    title: val.farm['name'],
+                    icon: 'media/icons/marker_farms.png'
+                  });
+
+                  markers.push(marker);
+
+                  google.maps.event.addListener(marker, 'click', function() {
+                    infowindow.open(map,marker);
+                  });
+
+                });
+              });
+            });
+
+          });
+        });
+      });
+    }
+</script>
+{% endblock extra_js %}

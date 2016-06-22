@@ -1,0 +1,102 @@
+{% extends "./base.html" %}
+{% block title %}AgroBlog{% endblock title %}
+
+{% block main-menu %}
+ 	{% include "./menu_myfarm.html" with active_blog="active" admin_in="in"%}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li class="active">AgroBlog</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">AgroBlog</h1>
+  </div>
+  <div class="col-md-12">
+    <h3><a href="{% url 'blog_add' %}" class="btn btn-success btn-sm"><span class="fa fa-pagelines"></span> Nueva Entrada</a></h3>
+    {% if entries %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Entrada</th>
+            <th>En el banner</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in entries %}
+          <tr>
+            <td width="60%">
+              <div class="media">
+                <div class="media-left">
+                  <a href="{% url 'blog_view' entry.id %}">
+                    <img src="{{MEDIA_URL}}{{entry.image}}" class="img-circle product-image-list"> <a href="#">
+                  </a>
+                </div>
+                <div class="media-body">
+                  <h4 class="media-heading"><a href="{% url 'blog_view' entry.id %}">{{entry.title|truncatechars:80}}</a></h4>
+                  <small>Fecha <strong>{{entry.posted}}</strong></small>
+                </div>
+              </div>
+            </td>
+            <td>
+              {% if entry.in_banner %}
+                <span class="label label-primary"><i class="fa fa-eye"></i> Visible</span>
+              {% else %}
+                <span class="label label-warning"><i class="fa fa-eye-slash"></i> Oculto</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{% url 'blog_view' entry.id %}" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="top" title="Detalles"><span class="glyphicon glyphicon-eye-open"></span></a>
+              <a href="{% url 'blog_edit' entry.id %}"  class="btn btn-warning btn-xs" data-toggle="tooltip" data-placement="top" title="Editar"><span class="glyphicon glyphicon-edit"></span></a>
+              <a href="#" class="delete btn btn-danger btn-xs" data-placement="top" id="btnDel_{{entry.id}}" title="Borrar"  data-toggle="modal" data-target="#mdlDelete"><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="alert alert-success" role="alert">No hay noticias registradas..</div>
+    {% endif %}
+    {% include './pagination.html' %}
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="mdlDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Borrar Noticia</h4>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de borrar esta noticia?
+        <form method="post">{% csrf_token %}
+          <input type="hidden" name="delete" id="delete" value="">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-success">Borrar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(".delete").click(function() {
+      $("#delete").val(this.id);
+    });
+  });
+</script>
+{% endblock extra_js %}

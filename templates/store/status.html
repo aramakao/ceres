@@ -1,0 +1,109 @@
+{% extends "./base.html" %}
+{% block title %}Publicaciones{% endblock title %}
+{% block active_status %}active{% endblock %}
+
+{% block banner %}
+  {% include './banner_app.html' with image="banners/publicaciones.jpg" title="Publicaciones" subtitle="Entérate de lo que pasa en el campo" %}
+{% endblock banner %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li class="active">Publicaiones <span class="badge"> {{ paginator.count }}  resultados</span></li>
+  </ol>
+  <div class="col-md-12">
+    {% for state in status %}
+      <div class="row">
+        <form name="delete_form" method="post">{% csrf_token %}
+          {% include "./card_state.html" with state=state %}
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% include './pagination.html'%}
+{% include "./card_comments.html" with comments_form=comments_form %}
+{% endblock container%}
+{% block extra_js %}
+<script type="text/javascript" src="{{STATIC_URL}}js/jasny-bootstrap.min.js"></script>
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+  $( document ).ready(function() {
+    $('#id_text[maxlength]').keyup(function(){
+        var limit = parseInt($(this).attr('maxlength'));
+        var text = $(this).val();
+        var chars = text.length;
+        console.log(limit-chars);
+        $('#text_length').html(limit-chars);
+    });
+		$(".comments").click(function(event) {
+				$("#id_state").val(event.target.id);
+		});
+
+		$(".comments").click(function(event) {
+			var url_comments = ("{% url 'api_status_comments' 999%}").replace("999",$(this).attr('id'));
+			$.getJSON(url_comments,function(data){
+				if(data.length>0){
+					$("#comments-list").empty();
+					$.each(data,function(key,val){
+						if(val.picture!=null){
+							var image ='<img src="'+val.picture+'" class="img-rounded img-responsive img-state" />';
+						}
+						else{
+							var image="";
+						}
+						var url_user = ("{% url 'user_profile' 999 %}").replace("999",val.user['username']);
+						$("#comments-list").append('<div class="media">'+
+							'<div class="media-left"><a href="'+url_user+'"><img class="media-object img-circle img-avatar" src="'+val.user['avatar']+'">'+
+							'</a></div><div class="media-body"><a href="'+url_user+'"><h4 class="media-heading">'+val.user['full_name']+'</h4></a>'+val.text+
+							'</div><br><small>Hace '+val.date_post+'</small></div><hr>'+image
+							);
+					});
+				}else {
+					$("#comments-list").html('<div class="alert alert-success" role="alert">Se el primero en hacer un comentario!</div>');
+				}
+			});
+		});
+
+		$("#comments_form").validate({
+			messages: {
+				text: "Este campor es requerido",
+			}
+		});
+
+  });
+</script>
+<script type="text/javascript">
+  (function($) {
+  $.fn.parallax = function(options) {
+            var windowHeight = $(window).height();
+            var settings = $.extend({
+                speed        : 0.15
+            }, options);
+            return this.each( function() {
+              var $this = $(this);
+              $(document).scroll(function(){
+                    var scrollTop = $(window).scrollTop();
+                          var offset = $this.offset().top;
+                          var height = $this.outerHeight();
+          if (offset + height <= scrollTop || offset >= scrollTop + windowHeight) {
+            return;
+          }
+          var yBgPosition = Math.round((offset - scrollTop) * settings.speed);
+              $this.css('background-position', 'center ' + yBgPosition + 'px');
+              });
+            });
+        }
+    }(jQuery));
+
+    $('.bg-1').parallax({
+      speed : 0.15
+    });
+</script>
+
+{% endblock extra_js %}

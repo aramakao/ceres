@@ -1,0 +1,198 @@
+{% extends "./base.html" %}
+{% block title %}Mi Perfil{% endblock title %}
+
+{% block banner %}
+  {% include "./banner_user2.html" with profile=user_profile name=full_name %}
+{% endblock banner %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_profile_edit="active" profile_in="in"%}
+{% endblock main-menu %}
+
+{% block messages %}
+  {% include "./messages.html" %}
+{% endblock messages %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li class="active">Mi Perfil</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">Mi Perfil <i class="helpers fa fa-question-circle" data-trigger="hover" data-toggle="popover" title="Ayuda" data-content="Para cambiar la imagen de perfil dar click sobre la imagen circular."></i></h1>
+  </div>
+  <form method="post" id="form">{% csrf_token %}
+    <div class="col-md-12">
+      <div class="page-header">
+        <h3 class="title-main">Información Personal</h3>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_name">Nombre</label>
+        {{ form_user.first_name }}
+      </div>
+    </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="id_summary">Apellido</label>
+            {{ form_user.last_name }}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+            <label for="id_category">Correo Eletrónico</label>
+            {{ form_user.email }}
+        </div>
+      </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id_profession">Profesión</label>
+        {{ form_profile.occupation }}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Fecha de Nacimiento</label>
+        <div class="input-group">
+          {{ form_profile.birth_day }}
+           <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+          <label>Género</label>
+          {{ form_profile.gender }}
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h3 class="title-main">Información de Contacto</h3>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="active" for="id_phone">Teléfono</label>
+        {{ form_profile.phone }}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="active" for="id_mobile">Celular</label>
+       {{ form_profile.mobile }}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="active" for="id_address">Dirección</label>
+        {{ form_profile.address }}
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="page-header">
+        <h3 class="title-main">Otra Información</h3>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="active" for="id_twitter">Twitter</label>
+        {{ form_profile.twitter }}
+      </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+        <label class="active" for="id_facebook">Facebook</label>
+        {{ form_profile.facebook }}
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label class="active" for="id_description">Acerca de ti</label>
+        {{ form_profile.description }}
+      </div>
+    </div>
+    <div class="col-md-12">
+      <button type="submit" class="btn btn-success btn-lg btn-block">Actualizar Información</button>
+    </div>
+  </form>
+</div>
+
+{% endblock container %}
+{% block extra_js %}
+<script src="{{STATIC_URL}}js/bootstrap-datetimepicker.min.js"></script>
+<script src="{{STATIC_URL}}js/bootstrap-datetimepicker.es.js"></script>
+<script src="{{STATIC_URL}}js/django-ajax.js"></script>
+<script src="{{STATIC_URL}}js/parallax.js"></script>
+<script src="{{STATIC_URL}}js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+      ajaxDjango();
+      $('[data-toggle="popover"]').popover();
+      $("#file-input-profile").change(function (){
+        var data=$('#file-input-profile')[0].files;
+        var formdata = new FormData();
+        formdata.append('file_upload', data[0]);
+        $.ajax({
+          type: "POST",
+          url: "/cuenta/changePictureProfile/",
+          data: formdata,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+            $("#image-profile").attr("src",res);
+            $("#image-profile2").attr("src",res);
+            $("#image-profile3").attr("src",res);
+          }
+        });
+      });
+
+      $("#file-input-bg").change(function (){
+        var data=$('#file-input-bg')[0].files;
+        var formdata = new FormData();
+        formdata.append('file_upload', data[0]);
+        $.ajax({
+          type: "POST",
+          url: "/cuenta/changePictureBanner/",
+          data: formdata,
+          processData: false,
+          contentType: false,
+          success: function (res) {
+            $("#image-banner").attr("style","background: url('"+res+"') no-repeat fixed center 8px / cover  transparent;");
+            $("#image-banner2").attr("src",res);
+          }
+        });
+      });
+
+      $('.form_date').datetimepicker({
+        language:  'es',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        format: 'yyyy-mm-dd'
+      });
+
+      $("#form").validate({
+        rules: {
+          email: {
+  					required: true,
+  					email: true
+				  }
+        },
+        messages: {
+				  first_name: "Por favor ingresa tu nombre",
+          last_name: "Por favor ingresa tu apellido",
+          email: "Por favor ingrese una dirección de correo electrónico válida",
+          birth_day: "Por selecciona tu fecha de nacimiento",
+          gender: "Por selecciona tu género",
+        }
+      });
+    });
+  </script>
+{% endblock extra_js %}

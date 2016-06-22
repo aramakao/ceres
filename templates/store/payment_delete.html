@@ -1,0 +1,32 @@
+{% extends "./base.html" %}
+{% block title %}Borrar Forma de Pago{% endblock title %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_occupations="active" admin_in="in" %}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+    <li><a href="{% url 'payments' %}">Formas de Pago</a></li>
+		<li class="active">Borrar Forma de Pago</li>
+	</ol>
+	<div class="page-header">
+		<h1 class="title-main">Borrar Ocupación</h1>
+	</div>
+	<div class="col-md-12">
+    {% if object %}
+    <form action="" method="post">{% csrf_token %}
+        <h3>Estas seguro de borrar la forma de pago <strong>"{{ object.get_payment_display|title }}"</strong>?</h3>
+        <input class="btn btn-success" type="submit" value="Confirmar" />
+    </form>
+    {% else %}
+    <div class="alert alert-success" role="alert">
+      No puedes borrar esta forma de pago ya que debes tener por lo menos una opción. <a href={% url 'payments' %} class="alert-link">Regresar</a>
+    </div>
+    {% endif %}
+	</div>
+</div>
+{% endblock container %}

@@ -1,0 +1,37 @@
+{% extends "./base.html" %}
+{% block title %}{{ blog.title|title }}{% endblock title %}
+{% block active_blog %}active{% endblock %}
+
+{% block banner %}
+  {% include './banner_app.html' with image=blog.image title=blog.title|title subtitle=blog.category %}
+{% endblock banner %}
+
+{% block second_menu %}
+  {% include './menu_blog.html' %}
+{% endblock second_menu %}
+
+{% block container %}
+<div class="col-md-12">
+  <ol class="breadcrumb">
+    <li><a href="{% url 'home' %}">Inicio</a></li>
+    <li><a href="{% url 'blog_app:agro_blog' %}">AgroBlog</a></li>
+    <li><a href="{% url 'blog_app:categories' %}">Categorías</a></li>
+    <li><a href="{% url 'blog_app:category' blog.category.slug %}">{{ blog.category.name }}</a></li>
+    <li class="active">{{ blog.title|title }}</li>
+  </ol>
+  <div class="page-header">
+    <h1 class="title-main">{{  blog.title|title }}<small>   {{blog.posted|date}}</small></h1>
+  </div>
+  <div class="col-md-12 container2 pin">
+    <div class="content">
+      {{blog.content|safe}}
+    </div>
+    {% include './comments/box_comment.html' %}
+  </div>
+</div>
+{% endblock container %}
+
+{% block extra_js %}
+  <script src="{{STATIC_URL}}js/comments.js" type="text/javascript"></script>
+  <script src="{{STATIC_URL}}js/parallax.js" type="text/javascript"></script>
+{% endblock extra_js %}

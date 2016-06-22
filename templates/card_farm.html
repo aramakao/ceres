@@ -1,0 +1,18 @@
+<a href={% url 'farm' profile.farm.slug %}>
+  <div class="{{class}}">
+    <div class="pin">
+      <div class="cover">
+        <img class="img-responsive" src="{{MEDIA_URL}}{{profile.banner}}" alt="{{profile.farm.name|title}}">
+      </div>
+      <div class="user">
+        <img class="img-responsive img-circle img-circle-profile" src="{{MEDIA_URL}}{{profile.farm.logo}}" alt="{{profile.farm.name|title}}">
+      </div>
+      <div class="content">
+        <div class="card-main">
+          <h3 class="name">{{profile.farm.name|title}}</h3>
+          <p class="summary">{{profile.get_slogan}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</a>

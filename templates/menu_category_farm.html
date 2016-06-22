@@ -1,0 +1,8 @@
+{% if categories %}
+<div class="list-group">
+  <strong class="list-group-item">Categorías de la Granja</strong>
+  {% for category in categories %}
+    <a class="list-group-item" id="{{category.category.slug}}" href="{% url 'category_product_farm' farm.farm.slug category.category.slug %}"><i class="fa fa-asterisk"></i> {{category.category|title}}</a>
+  {% endfor %}
+</div>
+{% endif %}

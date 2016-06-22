@@ -1,0 +1,26 @@
+{% extends "./base.html" %}
+{% block title %}Borrar Ocupación{% endblock title %}
+
+{% block main-menu %}
+  {% include "./menu_myfarm.html" with active_occupations="active" admin_in="in" %}
+{% endblock main-menu %}
+
+{% block container %}
+<div class="col-md-12">
+	<ol class="breadcrumb">
+		<li><a href="{% url 'home' %}">Inicio</a></li>
+		<li><a href="{% url 'mi_agro' %}">Mi Agro</a></li>
+		<li><a href="{% url 'extras_app:occupations_list' %}">Ocupaciones</a></li>
+		<li class="active">Borrar Ocupación</li>
+	</ol>
+	<div class="page-header">
+		<h1 class="title-main">Borrar Ocupación</h1>
+	</div>
+	<div class="col-md-12">
+		<form action="" method="post">{% csrf_token %}
+		    <h3>Estas seguro de borrar la ocupación <strong>"{{ object.name|title }}"</strong>?</h3>
+		    <input class="btn btn-success" type="submit" value="Confirmar" />
+		</form>
+	</div>
+</div>
+{% endblock container %}

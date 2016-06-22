@@ -1,0 +1,689 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>apps.store.models &mdash; AgroCeres 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="AgroCeres 1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> AgroCeres
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/account.html">Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/store.html">Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/blog.html">Blog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/comment.html">Comment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/extras.html">Extras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/farm.html">Farm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/groups.html">Groups</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/messages.html">Messages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/product.html">Product</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/search.html">Search</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">AgroCeres</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>apps.store.models</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for apps.store.models</h1><div class="highlight"><pre>
+<span class="c">#-*- encoding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Avg</span><span class="p">,</span> <span class="n">Count</span><span class="p">,</span> <span class="n">Sum</span><span class="p">,</span> <span class="n">Max</span><span class="p">,</span> <span class="n">Min</span>
+<span class="kn">from</span> <span class="nn">apps.product.models</span> <span class="kn">import</span> <span class="n">Product</span>
+<span class="kn">from</span> <span class="nn">apps.account.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">apps.farm.models</span> <span class="kn">import</span> <span class="n">Farm</span>
+<span class="kn">from</span> <span class="nn">autoslug</span> <span class="kn">import</span> <span class="n">AutoSlugField</span>
+<span class="kn">from</span> <span class="nn">apps.ceres.notification</span> <span class="kn">import</span> <span class="n">notificationShop</span>
+<span class="kn">from</span> <span class="nn">django.core.validators</span> <span class="kn">import</span> <span class="n">MaxValueValidator</span><span class="p">,</span> <span class="n">MinValueValidator</span>
+<span class="kn">from</span> <span class="nn">decimal</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">calendar</span> <span class="kn">import</span> <span class="n">Calendar</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">django.utils.timesince</span> <span class="kn">import</span> <span class="n">timesince</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Q</span>
+
+<div class="viewcode-block" id="ProductCommentsManager"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.ProductCommentsManager">[docs]</a><span class="k">class</span> <span class="nc">ProductCommentsManager</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Manager</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This manager allows extends the product comments model&#39;&#39;&#39;</span>
+	<span class="k">def</span> <span class="nf">getComments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">user</span><span class="p">):</span>
+		<span class="n">comments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Q</span><span class="p">(</span><span class="n">seller</span> <span class="o">=</span> <span class="n">user</span><span class="p">)</span> <span class="o">|</span> <span class="n">Q</span><span class="p">(</span> <span class="n">buyer</span> <span class="o">=</span> <span class="n">user</span><span class="p">))</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;-date_post_ask&#39;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">comments</span>
+</div>
+<div class="viewcode-block" id="ProductComments"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.ProductComments">[docs]</a><span class="k">class</span> <span class="nc">ProductComments</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This model allows write comments to product&#39;&#39;&#39;</span>
+	<span class="n">date_post_ask</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+	<span class="n">date_post_reply</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+	<span class="n">product</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Product</span><span class="p">)</span>
+	<span class="n">buyer</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s">&quot;custom_buyer_comment&quot;</span><span class="p">)</span>
+	<span class="n">seller</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s">&quot;custom_seller_comment&quot;</span><span class="p">)</span>
+	<span class="n">ask</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+	<span class="n">reply</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+	<span class="n">is_read</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+	<span class="n">objects</span> <span class="o">=</span> <span class="n">ProductCommentsManager</span><span class="p">()</span>
+
+	<span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ask</span>
+
+<div class="viewcode-block" id="ProductComments.date_ask"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.ProductComments.date_ask">[docs]</a>	<span class="k">def</span> <span class="nf">date_ask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function returns the date asking&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="s">&quot;Hace &quot;</span><span class="o">+</span> <span class="n">timesince</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">date_post_ask</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ProductComments.date_reply"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.ProductComments.date_reply">[docs]</a>	<span class="k">def</span> <span class="nf">date_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function returns the date reply&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_post_reply</span><span class="p">:</span>
+			<span class="k">return</span> <span class="s">&quot;Hace &quot;</span><span class="o">+</span> <span class="n">timesince</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">date_post_reply</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">False</span>
+
+		<span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+</div></div>
+<span class="n">PAYMENTS_CHOICES</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;Efectivo&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;Acordar con el Vendedor&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#39;Giros&#39;</span><span class="p">),</span>
+	<span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s">&#39;Consignación Bancaria&#39;</span><span class="p">),</span>
+	<span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s">&#39;Contra Entrega&#39;</span><span class="p">),</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="Payment"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.Payment">[docs]</a><span class="k">class</span> <span class="nc">Payment</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This model allows create pyament options&#39;&#39;&#39;</span>
+	<span class="n">payment</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">PAYMENTS_CHOICES</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+	<span class="n">farm</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Farm</span><span class="p">)</span>
+	<span class="n">description</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+
+	<span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+		<span class="n">unique_together</span><span class="o">=</span><span class="p">((</span><span class="s">&#39;payment&#39;</span><span class="p">,</span><span class="s">&#39;farm&#39;</span><span class="p">),)</span>
+
+	<span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">farm</span><span class="o">.</span><span class="n">name</span>
+</div>
+<div class="viewcode-block" id="ShippingOption"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.ShippingOption">[docs]</a><span class="k">class</span> <span class="nc">ShippingOption</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This model allows create shipping options&#39;&#39;&#39;</span>
+	<span class="n">farm</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Farm</span><span class="p">)</span>
+	<span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+	<span class="n">detail</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+	<span class="n">price</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FloatField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+	<span class="n">porcentage</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FloatField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detail</span>
+</div>
+<div class="viewcode-block" id="ShippingAddress"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.ShippingAddress">[docs]</a><span class="k">class</span> <span class="nc">ShippingAddress</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This model allows save the shipping address&#39;&#39;&#39;</span>
+	<span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">OneToOneField</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+	<span class="n">neighborhood</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+	<span class="n">address</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+	<span class="n">city</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+	<span class="n">phone</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+	<span class="n">description</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+
+	<span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">address</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager">[docs]</a><span class="k">class</span> <span class="nc">PurchaseOrderManager</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Manager</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This manager allows extend the purchase order model&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="PurchaseOrderManager.create_order"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.create_order">[docs]</a>	<span class="k">def</span> <span class="nf">create_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">product</span><span class="p">,</span><span class="n">shipping_option</span><span class="p">,</span><span class="n">quantity</span><span class="p">,</span><span class="n">payment_id</span><span class="p">,</span><span class="n">user</span><span class="p">,</span><span class="n">address</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function allows create a new order&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="n">shipping_option</span><span class="o">.</span><span class="n">price</span><span class="p">:</span>
+			<span class="n">total</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">quantity</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="n">shipping_option</span><span class="o">.</span><span class="n">price</span><span class="p">)</span><span class="o">+</span><span class="n">Decimal</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">price</span><span class="p">))</span>
+			<span class="n">shipping</span><span class="o">=</span><span class="s">&quot;{}. Descripción: El envío tiene un valor fijo de ${}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shipping_option</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">shipping_option</span><span class="o">.</span><span class="n">price</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">total</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">quantity</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">Decimal</span><span class="p">(</span><span class="n">shipping_option</span><span class="o">.</span><span class="n">price</span><span class="p">)</span><span class="o">*</span><span class="n">Decimal</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">price</span><span class="p">))</span><span class="o">+</span><span class="n">Decimal</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">price</span><span class="p">))</span>
+			<span class="n">shipping</span><span class="o">=</span><span class="s">&quot;{}. Descripción: El envío tiene un valor variable del {}</span><span class="si">% c</span><span class="s">on respecto al valor del producto&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shipping_option</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">shipping_option</span><span class="o">.</span><span class="n">porcentage</span><span class="p">)</span>
+		<span class="n">order</span> <span class="o">=</span> <span class="n">PurchaseOrder</span><span class="p">(</span><span class="n">buyer</span><span class="o">=</span><span class="n">user</span><span class="p">,</span><span class="n">farm</span><span class="o">=</span><span class="n">product</span><span class="o">.</span><span class="n">farm</span><span class="p">,</span><span class="n">address</span><span class="o">=</span><span class="n">address</span><span class="p">,</span><span class="n">payment_id</span><span class="o">=</span><span class="n">payment_id</span><span class="p">,</span><span class="n">product</span><span class="o">=</span><span class="n">product</span><span class="p">,</span><span class="n">quantity</span><span class="o">=</span><span class="n">quantity</span><span class="p">,</span><span class="n">price</span><span class="o">=</span><span class="n">product</span><span class="o">.</span><span class="n">price</span><span class="p">,</span><span class="n">shipping</span><span class="o">=</span><span class="n">shipping</span><span class="p">,</span><span class="n">total_order</span><span class="o">=</span><span class="n">total</span><span class="p">)</span>
+		<span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+		<span class="n">PurchaseRecord</span><span class="p">(</span><span class="n">purchase_order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span><span class="n">detail</span><span class="o">=</span><span class="s">&quot;Se ha realizado la compra de {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">name</span><span class="p">))</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+		<span class="n">notificationShop</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">product</span><span class="o">.</span><span class="n">farm</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">order</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">order</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.month_sales"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.month_sales">[docs]</a>	<span class="k">def</span> <span class="nf">month_sales</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function returns the monthly sales&#39;&#39;&#39;</span>
+		<span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+		<span class="n">cal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="p">()</span>
+		<span class="n">days_month</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">itermonthdays</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">,</span> <span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">)))</span><span class="o">-</span><span class="nb">set</span><span class="p">([</span><span class="mi">0</span><span class="p">]))</span>
+		<span class="n">orders</span> <span class="o">=</span> <span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">,</span><span class="n">date__month</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span><span class="n">date__year</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+		<span class="n">products</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">product_order_month</span><span class="p">(</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="p">)</span>
+		<span class="n">total_day</span><span class="o">=</span><span class="p">[]</span>
+		<span class="n">count_sales</span><span class="o">=</span><span class="p">[]</span>
+		<span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="n">days_month</span><span class="p">:</span>
+			<span class="n">total_day</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+			<span class="n">count_sales</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">total_month</span><span class="o">=</span><span class="mi">0</span>
+		<span class="n">total_products</span> <span class="o">=</span> <span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">count_products_month</span><span class="p">(</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">day</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">days_month</span><span class="p">):</span>
+				<span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">day</span><span class="o">==</span><span class="n">day</span><span class="p">:</span>
+					<span class="n">total</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">total_order</span>
+					<span class="n">t_products</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">quantity</span>
+					<span class="k">if</span> <span class="n">total_day</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+						<span class="n">price</span>  <span class="o">=</span> <span class="n">total_day</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">+</span><span class="n">total</span>
+						<span class="n">total_day</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="n">price</span>
+						<span class="n">total_month</span><span class="o">+=</span><span class="n">total</span>
+						<span class="n">count</span> <span class="o">=</span> <span class="n">count_sales</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+						<span class="n">count_sales</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">count</span><span class="o">+</span><span class="n">t_products</span><span class="p">)</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">total_month</span><span class="o">+=</span><span class="n">total</span>
+						<span class="n">total_day</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="n">total</span>
+						<span class="n">count_sales</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">t_products</span><span class="p">)</span>
+
+					<span class="k">break</span>
+		<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;labels&#39;</span><span class="p">:</span><span class="n">days_month</span><span class="p">,</span> <span class="s">&#39;values&#39;</span><span class="p">:</span><span class="n">total_day</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">:</span><span class="n">count_sales</span><span class="p">,</span> <span class="s">&#39;total_month&#39;</span><span class="p">:</span><span class="n">total_month</span><span class="p">,</span> <span class="s">&#39;total_products&#39;</span><span class="p">:</span><span class="n">total_products</span><span class="p">,</span> <span class="s">&#39;products&#39;</span><span class="p">:</span><span class="n">products</span><span class="p">}</span>
+		<span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.day_sales"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.day_sales">[docs]</a>	<span class="k">def</span> <span class="nf">day_sales</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function returns the daily sales&#39;&#39;&#39;</span>
+		<span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+		<span class="n">hours</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">],[</span><span class="mi">8</span><span class="p">,</span><span class="mi">12</span><span class="p">],[</span><span class="mi">12</span><span class="p">,</span><span class="mi">16</span><span class="p">],[</span><span class="mi">16</span><span class="p">,</span><span class="mi">20</span><span class="p">],[</span><span class="mi">20</span><span class="p">,</span><span class="mi">24</span><span class="p">]]</span>
+		<span class="n">total_hours</span><span class="o">=</span><span class="p">[]</span>
+		<span class="n">count_sales</span><span class="o">=</span><span class="p">[]</span>
+		<span class="k">for</span> <span class="n">hour</span> <span class="ow">in</span> <span class="n">hours</span><span class="p">:</span>
+			<span class="n">total_hours</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+			<span class="n">count_sales</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">products</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">product_order_day</span><span class="p">(</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="p">)</span>
+		<span class="n">total_products</span> <span class="o">=</span> <span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">count_products_day</span><span class="p">(</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="p">)</span>
+		<span class="n">total_day</span><span class="o">=</span><span class="mi">0</span>
+		<span class="n">orders</span> <span class="o">=</span> <span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">,</span> <span class="n">date__month</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">date__day</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">day</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">hour</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">hours</span><span class="p">):</span>
+				<span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">hour</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">hour</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">hour</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+					<span class="n">total</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">total_order</span>
+					<span class="n">t_products</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">quantity</span>
+					<span class="k">if</span> <span class="n">total_hours</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+						<span class="n">price</span>  <span class="o">=</span> <span class="n">total_hours</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">+</span><span class="n">total</span>
+						<span class="n">total_hours</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="n">price</span>
+						<span class="n">total_day</span><span class="o">+=</span><span class="n">total</span>
+						<span class="n">count</span> <span class="o">=</span> <span class="n">count_sales</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+						<span class="n">count_sales</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">count</span><span class="o">+</span><span class="n">t_products</span><span class="p">)</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">total_day</span><span class="o">+=</span><span class="n">total</span>
+						<span class="n">total_hours</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="n">total_day</span>
+						<span class="n">count_sales</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">t_products</span><span class="p">)</span>
+					<span class="k">break</span>
+		<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;values&#39;</span><span class="p">:</span><span class="n">total_hours</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">:</span><span class="n">count_sales</span><span class="p">,</span> <span class="s">&#39;total_day&#39;</span><span class="p">:</span><span class="n">total_day</span><span class="p">,</span> <span class="s">&#39;total_products&#39;</span><span class="p">:</span><span class="n">total_products</span><span class="p">,</span> <span class="s">&#39;products&#39;</span><span class="p">:</span><span class="n">products</span><span class="p">}</span>
+		<span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.week_sales"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.week_sales">[docs]</a>	<span class="k">def</span> <span class="nf">week_sales</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function returns the weekly deals&#39;&#39;&#39;</span>
+		<span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+		<span class="n">orders</span> <span class="o">=</span> <span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">order_week</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">)</span>
+		<span class="n">products_order</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">product_order_week</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">,</span><span class="n">orders</span><span class="o">=</span><span class="n">orders</span><span class="p">)</span>
+		<span class="n">total_products</span> <span class="o">=</span> <span class="n">products_order</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;total&#39;</span><span class="p">]</span>
+		<span class="n">products</span> <span class="o">=</span> <span class="n">products_order</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+		<span class="n">sales_day</span><span class="o">=</span><span class="p">[]</span>
+		<span class="n">count_sales</span><span class="o">=</span><span class="p">[]</span>
+		<span class="n">total_day</span><span class="o">=</span><span class="mi">0</span>
+		<span class="n">cal</span> <span class="o">=</span> <span class="n">Calendar</span><span class="p">()</span>
+		<span class="n">days</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cal</span><span class="o">.</span><span class="n">iterweekdays</span><span class="p">())</span>
+		<span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="n">days</span><span class="p">:</span>
+			<span class="n">sales_day</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+			<span class="n">count_sales</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+			<span class="n">order_day</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">isocalendar</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span>
+			<span class="n">total</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">total_order</span>
+			<span class="n">t_products</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">quantity</span>
+			<span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="n">days</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">day</span><span class="o">==</span><span class="n">order_day</span><span class="p">:</span>
+					<span class="k">if</span> <span class="n">sales_day</span><span class="p">[</span><span class="n">day</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+						<span class="n">price</span>  <span class="o">=</span> <span class="n">sales_day</span><span class="p">[</span><span class="n">day</span><span class="p">]</span><span class="o">+</span><span class="n">total</span>
+						<span class="n">sales_day</span><span class="p">[</span><span class="n">day</span><span class="p">]</span><span class="o">=</span><span class="n">price</span>
+						<span class="n">total_day</span><span class="o">+=</span><span class="n">total</span>
+						<span class="n">count</span> <span class="o">=</span> <span class="n">count_sales</span><span class="p">[</span><span class="n">day</span><span class="p">]</span>
+						<span class="n">count_sales</span><span class="p">[</span><span class="n">day</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">count</span><span class="o">+</span><span class="n">t_products</span><span class="p">)</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">total_day</span><span class="o">+=</span><span class="n">total</span>
+						<span class="n">sales_day</span><span class="p">[</span><span class="n">day</span><span class="p">]</span><span class="o">=</span><span class="n">total_day</span>
+						<span class="n">count_sales</span><span class="p">[</span><span class="n">day</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">t_products</span><span class="p">)</span>
+					<span class="k">break</span>
+		<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;values&#39;</span><span class="p">:</span><span class="n">sales_day</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">:</span><span class="n">count_sales</span><span class="p">,</span> <span class="s">&#39;total_day&#39;</span><span class="p">:</span><span class="n">total_day</span><span class="p">,</span> <span class="s">&#39;total_products&#39;</span><span class="p">:</span><span class="n">total_products</span><span class="p">,</span> <span class="s">&#39;products&#39;</span><span class="p">:</span><span class="n">products</span><span class="p">}</span>
+		<span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.year_sales"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.year_sales">[docs]</a>	<span class="k">def</span> <span class="nf">year_sales</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function returns the annual sales&#39;&#39;&#39;</span>
+		<span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+		<span class="n">months_year</span><span class="o">=</span><span class="p">[]</span>
+		<span class="k">for</span> <span class="n">month</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">13</span><span class="p">):</span>
+			<span class="n">months_year</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">month</span><span class="p">)</span>
+		<span class="n">orders</span> <span class="o">=</span> <span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">,</span> <span class="n">date__year</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+		<span class="n">products</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">product_order_year</span><span class="p">(</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="p">)</span>
+		<span class="n">sales_month</span><span class="o">=</span><span class="p">[]</span>
+		<span class="n">count_sales</span><span class="o">=</span><span class="p">[]</span>
+		<span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="n">months_year</span><span class="p">:</span>
+			<span class="n">sales_month</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+			<span class="n">count_sales</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">total_year</span><span class="o">=</span><span class="mi">0</span>
+		<span class="n">total_products</span> <span class="o">=</span> <span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">count_products_year</span><span class="p">(</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">month</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">months_year</span><span class="p">):</span>
+				<span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="o">==</span><span class="n">month</span><span class="p">:</span>
+					<span class="n">total</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">total_order</span>
+					<span class="n">t_products</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">quantity</span>
+					<span class="k">if</span> <span class="n">sales_month</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+						<span class="n">price</span>  <span class="o">=</span> <span class="n">sales_month</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">+</span><span class="n">total</span>
+						<span class="n">sales_month</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="n">price</span>
+						<span class="n">total_year</span><span class="o">+=</span><span class="n">total</span>
+						<span class="n">count</span> <span class="o">=</span> <span class="n">count_sales</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+						<span class="n">count_sales</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">count</span><span class="o">+</span><span class="n">t_products</span><span class="p">)</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">total_year</span><span class="o">+=</span><span class="n">total</span>
+						<span class="n">sales_month</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="n">total</span>
+						<span class="n">count_sales</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">t_products</span><span class="p">)</span>
+					<span class="k">break</span>
+		<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;values&#39;</span><span class="p">:</span><span class="n">sales_month</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">:</span><span class="n">count_sales</span><span class="p">,</span> <span class="s">&#39;total_year&#39;</span><span class="p">:</span><span class="n">total_year</span><span class="p">,</span> <span class="s">&#39;total_products&#39;</span><span class="p">:</span><span class="n">total_products</span><span class="p">,</span> <span class="s">&#39;products&#39;</span><span class="p">:</span><span class="n">products</span><span class="p">}</span>
+		<span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.origin_sales"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.origin_sales">[docs]</a>	<span class="k">def</span> <span class="nf">origin_sales</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This fucntion returns the sales since the farm opened&#39;&#39;&#39;</span>
+		<span class="n">orders</span> <span class="o">=</span> <span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">)</span>
+		<span class="n">rang</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">Max</span><span class="p">(</span><span class="s">&#39;date&#39;</span><span class="p">),</span> <span class="n">Min</span><span class="p">(</span><span class="s">&#39;date&#39;</span><span class="p">))</span>
+		<span class="n">years</span><span class="o">=</span><span class="p">[]</span>
+		<span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rang</span><span class="p">[</span><span class="s">&#39;date__min&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">year</span><span class="p">,</span><span class="n">rang</span><span class="p">[</span><span class="s">&#39;date__max&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">year</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+			<span class="n">years</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+		<span class="n">products</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">product_order_origin</span><span class="p">(</span><span class="n">farm</span><span class="p">)</span>
+		<span class="n">sales_year</span><span class="o">=</span><span class="p">[]</span>
+		<span class="n">count_sales</span><span class="o">=</span><span class="p">[]</span>
+		<span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
+			<span class="n">sales_year</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+			<span class="n">count_sales</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="n">total_year</span><span class="o">=</span><span class="mi">0</span>
+		<span class="n">total_products</span> <span class="o">=</span> <span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">total</span><span class="p">(</span><span class="n">farm</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">year</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">years</span><span class="p">):</span>
+				<span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="o">==</span><span class="n">year</span><span class="p">:</span>
+					<span class="n">total</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">total_order</span>
+					<span class="n">t_products</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">quantity</span>
+					<span class="k">if</span> <span class="n">sales_year</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+						<span class="n">price</span>  <span class="o">=</span> <span class="n">sales_year</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">+</span><span class="n">total</span>
+						<span class="n">sales_year</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="n">price</span>
+						<span class="n">total_year</span><span class="o">+=</span><span class="n">t_products</span>
+						<span class="n">count</span> <span class="o">=</span> <span class="n">count_sales</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+						<span class="n">count_sales</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">count</span><span class="o">+</span><span class="n">t_products</span><span class="p">)</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">total_year</span><span class="o">+=</span><span class="n">t_products</span>
+						<span class="n">sales_year</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="n">total</span>
+						<span class="n">count_sales</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="n">t_products</span><span class="p">)</span>
+					<span class="k">break</span>
+		<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;values&#39;</span><span class="p">:</span><span class="n">sales_year</span><span class="p">,</span><span class="s">&#39;labels&#39;</span><span class="p">:</span><span class="n">years</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">:</span><span class="n">count_sales</span><span class="p">,</span> <span class="s">&#39;products&#39;</span><span class="p">:</span><span class="n">products</span><span class="p">,</span> <span class="s">&#39;total_products&#39;</span><span class="p">:</span><span class="n">total_year</span><span class="p">}</span>
+		<span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.order_week"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.order_week">[docs]</a>	<span class="k">def</span> <span class="nf">order_week</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function returns the sales were made in week&#39;&#39;&#39;</span>
+		<span class="n">orders</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">,</span><span class="n">date__month</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span><span class="n">date__year</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+		<span class="n">orders_week</span><span class="o">=</span><span class="p">[]</span>
+		<span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">date</span><span class="o">.</span><span class="n">isocalendar</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">order</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">isocalendar</span><span class="p">()[</span><span class="mi">1</span><span class="p">]:</span>
+				<span class="n">orders_week</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">orders_week</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.product_order_week"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.product_order_week">[docs]</a>	<span class="k">def</span> <span class="nf">product_order_week</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">,</span><span class="n">orders</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function counts the products that sales were sold in week&#39;&#39;&#39;</span>
+		<span class="n">products</span><span class="o">=</span><span class="p">[]</span>
+		<span class="n">total</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;total&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">}</span>
+		<span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">orders</span><span class="p">:</span>
+			<span class="n">total</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">)</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;quantity&#39;</span><span class="p">))</span>
+			<span class="n">products</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s">&#39;product__name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;quantity&#39;</span><span class="p">))</span>
+		<span class="n">products_order</span><span class="o">=</span><span class="p">[]</span>
+		<span class="n">products_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+		<span class="n">products_order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">products</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">products_order</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.product_order_month"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.product_order_month">[docs]</a>	<span class="k">def</span> <span class="nf">product_order_month</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function counts the products that were sold in the month&#39;&#39;&#39;</span>
+		<span class="n">products</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s">&#39;product__name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;quantity&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">,</span><span class="n">date__month</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span><span class="n">date__year</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">products</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.product_order_year"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.product_order_year">[docs]</a>	<span class="k">def</span> <span class="nf">product_order_year</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function counts the products that were sold in the year&#39;&#39;&#39;</span>
+		<span class="n">products</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s">&#39;product__name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;quantity&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">,</span> <span class="n">date__year</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">products</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.product_order_origin"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.product_order_origin">[docs]</a>	<span class="k">def</span> <span class="nf">product_order_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function counts the products that were sold since the farm opened&#39;&#39;&#39;</span>
+		<span class="n">products</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s">&#39;product__name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;quantity&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">products</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.product_order_day"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.product_order_day">[docs]</a>	<span class="k">def</span> <span class="nf">product_order_day</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function counts the products that were sold in the day&#39;&#39;&#39;</span>
+		<span class="n">products</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="s">&#39;product__name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;quantity&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">,</span> <span class="n">date__month</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">date__day</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="n">date__year</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">products</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.total"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.total">[docs]</a>	<span class="k">def</span> <span class="nf">total</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function returns the total sales&#39;&#39;&#39;</span>
+		<span class="n">total_order</span><span class="o">=</span><span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">)</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;total_order&#39;</span><span class="p">))</span>
+		<span class="k">return</span> <span class="n">total_order</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.count_products_month"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.count_products_month">[docs]</a>	<span class="k">def</span> <span class="nf">count_products_month</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function counts the products that were sold in the month&#39;&#39;&#39;</span>
+		<span class="n">count</span> <span class="o">=</span> <span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">,</span> <span class="n">date__month</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">date__year</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;quantity&#39;</span><span class="p">))</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">count</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">]:</span>
+			<span class="n">count</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">return</span> <span class="n">count</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.count_products_year"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.count_products_year">[docs]</a>	<span class="k">def</span> <span class="nf">count_products_year</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function counts the products that were sold in the year&#39;&#39;&#39;</span>
+		<span class="n">count</span> <span class="o">=</span> <span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">,</span> <span class="n">date__year</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;quantity&#39;</span><span class="p">))</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">count</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">]:</span>
+			<span class="n">count</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">return</span> <span class="n">count</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrderManager.count_products_day"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrderManager.count_products_day">[docs]</a>	<span class="k">def</span> <span class="nf">count_products_day</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">farm</span><span class="p">,</span><span class="n">date</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function counts the products that were sold in the day&#39;&#39;&#39;</span>
+		<span class="n">count</span> <span class="o">=</span> <span class="n">PurchaseOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">farm</span><span class="o">=</span><span class="n">farm</span><span class="p">,</span> <span class="n">date__month</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">month</span><span class="p">,</span> <span class="n">date__day</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="n">date__year</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">year</span><span class="p">)</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;quantity&#39;</span><span class="p">))</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">count</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">]:</span>
+			<span class="n">count</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">return</span> <span class="n">count</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">]</span>
+</div></div>
+<span class="n">STATE_ORDER_CHOICES</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;Pedido&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;Enviado&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#39;Finalizado&#39;</span><span class="p">),</span>
+	<span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s">&#39;Cancelado&#39;</span><span class="p">),</span>
+<span class="p">)</span>
+<div class="viewcode-block" id="PurchaseOrder"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrder">[docs]</a><span class="k">class</span> <span class="nc">PurchaseOrder</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This models allows create purchase orders&#39;&#39;&#39;</span>
+	<span class="n">date</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+	<span class="n">buyer</span><span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+	<span class="n">farm</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Farm</span><span class="p">)</span>
+	<span class="n">state</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">STATE_ORDER_CHOICES</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">address</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">ShippingAddress</span><span class="p">)</span>
+	<span class="n">payment</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Payment</span><span class="p">)</span>
+	<span class="n">product</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Product</span><span class="p">)</span>
+	<span class="n">quantity</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+	<span class="n">price</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FloatField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+	<span class="n">shipping</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+	<span class="n">total_order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">FloatField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+	<span class="n">received</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+	<span class="n">objects</span> <span class="o">=</span> <span class="n">PurchaseOrderManager</span><span class="p">()</span>
+
+	<span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PurchaseOrder.total_shipping"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrder.total_shipping">[docs]</a>	<span class="k">def</span> <span class="nf">total_shipping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function returns the total shipping&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_order</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">price</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrder.total2"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrder.total2">[docs]</a>	<span class="k">def</span> <span class="nf">total2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function returns the total price of the order&#39;&#39;&#39;</span>
+		<span class="n">products</span> <span class="o">=</span> <span class="n">ProductOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+		<span class="n">total_product</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">products</span><span class="p">:</span>
+			<span class="n">total_product</span><span class="o">+=</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">price</span><span class="o">*</span><span class="n">product</span><span class="o">.</span><span class="n">quantity</span><span class="p">)</span>
+		<span class="n">total</span> <span class="o">=</span> <span class="n">ProductOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;total&#39;</span><span class="p">))</span>
+		<span class="n">total_shipping</span> <span class="o">=</span> <span class="n">total</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">total_product</span>
+		<span class="n">total</span><span class="p">[</span><span class="s">&#39;total_shipping&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">total_shipping</span>
+		<span class="n">total</span><span class="p">[</span><span class="s">&#39;total_products&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">total_product</span>
+		<span class="k">return</span> <span class="n">total</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrder.products"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrder.products">[docs]</a>	<span class="k">def</span> <span class="nf">products</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function returns the products&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="n">ProductOrder</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="PurchaseOrder.records"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseOrder.records">[docs]</a>	<span class="k">def</span> <span class="nf">records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function returns the purchase order records&#39;&#39;&#39;</span>
+		<span class="k">return</span> <span class="n">PurchaseRecord</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">purchase_order</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s">&#39;-date&#39;</span><span class="p">)</span>
+
+</div></div>
+<span class="k">class</span> <span class="nc">ProductOrderManager</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Manager</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">create_product</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">products</span><span class="p">,</span><span class="n">order</span><span class="p">,</span><span class="n">buyer</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">products</span><span class="p">:</span>
+			<span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+			<span class="n">shipping</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+			<span class="n">receiver</span> <span class="o">=</span> <span class="n">product</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">farm</span><span class="o">.</span><span class="n">user</span>
+			<span class="k">if</span> <span class="n">product</span><span class="o">.</span><span class="n">shipping</span><span class="o">.</span><span class="n">price</span><span class="p">:</span>
+				<span class="n">total</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">quantity</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">shipping</span><span class="o">.</span><span class="n">price</span><span class="p">)</span><span class="o">+</span><span class="n">Decimal</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">price</span><span class="p">))</span>
+				<span class="n">shipping</span><span class="o">=</span><span class="s">&quot;{}. Descripción: El envío tiene un valor fijo de ${}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">shipping</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">product</span><span class="o">.</span><span class="n">shipping</span><span class="o">.</span><span class="n">price</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">total</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">quantity</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">Decimal</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">shipping</span><span class="o">.</span><span class="n">price</span><span class="p">)</span><span class="o">*</span><span class="n">Decimal</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">price</span><span class="p">))</span><span class="o">+</span><span class="n">Decimal</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">price</span><span class="p">))</span>
+				<span class="n">shipping</span><span class="o">=</span><span class="s">&quot;{}. Descripción: El envío tiene un valor variable del {}</span><span class="si">% c</span><span class="s">on respecto al valor del producto&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">shipping</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">product</span><span class="o">.</span><span class="n">shipping</span><span class="o">.</span><span class="n">porcentage</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="n">product</span><span class="o">.</span><span class="n">product</span><span class="p">,</span> <span class="n">quantity</span><span class="o">=</span><span class="n">product</span><span class="o">.</span><span class="n">quantity</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">product</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">price</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span> <span class="n">shipping</span><span class="o">=</span><span class="n">shipping</span><span class="p">)</span>
+			<span class="n">product</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+		<span class="n">notificationShop</span><span class="p">(</span><span class="n">buyer</span><span class="p">,</span><span class="n">receiver</span><span class="p">,</span><span class="n">order</span><span class="p">)</span>
+
+<span class="n">PURSCHASE_STATE_CHOICES</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;Realizó una Compra&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;Nuevo Estado&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#39;Notificación Cliente&#39;</span><span class="p">),</span>
+	<span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s">&#39;Notificación Vendedor&#39;</span><span class="p">),</span>
+<span class="p">)</span>
+
+<div class="viewcode-block" id="PurchaseRecord"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.PurchaseRecord">[docs]</a><span class="k">class</span> <span class="nc">PurchaseRecord</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+	<span class="n">purchase_order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">PurchaseOrder</span><span class="p">)</span>
+	<span class="n">state</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">PURSCHASE_STATE_CHOICES</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+	<span class="n">detail</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+
+	<span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">detail</span>
+</div>
+<div class="viewcode-block" id="FeedbackProduct"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.FeedbackProduct">[docs]</a><span class="k">class</span> <span class="nc">FeedbackProduct</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This model allows add a comment to product&#39;&#39;&#39;</span>
+	<span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">OneToOneField</span><span class="p">(</span><span class="n">PurchaseOrder</span><span class="p">)</span>
+	<span class="n">date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+	<span class="n">comment</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+	<span class="n">quality</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">SmallIntegerField</span><span class="p">(</span><span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">MinValueValidator</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">MaxValueValidator</span><span class="p">(</span><span class="mi">5</span><span class="p">)])</span>
+	<span class="n">description</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">SmallIntegerField</span><span class="p">(</span><span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">MinValueValidator</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">MaxValueValidator</span><span class="p">(</span><span class="mi">5</span><span class="p">)])</span>
+	<span class="n">price</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">SmallIntegerField</span><span class="p">(</span><span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">MinValueValidator</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">MaxValueValidator</span><span class="p">(</span><span class="mi">5</span><span class="p">)])</span>
+
+	<span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">name</span>
+
+<div class="viewcode-block" id="FeedbackProduct.date_post"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.FeedbackProduct.date_post">[docs]</a>	<span class="k">def</span> <span class="nf">date_post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&#39;&#39;&#39;This function returns the date post&#39;&#39;&#39;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">:</span>
+			<span class="k">return</span> <span class="s">&quot;Hace &quot;</span><span class="o">+</span> <span class="n">timesince</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">False</span>
+</div></div>
+<div class="viewcode-block" id="FeedbackSeller"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.FeedbackSeller">[docs]</a><span class="k">class</span> <span class="nc">FeedbackSeller</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This model allows feedback to the seller&#39;&#39;&#39;</span>
+	<span class="n">order</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">OneToOneField</span><span class="p">(</span><span class="n">PurchaseOrder</span><span class="p">)</span>
+	<span class="n">date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+	<span class="n">observations</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+	<span class="n">communication</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">SmallIntegerField</span><span class="p">(</span><span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">MinValueValidator</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">MaxValueValidator</span><span class="p">(</span><span class="mi">5</span><span class="p">)])</span>
+	<span class="n">quickness</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">SmallIntegerField</span><span class="p">(</span><span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">MinValueValidator</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">MaxValueValidator</span><span class="p">(</span><span class="mi">5</span><span class="p">)])</span>
+	<span class="n">responsibility</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">SmallIntegerField</span><span class="p">(</span><span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">MinValueValidator</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">MaxValueValidator</span><span class="p">(</span><span class="mi">5</span><span class="p">)])</span>
+	<span class="n">reply</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">buyer</span><span class="o">.</span><span class="n">username</span>
+</div>
+<div class="viewcode-block" id="Mailbox"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.Mailbox">[docs]</a><span class="k">class</span> <span class="nc">Mailbox</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This model allows write comments about the AgroCeres&#39;&#39;&#39;</span>
+	<span class="n">date</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+	<span class="n">user</span><span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+	<span class="n">phone</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+	<span class="n">email</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+	<span class="n">message</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">()</span>
+	<span class="n">reply</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">__unicode__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span>
+</div>
+<div class="viewcode-block" id="getFeedbackProduct"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.getFeedbackProduct">[docs]</a><span class="k">def</span> <span class="nf">getFeedbackProduct</span><span class="p">(</span><span class="n">product</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This function get the feedback from a product&#39;&#39;&#39;</span>
+	<span class="n">feedback</span><span class="o">=</span><span class="n">FeedbackProduct</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">order__product</span><span class="o">=</span><span class="n">product</span><span class="p">)</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">price</span><span class="o">=</span><span class="n">Avg</span><span class="p">(</span><span class="s">&#39;price&#39;</span><span class="p">),</span><span class="n">quality</span><span class="o">=</span><span class="n">Avg</span><span class="p">(</span><span class="s">&#39;quality&#39;</span><span class="p">),</span><span class="n">description</span><span class="o">=</span><span class="n">Avg</span><span class="p">(</span><span class="s">&#39;description&#39;</span><span class="p">),</span><span class="n">count</span><span class="o">=</span><span class="n">Count</span><span class="p">(</span><span class="s">&#39;order__product&#39;</span><span class="p">))</span>
+	<span class="k">if</span> <span class="n">feedback</span><span class="p">[</span><span class="s">&#39;count&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+		<span class="n">total</span><span class="o">=</span><span class="p">(</span><span class="n">feedback</span><span class="p">[</span><span class="s">&#39;price&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">feedback</span><span class="p">[</span><span class="s">&#39;quality&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">feedback</span><span class="p">[</span><span class="s">&#39;description&#39;</span><span class="p">])</span><span class="o">/</span><span class="mi">3</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">feedback</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">total</span>
+	<span class="k">return</span> <span class="n">feedback</span>
+</div>
+<div class="viewcode-block" id="getFeedbackFarm"><a class="viewcode-back" href="../../../modules/store.html#apps.store.models.getFeedbackFarm">[docs]</a><span class="k">def</span> <span class="nf">getFeedbackFarm</span><span class="p">(</span><span class="n">farm</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;This function get the feedback from a farm&#39;&#39;&#39;</span>
+	<span class="n">feedback</span><span class="o">=</span><span class="n">FeedbackSeller</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">order__farm</span><span class="o">=</span><span class="n">farm</span><span class="p">)</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="n">communication</span><span class="o">=</span><span class="n">Avg</span><span class="p">(</span><span class="s">&#39;communication&#39;</span><span class="p">),</span><span class="n">quickness</span><span class="o">=</span><span class="n">Avg</span><span class="p">(</span><span class="s">&#39;quickness&#39;</span><span class="p">),</span><span class="n">responsibility</span><span class="o">=</span><span class="n">Avg</span><span class="p">(</span><span class="s">&#39;responsibility&#39;</span><span class="p">),</span><span class="n">count</span><span class="o">=</span><span class="n">Count</span><span class="p">(</span><span class="s">&#39;order__farm&#39;</span><span class="p">))</span>
+	<span class="k">if</span> <span class="n">feedback</span><span class="p">[</span><span class="s">&#39;count&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+		<span class="n">total</span><span class="o">=</span><span class="p">(</span><span class="n">feedback</span><span class="p">[</span><span class="s">&#39;communication&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">feedback</span><span class="p">[</span><span class="s">&#39;quickness&#39;</span><span class="p">]</span><span class="o">+</span><span class="n">feedback</span><span class="p">[</span><span class="s">&#39;responsibility&#39;</span><span class="p">])</span><span class="o">/</span><span class="mi">3</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">feedback</span><span class="p">[</span><span class="s">&#39;total&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">total</span>
+	<span class="k">return</span> <span class="n">feedback</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, AgroCeres.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

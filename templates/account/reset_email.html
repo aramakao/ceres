@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>AgroCeres</title>
+
+</head>
+
+<body bgcolor="#f6f6f6" style="height: 100%; width: 100% ! important;font-family: &quot;Helvetica Neue&quot;,Helvetica,Arial,&quot;Lucida Grande&quot;,sans-serif; font-size: 14px; ">
+
+<!-- body -->
+
+<table style="padding: 5px; width: 100%;" bgcolor="#f6f6f6">
+  <tr>
+    <td>
+    </td>
+    <td class="container" style="border: 1px solid #f0f0f0;" bgcolor="#FFFFFF">
+      <p style="text-align: center; padding: 5px;">
+      <img  src="https://dl.dropboxusercontent.com/u/26254610/logo.png" alt="logo">
+      </p>
+      <!-- content -->
+      <div class="content">
+      <table style="padding: 0px; width: 100%; font-family: &quot;Helvetica Neue&quot;,&quot;Helvetica&quot;,Helvetica,Arial,sans-serif; font-size: 100%; line-height: 1.6em; margin: 0px;">
+        <tr>
+          <td style="padding: 5px;">
+            <p>Hola,</p>
+            <p style="text-align:justify;">
+              Recientemente, alguien solicitó cambiar la contraseña de tu cuenta de <strong>AgroCeres</strong>. Si fuiste tú, <a style="color: #8BC34A;text-decoration: none;" href="{{ protocol}}://{{ domain }}{% url 'account:reset_confirm' uidb64=uid token=token %}">haz clic aquí</a> para definir una nueva contraseña:
+            </p>
+            <p style="text-align:center;">
+              <a style="color: #FFF;
+              background-color: #5CB85C;
+              border-color: #4CAE4C;display: inline-block;
+              padding: 6px 12px;
+              margin-bottom: 0px;
+              font-size: 14px;
+              font-weight: 400;
+              line-height: 1.42857;
+              text-align: center;
+              vertical-align: middle;
+              cursor: pointer;
+              -moz-user-select: none;
+              background-image: none;
+              border: 1px solid transparent;
+              border-radius: 4px; text-decoration: none !important;" href="{{ protocol}}://{{ domain }}{% url 'account:reset_confirm' uidb64=uid token=token %}">Restaurar Contraseña</a>
+            </p>
+            <p style="text-align:justify;">
+              Si no deseas modificar tu contraseña o no solicitaste hacerlo, ignora y elimina este mensaje.
+            </p>
+            <p style="text-align:justify;">
+              Para preservar la seguridad de tu cuenta, no reenvíes este mensaje a nadie.
+            </p>
+            <p>
+              <hr style="margin-top: 20px;
+              margin-bottom: 20px;
+              border-width: 1px 0px 0px;
+              border-style: solid none none;
+              border-color: #EEE -moz-use-text-color -moz-use-text-color;
+              -moz-border-top-colors: none;
+              -moz-border-right-colors: none;
+              -moz-border-bottom-colors: none;
+              -moz-border-left-colors: none;
+              border-image: none;
+              height: 0px;">
+              Gracias<br>
+              El equipo de <strong>AgroCeres</strong>
+            </p>
+          </td>
+        </tr>
+      </table>
+      </div>
+    </td>
+  </tr>
+</table>
+<p style="text-align: center; padding: 5px;" >Copyright 2016 <a style="color: #8BC34A;text-decoration: none;" href="http://www.aramkao.com">Ara Makao</a>. Todos los derechos reservados.</a>.
+</body>
+</html>

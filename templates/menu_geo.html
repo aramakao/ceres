@@ -1,0 +1,7 @@
+<div class="list-group">
+  <a class="list-group-item" style="cursor:pointer"><strong>GeoGranjas - Categorías</strong></a>
+  <a class="list-group-item category" id="all_categories" style="cursor:pointer">Ver todas las granjas <span class="badge">{{total_farms}}</span></a>
+    {% for category in categories %}
+      <a class="category list-group-item" id="{{category.category.slug}}" style="cursor:pointer">{{category.category.svg|safe}} {{category.category}} <span class="badge">{{category.count}}</span></a>
+    {% endfor %}
+</div>

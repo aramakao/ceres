@@ -1,0 +1,559 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>apps.account.views &mdash; AgroCeres 1.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="AgroCeres 1.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> AgroCeres
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/account.html">Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/store.html">Store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/blog.html">Blog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/comment.html">Comment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/extras.html">Extras</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/farm.html">Farm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/groups.html">Groups</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/messages.html">Messages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/product.html">Product</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules/search.html">Search</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">AgroCeres</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>apps.account.views</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for apps.account.views</h1><div class="highlight"><pre>
+<span class="c">#-*- encoding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span><span class="p">,</span><span class="n">redirect</span><span class="p">,</span> <span class="n">get_object_or_404</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span><span class="p">,</span> <span class="n">HttpResponseRedirect</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="kn">import</span> <span class="n">TemplateView</span><span class="p">,</span> <span class="n">UpdateView</span><span class="p">,</span> <span class="n">FormView</span><span class="p">,</span> <span class="n">ListView</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth</span> <span class="kn">import</span> <span class="n">views</span> <span class="k">as</span> <span class="n">auth_views</span>
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">messages</span>
+<span class="kn">from</span> <span class="nn">django.core.urlresolvers</span> <span class="kn">import</span> <span class="n">reverse</span><span class="p">,</span> <span class="n">reverse_lazy</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.views</span> <span class="kn">import</span> <span class="n">password_reset</span><span class="p">,</span> <span class="n">password_reset_confirm</span>
+<span class="kn">from</span> <span class="nn">django.views.generic.edit</span> <span class="kn">import</span> <span class="n">CreateView</span><span class="p">,</span> <span class="n">UpdateView</span><span class="p">,</span> <span class="n">DeleteView</span>
+<span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Q</span>
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">apps.account.models</span> <span class="kn">import</span> <span class="n">LoggedInMixin</span>
+<span class="kn">from</span> <span class="nn">apps.message.models</span> <span class="kn">import</span> <span class="n">Message</span>
+<span class="kn">from</span> <span class="nn">apps.message.forms</span> <span class="kn">import</span> <span class="n">MessageForm</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth</span> <span class="kn">import</span> <span class="n">authenticate</span><span class="p">,</span><span class="n">login</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth</span> <span class="kn">import</span> <span class="n">update_session_auth_hash</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">apps.ceres.processors</span> <span class="kn">import</span> <span class="n">getUserFullName</span><span class="p">,</span> <span class="n">getFarmAdmin</span><span class="p">,</span> <span class="n">getActiveGroupsUser</span>
+<span class="kn">from</span> <span class="nn">apps.ceres.notification</span> <span class="kn">import</span> <span class="n">notificationComment</span><span class="p">,</span> <span class="n">notificationFriendInvitation</span>
+<span class="kn">from</span> <span class="nn">django.core.paginator</span> <span class="kn">import</span> <span class="n">Paginator</span><span class="p">,</span> <span class="n">EmptyPage</span><span class="p">,</span> <span class="n">PageNotAnInteger</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">django.utils.timesince</span> <span class="kn">import</span> <span class="n">timesince</span>
+<span class="kn">from</span> <span class="nn">notifications.models</span> <span class="kn">import</span> <span class="n">Notification</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">Http404</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<div class="viewcode-block" id="Login"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.Login">[docs]</a><span class="k">def</span> <span class="nf">Login</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function allows the login, checks if the username and password are right&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">login_form</span><span class="o">=</span><span class="n">LoginForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">login_form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">username</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;username&#39;</span><span class="p">]</span>
+            <span class="n">password</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;password&#39;</span><span class="p">]</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">authenticate</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">login</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">():</span>
+                    <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">set_expiry</span><span class="p">(</span><span class="mi">60000</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s">&#39;remember_me&#39;</span><span class="p">):</span>
+                    <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">set_expiry</span><span class="p">(</span><span class="mi">1209600</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s">&#39;next&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;next&#39;</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s">&#39;next&#39;</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;home&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Usuario y/o Contraseña Incorrecta&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Tenemos un problema&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">login_form</span><span class="o">=</span><span class="n">LoginForm</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="s">&#39;account/login.html&#39;</span><span class="p">,{</span><span class="s">&#39;login_form&#39;</span><span class="p">:</span><span class="n">login_form</span><span class="p">})</span>
+</div>
+<div class="viewcode-block" id="Register"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.Register">[docs]</a><span class="k">def</span> <span class="nf">Register</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This functions allosws the register for new users&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">&quot;POST&quot;</span><span class="p">:</span>
+        <span class="n">user_register</span> <span class="o">=</span> <span class="n">UserRegisterForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">user_register</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="n">user_register</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;username&#39;</span><span class="p">]</span>
+            <span class="n">email</span> <span class="o">=</span> <span class="n">user_register</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;email&#39;</span><span class="p">]</span>
+            <span class="n">password</span> <span class="o">=</span> <span class="n">user_register</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;password&#39;</span><span class="p">]</span>
+            <span class="n">re_password</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;re_password&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">re_password</span><span class="o">==</span><span class="n">password</span><span class="p">:</span>
+                <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">username</span><span class="p">,</span><span class="n">email</span><span class="p">,</span><span class="n">password</span><span class="p">)</span>
+                <span class="n">user</span><span class="o">=</span> <span class="n">authenticate</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span><span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
+                <span class="n">login</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">user</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;mi_agro&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Las contraseñas no coinciden!&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="n">user_register</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">err</span><span class="o">==</span><span class="s">&#39;username&#39;</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Ya existe ese nombre de usuario&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Tenemos un problema&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">user_register</span><span class="o">=</span><span class="n">UserRegisterForm</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="s">&#39;account/register.html&#39;</span><span class="p">,{</span><span class="s">&#39;user_register&#39;</span><span class="p">:</span><span class="n">user_register</span><span class="p">})</span>
+</div>
+<div class="viewcode-block" id="reset_confirm"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.reset_confirm">[docs]</a><span class="k">def</span> <span class="nf">reset_confirm</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">uidb64</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function return after the user request reset the password&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">password_reset_confirm</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">template_name</span><span class="o">=</span><span class="s">&#39;account/password_reset_confirm.html&#39;</span><span class="p">,</span>
+        <span class="n">uidb64</span><span class="o">=</span><span class="n">uidb64</span><span class="p">,</span>
+        <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
+        <span class="n">post_reset_redirect</span><span class="o">=</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;login&#39;</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Reset"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.Reset">[docs]</a><span class="k">def</span> <span class="nf">Reset</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function allows reset the password, it return a form with the email address and send</span>
+<span class="sd">    an email with an url token for reset the password&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">reset_form</span><span class="o">=</span><span class="n">ResetPasswordForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reset_form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">email</span><span class="o">=</span><span class="n">reset_form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;email&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">password_reset</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">template_name</span><span class="o">=</span><span class="s">&#39;account/reset.html&#39;</span><span class="p">,</span>
+                <span class="n">email_template_name</span><span class="o">=</span><span class="s">&#39;account/reset_email.html&#39;</span><span class="p">,</span>
+                <span class="n">is_admin_site</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">html_email_template_name</span><span class="o">=</span><span class="s">&#39;account/reset_email.html&#39;</span><span class="p">,</span>
+                <span class="n">subject_template_name</span><span class="o">=</span><span class="s">&#39;account/reset_subject.txt&#39;</span><span class="p">,</span>
+                <span class="n">post_reset_redirect</span><span class="o">=</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;account:forget_succes&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;La dirección de Correo Electrónico no existe&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Tenemos un problema!&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">reset_form</span><span class="o">=</span><span class="n">ResetPasswordForm</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="s">&#39;account/reset.html&#39;</span><span class="p">,{</span><span class="s">&#39;reset_form&#39;</span><span class="p">:</span><span class="n">reset_form</span><span class="p">})</span>
+</div>
+<div class="viewcode-block" id="ForgetSucces"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.ForgetSucces">[docs]</a><span class="k">class</span> <span class="nc">ForgetSucces</span><span class="p">(</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class returns a template after the request for reset the password is success&#39;&#39;&#39;</span>
+    <span class="n">template_name</span><span class="o">=</span><span class="s">&#39;account/password_reset_done.html&#39;</span>
+</div>
+<div class="viewcode-block" id="UpdateProfileView"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.UpdateProfileView">[docs]</a><span class="k">class</span> <span class="nc">UpdateProfileView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class allows update the user profile&#39;&#39;&#39;</span>
+    <span class="n">template_name</span><span class="o">=</span><span class="s">&#39;account/profile_edit.html&#39;</span>
+
+<div class="viewcode-block" id="UpdateProfileView.get_context_data"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.UpdateProfileView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This functions return the user form and the profile form&#39;&#39;&#39;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">UpdateProfileView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s">&#39;form_user&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">UserForm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span> <span class="ow">or</span> <span class="bp">None</span><span class="p">,</span> <span class="n">instance</span> <span class="o">=</span> <span class="n">user</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s">&#39;form_profile&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">ProfileForm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span> <span class="ow">or</span> <span class="bp">None</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">profile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">context</span>
+</div>
+<div class="viewcode-block" id="UpdateProfileView.post"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.UpdateProfileView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This funtion save the forms and update the user and user profile&#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">context</span><span class="p">[</span><span class="s">&quot;form_user&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">is_valid</span><span class="p">()</span> <span class="ow">and</span> <span class="n">context</span><span class="p">[</span><span class="s">&quot;form_profile&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+                <span class="n">context</span><span class="p">[</span><span class="s">&quot;form_user&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">context</span><span class="p">[</span><span class="s">&quot;form_profile&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Tu información se ha actualizado correctamente!&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Por favor revisa tu información!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;profile&#39;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Tenemos un problema en el servidor!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;profile&#39;</span><span class="p">))</span>
+</div></div>
+<div class="viewcode-block" id="UpdatePasswordView"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.UpdatePasswordView">[docs]</a><span class="k">class</span> <span class="nc">UpdatePasswordView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">FormView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class update the password of user account&#39;&#39;&#39;</span>
+    <span class="n">form_class</span><span class="o">=</span><span class="n">UpdatePasswordForm</span>
+    <span class="n">template_name</span> <span class="o">=</span>  <span class="s">&#39;account/update_password.html&#39;</span>
+    <span class="n">success_url</span> <span class="o">=</span> <span class="n">reverse_lazy</span><span class="p">(</span><span class="s">&#39;update_password&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="UpdatePasswordView.form_valid"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.UpdatePasswordView.form_valid">[docs]</a>    <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function checks if the password is equals to the old password&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s">&#39;POST&#39;</span><span class="p">:</span>
+            <span class="n">newpassword</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;new_password1&#39;</span><span class="p">]</span>
+            <span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span>
+            <span class="n">password</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;old_password&#39;</span><span class="p">]</span>
+
+            <span class="n">user</span> <span class="o">=</span> <span class="n">authenticate</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">newpassword</span><span class="p">)</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">update_session_auth_hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Contraseña actualizada correctamente!&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;La contraseña actual no es correcta&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">UpdatePasswordView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="ProfileView"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.ProfileView">[docs]</a><span class="k">class</span> <span class="nc">ProfileView</span><span class="p">(</span><span class="n">TemplateView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class allows view a profile&#39;&#39;&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;account/profile.html&#39;</span>
+
+<div class="viewcode-block" id="ProfileView.get_context_data"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.ProfileView.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function returns user profile, farms, groups, friends, status from an user&#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ProfileView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">user_profile</span><span class="o">=</span><span class="n">get_object_or_404</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">user_profile</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s">&#39;state&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+                    <span class="n">notifications</span><span class="o">=</span><span class="n">Notification</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">])</span>
+                    <span class="n">notifications</span><span class="o">.</span><span class="n">mark_as_read</span><span class="p">()</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;profile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Profile</span><span class="p">,</span> <span class="n">user</span> <span class="o">=</span> <span class="n">user_profile</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;profile_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">getUserFullName</span><span class="p">(</span><span class="n">user_profile</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;farm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">getFarmAdmin</span><span class="p">(</span><span class="n">user_profile</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;message_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MessageForm</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;groups&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">getActiveGroupsUser</span><span class="p">(</span><span class="n">user_profile</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;friends&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Friend</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">getAllFriends</span><span class="p">(</span><span class="n">user_profile</span><span class="p">)[:</span><span class="mi">10</span><span class="p">]</span>
+            <span class="n">paginator</span> <span class="o">=</span> <span class="n">Paginator</span><span class="p">(</span><span class="n">getStateUser</span><span class="p">(</span><span class="n">user_profile</span><span class="p">),</span><span class="mi">10</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s">&#39;page&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+                <span class="n">page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;page&#39;</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">PageNotAnInteger</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">EmptyPage</span><span class="p">:</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">paginator</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">paginator</span><span class="o">.</span><span class="n">num_pages</span><span class="p">)</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;admin&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">False</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;comments_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">StateUserCommentForm</span><span class="p">()</span>
+            <span class="n">context</span><span class="p">[</span><span class="s">&#39;invitation_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">InivitationFriendForm</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">context</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">e</span>
+            <span class="k">raise</span>
+
+</div>
+<div class="viewcode-block" id="ProfileView.post"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.ProfileView.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function allows send comments, invitations, messages&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="s">&#39;btn_comments&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;text&#39;</span><span class="p">]</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">]</span>
+            <span class="n">comment</span> <span class="o">=</span> <span class="n">StateUser</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">state</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s">&#39;picture&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">StateUserComment</span><span class="p">(</span><span class="n">state_id</span><span class="o">=</span><span class="n">state</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span><span class="n">picture</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;picture&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">state</span> <span class="o">=</span> <span class="n">StateUserComment</span><span class="p">(</span><span class="n">state_id</span><span class="o">=</span><span class="n">state</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">notificationComment</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">comment</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">comment</span><span class="p">)</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Publicación exitosa!&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;btn_invitation&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">comment</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;comment&#39;</span><span class="p">]</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">])</span>
+                <span class="n">invitation</span> <span class="o">=</span> <span class="n">InivitationFriend</span><span class="p">(</span><span class="n">friend</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">comment</span><span class="o">=</span><span class="n">comment</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">)</span>
+                <span class="n">invitation</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">notificationFriendInvitation</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">user</span><span class="p">)</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Invitación enviada correctamente!&#39;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Ya la has enviado una solicitud de amistad!&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;btn_message&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="n">form</span> <span class="o">=</span> <span class="n">MessageForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+                <span class="n">message_content</span><span class="o">=</span><span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s">&#39;message&#39;</span><span class="p">]</span>
+                <span class="n">receiver</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="s">&#39;file&#39;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">:</span>
+                    <span class="nb">file</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;file&#39;</span><span class="p">]</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message_content</span><span class="p">,</span><span class="nb">file</span><span class="o">=</span><span class="nb">file</span><span class="p">,</span><span class="n">sender</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">receiver</span><span class="o">=</span><span class="n">receiver</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message_content</span><span class="p">,</span><span class="n">sender</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">receiver</span><span class="o">=</span><span class="n">receiver</span><span class="p">)</span>
+                <span class="n">message</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Mensaje enviado correctamente!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;user_profile&#39;</span><span class="p">,</span><span class="n">slug</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;slug&#39;</span><span class="p">])</span>
+</div></div>
+<div class="viewcode-block" id="NotificationsView"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.NotificationsView">[docs]</a><span class="k">class</span> <span class="nc">NotificationsView</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class list all notifications that the user has received&#39;&#39;&#39;</span>
+    <span class="n">template_name</span><span class="o">=</span><span class="s">&#39;account/notifications.html&#39;</span>
+    <span class="n">paginate_by</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">context_object_name</span><span class="o">=</span> <span class="s">&#39;notifications&#39;</span>
+
+    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">object_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">notifications</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">object_list</span>
+</div>
+<div class="viewcode-block" id="MyFriendList"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.MyFriendList">[docs]</a><span class="k">class</span> <span class="nc">MyFriendList</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class list all friends of the user&#39;&#39;&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;account/my_friends.html&#39;</span>
+    <span class="n">paginate_by</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s">&#39;friends&#39;</span>
+
+<div class="viewcode-block" id="MyFriendList.get_queryset"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.MyFriendList.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function filters friends by user logged&#39;&#39;&#39;</span>
+        <span class="n">object_list</span> <span class="o">=</span> <span class="n">Friend</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">getAllFriends</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">object_list</span>
+</div>
+<div class="viewcode-block" id="MyFriendList.get_context_data"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.MyFriendList.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function returns a form for delete a friend&#39;&#39;&#39;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyFriendList</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s">&#39;friend_form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FriendDeleteForm</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">context</span>
+</div>
+<div class="viewcode-block" id="MyFriendList.post"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.MyFriendList.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function allows delete a friend&#39;&#39;&#39;</span>
+        <span class="n">friend_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">]</span>
+        <span class="n">friend</span> <span class="o">=</span> <span class="n">isFriend</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">friend_id</span><span class="p">)</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">Friend</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">friend</span><span class="o">.</span><span class="n">friend</span><span class="p">,</span><span class="n">friend</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">friend</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Borrado de la lista de amigos!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;my_friends&#39;</span><span class="p">))</span>
+</div></div>
+<div class="viewcode-block" id="FriendInvitationList"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.FriendInvitationList">[docs]</a><span class="k">class</span> <span class="nc">FriendInvitationList</span><span class="p">(</span><span class="n">LoggedInMixin</span><span class="p">,</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This class lists all friend requests&#39;&#39;&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;account/friends_invitation.html&#39;</span>
+    <span class="n">paginate_by</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s">&#39;invitations&#39;</span>
+
+<div class="viewcode-block" id="FriendInvitationList.get_queryset"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.FriendInvitationList.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This class lists all friend requests by user logged&#39;&#39;&#39;</span>
+        <span class="n">object_list</span> <span class="o">=</span> <span class="n">InivitationFriend</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">object_list</span>
+</div>
+<div class="viewcode-block" id="FriendInvitationList.get_context_data"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.FriendInvitationList.get_context_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function mark as read a notification&#39;&#39;&#39;</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FriendInvitationList</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;state&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">:</span>
+            <span class="n">notifications</span><span class="o">=</span><span class="n">Notification</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s">&#39;state&#39;</span><span class="p">])</span>
+            <span class="n">notifications</span><span class="o">.</span><span class="n">mark_as_read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">context</span>
+</div>
+<div class="viewcode-block" id="FriendInvitationList.post"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.FriendInvitationList.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">request</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;This function allows accept,reject friend requests&#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;accept:&#39;</span><span class="p">):</span>
+                <span class="n">accept</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="mi">7</span><span class="p">:]</span>
+                <span class="n">invitation</span> <span class="o">=</span> <span class="n">isInvitation</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">accept</span><span class="p">)</span>
+                <span class="n">friend</span> <span class="o">=</span> <span class="n">Friend</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">invitation</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">friend</span><span class="o">=</span><span class="n">invitation</span><span class="o">.</span><span class="n">friend</span><span class="p">)</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="n">Friend</span><span class="p">(</span><span class="n">friend</span><span class="o">=</span><span class="n">invitation</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="n">invitation</span><span class="o">.</span><span class="n">friend</span><span class="p">)</span>
+                <span class="n">inivitations</span> <span class="o">=</span> <span class="n">InivitationFriend</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Q</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">invitation</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">friend</span><span class="o">=</span><span class="n">invitation</span><span class="o">.</span><span class="n">friend</span><span class="p">)</span><span class="o">|</span><span class="n">Q</span><span class="p">(</span><span class="n">friend</span><span class="o">=</span><span class="n">invitation</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="n">invitation</span><span class="o">.</span><span class="n">friend</span><span class="p">))</span>
+                <span class="n">friend</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">invitation</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+                <span class="n">inivitations</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Amistad aceptada!&#39;</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;reject:&#39;</span><span class="p">):</span>
+                <span class="n">reject</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="mi">7</span><span class="p">:]</span>
+                <span class="n">invitation</span> <span class="o">=</span> <span class="n">isInvitation</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">reject</span><span class="p">)</span>
+                <span class="n">invitation</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;Amistad rechazada!&#39;</span><span class="p">)</span>
+                <span class="k">break</span>
+        <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s">&#39;friends_invitations&#39;</span><span class="p">))</span>
+</div></div>
+<div class="viewcode-block" id="isFriend"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.isFriend">[docs]</a><span class="k">def</span> <span class="nf">isFriend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">friend_id</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function checks if an user is friend&#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">friend</span> <span class="o">=</span> <span class="n">Friend</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">friend_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">friend</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">friend</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Http404</span>
+    <span class="k">except</span> <span class="n">Friend</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Http404</span>
+</div>
+<div class="viewcode-block" id="isInvitation"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.isInvitation">[docs]</a><span class="k">def</span> <span class="nf">isInvitation</span><span class="p">(</span><span class="n">user</span><span class="p">,</span><span class="n">invitation_id</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function checks if an user and he sent him a friend request&#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">inivitation</span> <span class="o">=</span> <span class="n">InivitationFriend</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">invitation_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inivitation</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">inivitation</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Http404</span>
+    <span class="k">except</span> <span class="n">InivitationFriend</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Http404</span>
+</div>
+<div class="viewcode-block" id="changePictureProfile"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.changePictureProfile">[docs]</a><span class="k">def</span> <span class="nf">changePictureProfile</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function allows change the picture profile a user&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_ajax</span><span class="p">():</span>
+        <span class="n">user</span><span class="o">=</span><span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">avatar</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;file_upload&#39;</span><span class="p">]</span>
+        <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">avatar</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&quot;text/plain&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Http404</span>
+</div>
+<div class="viewcode-block" id="changePictureBanner"><a class="viewcode-back" href="../../../modules/account.html#apps.account.views.changePictureBanner">[docs]</a><span class="k">def</span> <span class="nf">changePictureBanner</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This function allows change the banner profile a user&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">is_ajax</span><span class="p">():</span>
+        <span class="n">profile</span><span class="o">=</span><span class="n">Profile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user__username</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+        <span class="n">profile</span><span class="o">.</span><span class="n">banner</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="s">&#39;file_upload&#39;</span><span class="p">]</span>
+        <span class="n">profile</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">banner</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&quot;text/plain&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Http404</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, AgroCeres.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

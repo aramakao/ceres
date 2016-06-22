@@ -1,0 +1,33 @@
+{% if message.is_receiver %}
+<div class="media">
+  <div class="media-left">
+    <a href="{% url 'user_profile' message.receiver %}">
+      <img src="{{MEDIA_URL}}{{message.receiver.avatar}}" class="media-object img-circle img-avatar" >
+    </a>
+  </div>
+  <div class="media-body">
+    <a href="{% url 'user_profile' message.receiver %}"><h4 class="media-heading">{{message.receiver.get_full_name}}</h4></a>
+    {{message.message}}
+    {% if message.file %}
+      <p><a href="{{MEDIA_URL}}{{message.file}}"><small class="text-muted"><i class="fa fa-paperclip"></i> {{message.filename}}</small></a></p>
+    {% endif %}
+    <p><small class="text-muted"><i class="fa fa-clock-o"></i> {{message.date|timesince}}</small></p>
+  </div>
+</div>
+{% else %}
+<div class="media">
+  <div class="media-left">
+    <a href="{% url 'user_profile' message.sender %}">
+      <img src="{{MEDIA_URL}}{{message.sender.avatar}}" class="media-object img-circle img-avatar" >
+    </a>
+  </div>
+  <div class="media-body">
+    <a href="{% url 'user_profile' message.sender %}"><h4 class="media-heading">{{message.sender.get_full_name}}</h4></a>
+    {{message.message}}
+    {% if message.file %}
+      <p><a href="{{MEDIA_URL}}{{message.file}}"><small class="text-muted"><i class="fa fa-paperclip"></i> {{message.filename}}</small></a></p>
+    {% endif %}
+    <p><small class="text-muted"><i class="fa fa-clock-o"></i> {{message.date|timesince}}</small></p>
+  </div>
+</div>
+{% endif %}
